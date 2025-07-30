@@ -93,7 +93,17 @@ if ($ok) {
                 $updatePlatform->accessTokenUrl = null;
             }
             if (!empty($_POST['publickey'])) {
-                $updatePlatform->rsaKey = $_POST['publickey'];
+                $res = openssl_pkey_get_public($_POST['publickey']);
+                if ($res === false) {
+                    $_SESSION['error_message'] = 'Invalid public key - value has not been changed.';
+                } else {
+                    $details = openssl_pkey_get_details($res);
+                    if (($details === false) || !isset($details['rsa'])) {
+                        $_SESSION['error_message'] = 'The public key must have a type of \'RSA\' - value has not been changed.';
+                    } else {
+                        $updatePlatform->rsaKey = $_POST['publickey'];
+                    }
+                }
             } else {
                 $updatePlatform->rsaKey = null;
             }
@@ -384,17 +394,17 @@ EOD;
             $lti2 = ' disabled="disabled"';
         }
     }
-    $name = htmlentities($updatePlatform->name);
-    $key = htmlentities($updatePlatform->getKey());
-    $platformId = htmlentities($updatePlatform->platformId);
-    $clientId = htmlentities($updatePlatform->clientId);
-    $deploymentId = htmlentities($updatePlatform->deploymentId);
-    $authorizationServerId = htmlentities($updatePlatform->authorizationServerId);
-    $authenticationUrl = htmlentities($updatePlatform->authenticationUrl);
-    $accessTokenUrl = htmlentities($updatePlatform->accessTokenUrl);
-    $publicKey = htmlentities($updatePlatform->rsaKey);
-    $jku = htmlentities($updatePlatform->jku);
-    $secret = htmlentities($updatePlatform->secret);
+    $name = LTIhtmlentities($updatePlatform->name);
+    $key = LTIhtmlentities($updatePlatform->getKey());
+    $platformId = LTIhtmlentities($updatePlatform->platformId);
+    $clientId = LTIhtmlentities($updatePlatform->clientId);
+    $deploymentId = LTIhtmlentities($updatePlatform->deploymentId);
+    $authorizationServerId = LTIhtmlentities($updatePlatform->authorizationServerId);
+    $authenticationUrl = LTIhtmlentities($updatePlatform->authenticationUrl);
+    $accessTokenUrl = LTIhtmlentities($updatePlatform->accessTokenUrl);
+    $publicKey = LTIhtmlentities($updatePlatform->rsaKey);
+    $jku = LTIhtmlentities($updatePlatform->jku);
+    $secret = LTIhtmlentities($updatePlatform->secret);
     if ($updatePlatform->enabled) {
         $enabled = ' checked="checked"';
     } else {
@@ -453,7 +463,9 @@ EOD;
   <span id="id_authorizationserverid"><span class="label">Authorization server ID:</span>&nbsp;<input name="authorizationserverid" type="text" size="75" maxlength="255" value="{$authorizationServerId}" /><br /></span>
   <span id="id_authenticationurl"><span class="label">Authentication request URL:</span>&nbsp;<input name="authenticationurl" type="text" size="75" maxlength="255" value="{$authenticationUrl}" /><br /></span>
   <span id="id_accesstokenurl"><span class="label">Access token URL:</span>&nbsp;<input name="accesstokenurl" type="text" size="75" maxlength="255" value="{$accessTokenUrl}" /><br /></span>
-  <span id="id_publickey"><span class="label">Public key:</span>&nbsp;<textarea name="publickey" rows="9" cols="65">{$publicKey}</textarea><br /></span>
+  <span id="id_publickey"><span class="label">Public key:</span>&nbsp;<textarea name="publickey" rows="9" cols="65" placeholder="-----BEGIN PUBLIC KEY-----
+...
+-----END PUBLIC KEY-----">{$publicKey}</textarea><br /></span>
   <span id="id_jku"><span class="label">JSON webkey URL (jku):</span>&nbsp;<input name="jku" type="text" size="75" maxlength="255" value="{$jku}" /><br /></span>
   <br />
   <span class="label">Enabled?</span>&nbsp;<input name="enabled" type="checkbox" value="1"{$enabled} /><br />
