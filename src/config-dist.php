@@ -27,7 +27,7 @@ define('REQUEST_URI_PREFIX', '');
 define('TOOL_ID', 'lti13');
 define('SESSION_NAME', 'lti13');
 define('TOOL_BASE_URL', '');
-define('TOOL_UUID', '6a629dc8-7f50-438c-a106-8d9560acdfda'); // Linux command: uuidgen
+define('TOOL_UUID', '<your_UUID>'); // Linux command: uuidgen
 define('APP_NAME', 'Basic LTI 1.3');
 define('APP_DESCRIPTION', 'An LTI 1.3 test app.');
 define('APP_VERSION', '0.1.0');
@@ -43,6 +43,10 @@ define('CUSTOM_FIELDS', array(
 #	'COURSE_NUMBER'=>"\$Canvas.course.id",
 #	'COURSE_SIS_ID'=>"\$Canvas.course.sisSourceId"
 ));
+### LTI Tool configuration admins (not necessarily Canvas admins)
+define('ADMINS', array(
+	'', // the username for the LTI Tool admin
+);
 
 ###
 ###  Database connection settings

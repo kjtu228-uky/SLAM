@@ -70,30 +70,14 @@ class MyTool extends LTI\Tool
     protected function onLaunch(): void
     {
 // Check the user has an appropriate role
-        if ($this->userResult->isLearner() || $this->userResult->isStaff()) {
-			$_SESSION['userResult'] = json_encode($this->userResult);
+        if ($this->userResult->isStaff() || $this->userResult->isAdmin()) {
 
-// Initialise the user session
-            $_SESSION['lti_version'] = $this->platform->ltiVersion;
-            $_SESSION['resource_pk'] = $this->resourceLink->getRecordId();
-            $_SESSION['consumer_pk'] = $this->platform->getRecordId();
-            $_SESSION['user_consumer_pk'] = $this->userResult->getResourceLink()->getPlatform()->getRecordId();
-            $_SESSION['user_resource_pk'] = $this->userResult->getResourceLink()->getRecordId();
-            $_SESSION['user_pk'] = $this->userResult->getRecordId();
-			$_SESSION['ltiUserId'] = $this->userResult->ltiUserId;
-            $_SESSION['isStudent'] = $this->userResult->isLearner();
-// The default index.php file will try to get the user information from the memberships based on $_SESSION['ltiUserId'].
-// Alternatively, you can set session values here.
-/* 			$_SESSION['user']['fullname'] = $this->userResult->fullname . " (here)";
-			$_SESSION['user']['firstname'] = $this->userResult->firstname;
-			$_SESSION['user']['middlename'] = $this->userResult->middlename;
-			$_SESSION['user']['lastname'] = $this->userResult->lastname;
-			$_SESSION['user']['sourcedId'] = $this->userResult->sourcedId;
-			$_SESSION['user']['username'] = $this->userResult->username;
-			$_SESSION['user']['email'] = $this->userResult->email;
-			$_SESSION['user']['image'] = $this->userResult->image;
-			$_SESSION['user']['roles'] = $this->userResult->roles;
-			$_SESSION['user']['ltiUserId'] = $this->userResult->ltiUserId; */
+// Initialise the SLAM session
+            $_SESSION['SLAM'] = array(
+				'user_id' => $this->userResult->username;
+				'course_title' => $this->userResult->getResourceLink()->title,
+				'course_number' => $this->userResult->getResourceLink()->getSetting('custom_course_number')
+			);
 
 // Redirect the user to display the list of items for the resource link
             $this->redirectUrl = getAppUrl();
@@ -163,7 +147,7 @@ EOD;
             }
         }
         $appName = APP_NAME;
-		$disabledMsg = DEFAULT_DISABLED?"<p>The navigation item is disabled by default. Once you have registered the app, you will need to install it, and instructors will need to add it to their course navigation.</p>":"";
+		$disabledMsg = DEFAULT_DISABLED?"<p>The SLAM 1.3 navigation item is disabled by default. Once you have registered the app, you will need to install it, and instructors will need to add it to their course navigation.</p>":"";
         $html = <<< EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -216,7 +200,7 @@ EOD;
   <h1>{$appName} Tool Registration</h1>
 
   <p>
-    This page allows you to perform a dynamic registration with an LTI 1.3 platform.
+    You are trying to perform a dynamic registration of SLAM 1.3.
   </p>
 {$disabledMsg}
 

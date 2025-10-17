@@ -1,3 +1,7 @@
-*Basic-LTI* is a simple LTI 1.3 app developed as a way to demonstrate how to build an IMS LTI tool provider using the [ceLTIc LTI class library](https://github.com/celtic-project/LTI-PHP). It is based on the [Rating LTI app](https://github.com/celtic-project/Rating-PHP). The application simply displays information from the platform.
+**SLAM** is the Self-service LTI App Manager for the Canvas LMS.
 
-**Work in progress:** The wiki area of this repository contains [documentation](https://github.com/kylejtuck/Basic-LTI-PHP/wiki) for installing and using this application.
+It is an LTI 1.3 app forked from [Basic-LTI-PHP](https://github.com/kylejtuck/Basic-LTI-PHP) and uses the [__ceLTIc LTI class library__](https://github.com/celtic-project/LTI-PHP).
+
+**IMPORTANT**
+
+This is very much a work in progress and does not yet work. The wiki is still the documentation from Basic-LTI-PHP.
