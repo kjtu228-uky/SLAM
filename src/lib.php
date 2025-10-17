@@ -13,7 +13,7 @@ use ceLTIc\LTI\Enum\ServiceAction;
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('db.php');
-require_once('MyTool.php');
+require_once('SLAM.php');
 
 LTI\ResourceLink::registerApiHook(LTI\ResourceLink::$MEMBERSHIPS_SERVICE_HOOK, 'moodle',
     'ceLTIc\LTI\ApiHook\moodle\MoodleApiResourceLink');
@@ -53,7 +53,7 @@ function init(&$db, $checkSession = null, $currentLevel = 0)
     session_start();
 
 // Set the default tool
-    LTI\Tool::$defaultTool = new MyTool(null);
+    LTI\Tool::$defaultTool = new SLAM(null);
 
     if (!is_null($checkSession) && $checkSession) {
         $ok = isset($_SESSION['consumer_pk']) && (isset($_SESSION['resource_pk']) || is_null($_SESSION['resource_pk'])) &&

@@ -9,13 +9,13 @@ use ceLTIc\LTI\DataConnector;
  * @copyright  SPV Software Products
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
-require_once('MyTool.php');
+require_once('SLAM.php');
 
 // Initialise session and database
 $db = null;
 if (init($db)) {
     $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-    $tool = new MyTool($dataConnector);
+    $tool = new SLAM($dataConnector);
     $tool->doRegistration();
     $ok = $tool->ok;
     $message = $tool->reason;

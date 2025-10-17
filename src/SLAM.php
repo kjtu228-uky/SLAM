@@ -14,7 +14,7 @@ use ceLTIc\LTI\Enum\LtiVersion;
  */
 require_once('lib.php');
 
-class MyTool extends LTI\Tool
+class SLAM extends LTI\Tool
 {
 	// ceLTIc Message class does not include/filters out some message fields (such as placements, roles, icon_uri, custom_parameters)
 	// and Canvas-specific fiels (https://canvas.instructure.com/lti/course_navigation/default_enabled, https://canvas.instructure.com/lti/visibility)

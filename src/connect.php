@@ -10,7 +10,7 @@ use ceLTIc\LTI\Platform;
  * @copyright  SPV Software Products
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
-require_once('MyTool.php');
+require_once('SLAM.php');
 
 // Cancel any existing session
 session_name(SESSION_NAME);
@@ -60,12 +60,12 @@ if (init($db)) {
 			}
 		}
 	}
-	$tool = new MyTool($dataConnector);
+	$tool = new SLAM($dataConnector);
 	$tool->setParameterConstraint('resource_link_id', true, 50, array('basic-lti-launch-request'));
 	$tool->setParameterConstraint('user_id', true, 50, array('basic-lti-launch-request'));
 	$tool->setParameterConstraint('roles', true, null, array('basic-lti-launch-request'));
 } else {
-	$tool = new MyTool(null);
+	$tool = new SLAM(null);
 	$tool->reason = $_SESSION['error_message'];
 }
 $tool->handleRequest();
