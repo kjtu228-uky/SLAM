@@ -43,10 +43,6 @@ define('CUSTOM_FIELDS', array(
 #	'COURSE_NUMBER'=>"\$Canvas.course.id",
 #	'COURSE_SIS_ID'=>"\$Canvas.course.sisSourceId"
 ));
-### LTI Tool configuration admins (not necessarily Canvas admins)
-define('ADMINS', array(
-	'', // the username for the LTI Tool admin
-);
 
 ###
 ###  Database connection settings
