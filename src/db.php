@@ -273,6 +273,31 @@ function init_db($db)
         }
     }
 
+	if ($ok && !tableExists($db, "{$prefix}log")) {
+		$sql = "CREATE TABLE {$prefix}log (" .
+            'user_id varchar(250) NOT NULL, ' .
+            'action tinyint(3) unsigned NOT NULL, ' .
+            'tool_id int(11) NOT NULL, ' .
+            'changed_at timestamp NOT NULL DEFAULT current_timestamp(), ' .
+            'result int(11) NOT NULL, ' .
+            'course_number int(11) DEFAULT NULL ' .
+            ') ENGINE=InnoDB DEFAULT CHARSET=utf8';
+		$ok = $db->exec($sql) !== false;
+	}
+	
+	if ($ok && !tableExists($db, "{$prefix}tools")) {
+		$sql = "CREATE TABLE {$prefix}tools (" .
+            'id int(11) NOT NULL AUTO_INCREMENT, ' .
+            'visible tinyint(1) NOT NULL DEFAULT 1, ' .
+            'config longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`config`)), ' .
+			'dependency int(11) DEFAULT NULL, ' .
+			'user_notice varchar(1000) DEFAULT NULL, ' .
+			'support_info varchar(1000) DEFAULT NULL, ' .
+			'PRIMARY KEY (id)' .
+            ') ENGINE=InnoDB DEFAULT CHARSET=utf8';
+		$ok = $db->exec($sql) !== false;
+	}
+	
     return $ok;
 }
 
