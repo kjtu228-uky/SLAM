@@ -74,7 +74,7 @@ class SLAM extends LTI\Tool
 
 // Initialise the SLAM session
             $_SESSION['SLAM'] = array(
-				'user_id' => $this->userResult->username;
+				'user_id' => $this->userResult->username,
 				'course_title' => $this->userResult->getResourceLink()->title,
 				'course_number' => $this->userResult->getResourceLink()->getSetting('custom_course_number')
 			);
