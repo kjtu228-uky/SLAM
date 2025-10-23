@@ -1,6 +1,7 @@
 <?php
 
 use ceLTIc\LTI;
+use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\DataConnector;
 use ceLTIc\LTI\OAuth;
 use ceLTIc\LTI\Enum\ServiceAction;
@@ -208,4 +209,12 @@ function getGuid()
     );
 }
 
+function isToolAdmin($user, $platform) {
+	$tool_admins = $platform->getSetting(‘TOOL_ADMINS’);
+	if (!empty($tool_admins)) {
+		$tool_admin_array = explode(",", $tool_admins);
+		return in_array($user, $tool_admin_array);
+	}
+	return false;
+}
 ?>
