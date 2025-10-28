@@ -9,6 +9,7 @@ use ceLTIc\LTI;
  * @copyright  SPV Software Products
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
+ require_once('config.php');
 require_once('lib.php');
 
 $url = getAppUrl();
@@ -18,10 +19,15 @@ $here = function($val) {
     return $val;
 };
 $custom = "";
+$disabled_json = DEFAULT_DISABLED?'            "default":"disabled",':'';
+$disabled_xml = DEFAULT_DISABLED?'      <lticm:property name="default">disabled</lticm:property>':'';
 
 if (!isset($_GET['json'])) {
     foreach (CUSTOM_FIELDS as $field => $val)
         $custom .= '    <lticm:property name="' . $field . '">' . $val . "</lticm:property>\n";
+	if (count(CUSTOM_FIELDS) > 0)
+		$custom = "  <blti:custom>\n" . $custom . "  </blti:custom>";
+	if (INSTRUCTOR_ONLY) $visibility = "      <lticm:property name=\"visibility\">admins</lticm:property>\n";
     $xml = <<< EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <cartridge_basiclti_link xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
@@ -42,6 +48,13 @@ if (!isset($_GET['json'])) {
     <lticm:property name="privacy_level">public</lticm:property>
     <lticm:property name="domain">{$domain}</lticm:property>
     <lticm:property name="oauth_compliant">true</lticm:property>
+    <lticm:options name="course_navigation">
+      <lticm:property name="enabled">true</lticm:property>
+      <lticm:property name="url">{$url}connect.php</lticm:property>
+      <lticm:property name="text">{$here(APP_NAME)}</lticm:property>
+{$visibility}
+{$disabled_xml}
+    </lticm:options>
 {$custom}
   </blti:extensions>
   <blti:vendor>
@@ -63,6 +76,7 @@ EOD;
     foreach (CUSTOM_FIELDS as $field => $val)
         $custom .= '    "' . $field . '": "' . $val . "\",\n";
     $custom = rtrim($custom, ",\n");
+	if (INSTRUCTOR_ONLY) $visibility = "            \"visibility\": \"admins\"\n";
     $json = <<< EOD
 {
   "title": "{$here(APP_NAME)}",
@@ -84,8 +98,14 @@ EOD;
         "icon_url": "{$url}icon16.png",
         "placements": [
           {
+            "text": "{$here(APP_NAME)}",
+            "enabled": true,
+            "icon_url": "{$url}images/icon16.png",
             "placement": "course_navigation",
-            "message_type": "LtiResourceLinkRequest"
+{$disabled_json}
+            "message_type": "LtiResourceLinkRequest",
+            "target_link_uri": "{$url}connect.php",
+{$visibility}
           }
         ]
       }
