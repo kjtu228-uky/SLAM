@@ -65,6 +65,15 @@ EOD
 );
 
 ###
+###  Canvas API Settings
+###
+/*define('CANVAS_URL', 'https://uk.instructure.com');*/
+define('API_SCOPES', array(	'url:GET|/api/v1/accounts/:account_id/admins',
+							'url:GET|/api/v1/courses/:course_id/external_tools',
+							'url:POST|/api/v1/courses/:course_id/external_tools',
+							'url:DELETE|/api/v1/courses/:course_id/external_tools/:external_tool_id'));
+
+###
 ###  Dynamic registration settings
 ###
 define('AUTO_ENABLE', false);
