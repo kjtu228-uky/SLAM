@@ -209,6 +209,13 @@ function getGuid()
     );
 }
 
+/**
+ * Determine if the user is an administrator of the LTI tools for
+ * the specified platform. This is not necessarily the same thing
+ * as a platform admin.
+ *
+ * @return boolean.
+ */
 function isToolAdmin($user, $platform) {
 	$tool_admins = $platform->getSetting(‘TOOL_ADMINS’);
 	if (!empty($tool_admins)) {
@@ -216,5 +223,70 @@ function isToolAdmin($user, $platform) {
 		return in_array($user, $tool_admin_array);
 	}
 	return false;
+}
+
+function platformHasToken($platform, $refresh = false) {
+//Util::logError(json_encode($_SESSION['SLAM'], JSON_PRETTY_PRINT));
+	// the API URL and client secret must be defined in the platform settings, otherwise API calls won't work
+	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
+	$client_secret = $platform->getSetting('client_secret');
+	if (!$api_url || !$client_secret) return false;
+	// check if the platform has an access token; if not, request one from Canvas
+	$access_token = $platform->getSetting('access_token');
+	if ($access_token) $access_token = json_decode($access_token);
+	if (!$access_token || !$access_token->access_token) requestNewToken($platform);
+	// check if we need to refresh the token
+	if ($refresh || (isset($access_token->refresh_at) && $access_token->refresh_at < time())) {
+		$url = $api_url . '/login/oauth2/token';
+		$ch = curl_init();
+		curl_setopt ($ch, CURLOPT_URL, $url);
+		curl_setopt ($ch, CURLOPT_HEADER, true);
+		curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
+		curl_setopt ($ch, CURLOPT_POST, true);
+		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
+						'grant_type' => 'refresh_token',
+						'client_id' => $platform->clientId,
+						'client_secret' => $client_secret,
+						'refresh_token' => $access_token->refresh_token)));
+		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($ch);
+		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$header = substr($response, 0, $header_size);
+// TO DO: check $header for WWW-Authenticate
+//$for_session['headers'] = $this->get_headers_from_curl_response($header);
+//Util::logError($this->get_headers_from_curl_response($header));
+		$response_data = json_decode(substr($response, $header_size), true);
+		curl_close($ch);
+		// if there was an error using the refresh token, request a brand new token
+		if (isset($response_data['error'])) {
+			$_SESSION['error_message'] = $response_data['error'];
+//Util::logError($response_data['error']);
+			// delete the token and request a new one
+			$platform->setSetting('access_token');
+			$platform->save();
+			requestNewToken($platform);
+		}
+		$access_token->access_token = null;
+		$access_token->refresh_at = null;
+		if (isset($response_data['access_token']) && preg_match('/^[0-9a-zA-Z~]+$/', $response_data['access_token']))
+			$access_token->access_token = $response_data['access_token'];
+		if (isset($response_data['expires_in']) && is_numeric($response_data['expires_in']))
+			$access_token->refresh_at = time() + intval($response_data['expires_in']);
+		if (isset($access_token->access_token) && isset($access_token->refresh_at)) {
+			$platform->setSetting('access_token', json_encode($access_token));
+			$platform->save();
+		}
+	}
+	return true;
+}
+
+function requestNewToken($platform) {
+	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
+	if (!$api_url) return false;
+	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->clientId . 
+			'&response_type=code&state=' . session_id() . '&scope=' . implode("%20", API_SCOPES) .
+//				'&response_type=code&scope=' . implode("%20", API_SCOPES) .
+			'&redirect_uri=' . APP_URL . 'OAuth/oauth2response.php');
+	exit(0);
 }
 ?>
