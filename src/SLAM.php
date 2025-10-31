@@ -5,6 +5,9 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\Profile;
 use ceLTIc\LTI\Enum\LtiVersion;
 
+use ceLTIc\LTI\Util;
+use ceLTIc\LTI\Enum\LogLevel;
+
 /**
  * This page processes a launch request from an LTI platform.
  *
@@ -124,6 +127,7 @@ EOD;
 
     protected function onRegister(): void
     {
+Util::logError("onRegister():\n" . json_encode($_SESSION, JSON_PRETTY_PRINT));
 // Initialise the user session
         $_SESSION['consumer_pk'] = $this->platform->getRecordId();
         $_SESSION['tc_profile_url'] = $_POST['tc_profile_url'];
