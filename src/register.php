@@ -91,7 +91,7 @@ $page = <<< EOD
 <meta http-equiv="content-language" content="EN" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>{$title}</title>
-<link href="css/rating.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="css/slam.css" media="screen" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
