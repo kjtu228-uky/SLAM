@@ -60,7 +60,16 @@ EOD;
     $page .= <<< EOD
 <div class="box">
   <p>
-    Your system meets the minimum requirements for this tool.  Click the button below to complete the registration process.
+    Self-service LTI App Manager is an LTI tool for allowing instructors to enable and disable
+	pre-configured LTI apps in their course.
+  </p>
+  <p>
+    After registering this app in Canvas, you will need to complete the steps to 
+	<a href="https://github.com/kjtu228-uky/SLAM/wiki/Canvas-Requirements">add a SLAM user and role</a>.
+	The SLAM user adds and removes LTI apps to and from courses.
+  </p>
+  <p>
+    Click the button below to complete the registration process.
   </p>
   <p>
     <input type="submit" name="do" value="Cancel" />
@@ -84,7 +93,7 @@ $page = <<< EOD
 </head>
 
 <body>
-<h1>Rating Application Registration</h1>
+<h1>Self-service LTI App Manager Registration</h1>
 {$page}
 </body>
 </html>
