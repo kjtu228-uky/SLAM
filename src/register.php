@@ -65,7 +65,7 @@ EOD;
   </p>
   <p>
     After registering this app in Canvas, you will need to complete the steps to 
-	<a href="https://github.com/kjtu228-uky/SLAM/wiki/Canvas-Requirements">add a SLAM user and role</a>.
+	<a target="_blank" href="https://github.com/kjtu228-uky/SLAM/wiki/Canvas-Requirements">add a SLAM user and role</a>.
 	The SLAM user adds and removes LTI apps to and from courses.
   </p>
   <p>
