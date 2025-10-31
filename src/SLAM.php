@@ -127,7 +127,6 @@ EOD;
 
     protected function onRegister(): void
     {
-Util::logError("onRegister():\n" . json_encode($_SESSION, JSON_PRETTY_PRINT));
 // Initialise the user session
         $_SESSION['consumer_pk'] = $this->platform->getRecordId();
         $_SESSION['tc_profile_url'] = $_POST['tc_profile_url'];
@@ -140,7 +139,6 @@ Util::logError("onRegister():\n" . json_encode($_SESSION, JSON_PRETTY_PRINT));
 
     protected function onRegistration(): void
     {
-Util::logError("onRegistration():\n" . json_encode($_SESSION, JSON_PRETTY_PRINT));
         if (!defined('AUTO_ENABLE') || !AUTO_ENABLE) {
             $successMessage = 'Note that the tool must be enabled by the tool provider before it can be used.';
         } else if (!defined('ENABLE_FOR_DAYS') || (ENABLE_FOR_DAYS <= 0)) {

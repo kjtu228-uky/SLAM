@@ -19,7 +19,6 @@ if (init($db)) {
 
 // Register
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-		var_dump($_SESSION);
         $errorMsg = '';
         $url = $_SESSION['return_url'];
         if (strpos($url, '?') === false) {
