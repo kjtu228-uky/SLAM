@@ -150,7 +150,7 @@ EOD;
             }
         }
         $appName = APP_NAME;
-		$disabledMsg = DEFAULT_DISABLED?"<p>The SLAM 1.3 navigation item is disabled by default. Once you have registered the app, you will need to install it, and instructors will need to add it to their course navigation.</p>":"";
+		$disabledMsg = DEFAULT_DISABLED?"<p>The SLAM navigation item is disabled by default. Once you have registered the app, you will need to install it, and instructors will need to add it to their course navigation.</p>":"";
         $html = <<< EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -159,7 +159,7 @@ EOD;
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title>LTI Tool registration</title>
   <script src="js/jquery-3.7.0.min.js" type="text/javascript"></script>
-  <link href="css/basic-lti.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/slam.css" media="screen" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
     //<![CDATA[
     function doRegister() {
