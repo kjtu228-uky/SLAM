@@ -15,7 +15,7 @@
     }
   ],
   "support": {
-    "docs": "https://github.com/kjtu228/SLAM/wiki"
+    "docs": "https://github.com/kjtu228-uky/SLAM/wiki"
   },
   "require": {
     "php": ">=8.1",
