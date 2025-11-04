@@ -229,7 +229,8 @@ function platformHasToken($platform, $refresh = false) {
 //Util::logError(json_encode($_SESSION['SLAM'], JSON_PRETTY_PRINT));
 	// the API URL and client secret must be defined in the platform settings, otherwise API calls won't work
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
-	$client_secret = $platform->getSetting('client_secret');
+	$api_client_id = $platform->getSetting('api_client_id');
+	$api_client_secret = $platform->getSetting('api_client_secret');
 	if (!$api_url || !$client_secret) return false;
 	// check if the platform has an access token; if not, request one from Canvas
 	$access_token = $platform->getSetting('access_token');
@@ -245,8 +246,8 @@ function platformHasToken($platform, $refresh = false) {
 		curl_setopt ($ch, CURLOPT_POST, true);
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
 						'grant_type' => 'refresh_token',
-						'client_id' => $platform->clientId,
-						'client_secret' => $client_secret,
+						'client_id' => $api_client_id,
+						'client_secret' => $api_client_secret,
 						'refresh_token' => $access_token->refresh_token)));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($ch);
