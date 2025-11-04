@@ -287,7 +287,7 @@ function requestNewToken($platform) {
 			'&response_type=code&state=' . $_SESSION['consumer_pk'] . '&scope=' . implode("%20", API_SCOPES) .
 //			'&response_type=code&state=' . session_id() . '&scope=' . implode("%20", API_SCOPES) .
 //				'&response_type=code&scope=' . implode("%20", API_SCOPES) .
-			'&redirect_uri=' . APP_URL . 'oauth2response.php');
+			'&redirect_uri=' . TOOL_BASE_URL . 'oauth2response.php');
 	exit(0);
 }
 ?>
