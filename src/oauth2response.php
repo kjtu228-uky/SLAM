@@ -1,6 +1,8 @@
 <?php
 use ceLTIc\LTI\DataConnector;
 use ceLTIc\LTI\Platform;
+use ceLTIc\LTI\Util;
+use ceLTIc\LTI\Enum\LogLevel;
 
 // Don't do anything if no $_GET value is sent.
 require_once('config.php');
@@ -12,6 +14,7 @@ $ok = init($db, true);
 
 if(count($_GET) > 0) {
 	if(isset($_GET['code']) && isset($_GET['state'])) {
+		// get the platform associated with the state id
 		$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 		$platform = Platform::fromRecordId($_GET['state'], $dataConnector);
 		$url = $platform->getSetting('api_url') . '/login/oauth2/token';
@@ -35,10 +38,8 @@ if(count($_GET) > 0) {
 		// TO DO: check $header to make sure we're OK
 		//$for_session['headers'] = get_headers_from_curl_response($header);
 		$response_data = json_decode(substr($response, $header_size), true);
+		Util::logError(substr($response, $header_size));
 		if (isset($response_data['expires_in'])) $response_data['refresh_at'] = time() + intval($response_data['expires_in']);
-		// get the platform associated with the state id
-		$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-		$platform = Platform::fromRecordId($_GET['state'], $dataConnector);
 		// update the token values
 		$platform->setSetting('access_token', json_encode($response_data));
 		$platform->save();
