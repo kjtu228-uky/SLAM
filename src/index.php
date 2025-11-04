@@ -23,17 +23,8 @@ $ok = init($db, true);
 // Initialise parameters
 $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 $platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
-/* $platformCheck = new Platform($dataConnector);
-$platformCheck->platformId = $platform->platformId;
-$platformCheck->clientId = $platform->clientId;
-$platformCheck->deploymentId = null;
-if ($dataConnector->loadPlatform($platformCheck))
-	$platform = $platformCheck; */
-// check $platform->authenticationUrl
-// check $platform->authorizationServerId
 $resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
 //			$resourceLink->getSetting('custom_course_number');
-
 
 $showVal = function($val) {
     return $val;
