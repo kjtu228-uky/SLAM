@@ -2,6 +2,7 @@
 
 use ceLTIc\LTI\DataConnector;
 use ceLTIc\LTI\Platform;
+use ceLTIc\LTI\Enum\LogLevel;
 
 /**
  * This page processes a launch request from an LTI platform.
@@ -21,6 +22,7 @@ session_destroy();
 // Initialise database
 $db = null;
 if (init($db)) {
+	Util::logError("Database initialized.\n" . json_encode($_POST, JSON_PRETTY_PRINT));
     $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 	// If the consumer (platform) was auto-registered, there may not be a deployment_id. This will add it
 	//  if the platform exists, is enabled, and is not protected.
