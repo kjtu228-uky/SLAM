@@ -1,6 +1,6 @@
 <?php
 // Don't do anything if no $_GET value is sent.
-require_once('../config.php');
+require_once('config.php');
 
 // Initialise session and database
 $db = null;
@@ -8,7 +8,9 @@ $ok = init($db, true);
 
 if(count($_GET) > 0) {
 	if(isset($_GET['code']) && isset($_GET['state'])) {
-		$url = CANVAS_URL . '/login/oauth2/token';
+		$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
+		$platform = Platform::fromRecordId($_GET['state'], $dataConnector);
+		$url = $platform->getSetting('api_url') . '/login/oauth2/token';
 		$ch = curl_init();
 		curl_setopt ($ch, CURLOPT_URL, $url);
 		curl_setopt ($ch, CURLOPT_HEADER, true);
@@ -16,9 +18,9 @@ if(count($_GET) > 0) {
 		curl_setopt ($ch, CURLOPT_POST, true);
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
 						'grant_type' => 'authorization_code',
-						'client_id' => CLIENT_ID,
-						'client_secret' => CLIENT_SECRET,
-						'redirect_uri' => APP_URL . 'oauth2response.php',
+						'client_id' => $platform->getSetting('api_client_id'),
+						'client_secret' => $platform->getSetting('api_client_secret'),
+						'redirect_uri' => TOOL_BASE_URL . 'oauth2response.php',
 						'code' => $_GET['code'],
 						'replace_tokens' => '1'
 						)));
@@ -37,7 +39,7 @@ if(count($_GET) > 0) {
 		$platform->setSetting('access_token', json_encode($response_data));
 		$platform->save();
 		// redirect
-		header('Location: ' . APP_URL . 'index.php');
+		header('Location: ' . TOOL_BASE_URL . 'index.php');
 		exit(0);
 	} else if(isset($_GET['error'])) {
 		print('<p><strong>Error: </strong>' . $_GET['error']);
