@@ -20,6 +20,7 @@ require_once('lib.php');
 // Initialise session and database
 $db = null;
 $ok = init($db, true);
+$ok = true;
 // Initialise parameters
 $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 //$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
