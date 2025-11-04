@@ -10,6 +10,7 @@ use ceLTIc\LTI\Enum\LogLevel;
  * @copyright  SPV Software Products
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
+require_once('vendor/autoload.php');
 ###
 ###  Application settings
 ###
