@@ -1,6 +1,10 @@
 <?php
+use ceLTIc\LTI\DataConnector;
+use ceLTIc\LTI\Platform;
+
 // Don't do anything if no $_GET value is sent.
 require_once('config.php');
+require_once('db.php');
 
 // Initialise session and database
 $db = null;
