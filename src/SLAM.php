@@ -82,8 +82,7 @@ class SLAM extends LTI\Tool
 			$_SESSION['isStudent'] = $this->userResult->isLearner();
 			$_SESSION['isContentItem'] = false;
 			$_SESSION['lti_version'] = $this->platform->ltiVersion;
-			$_SESSION['course_title'] = $this->userResult->getResourceLink()->title;
-			$_SESSION['course_number'] = $this->userResult->getResourceLink()->getSetting('custom_course_number');
+
 			
 
 /*

@@ -20,10 +20,9 @@ require_once('lib.php');
 // Initialise session and database
 $db = null;
 $ok = init($db, true);
-//$ok = true;
 // Initialise parameters
 $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-//$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
+$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
 /* $platformCheck = new Platform($dataConnector);
 $platformCheck->platformId = $platform->platformId;
 $platformCheck->clientId = $platform->clientId;
@@ -32,7 +31,10 @@ if ($dataConnector->loadPlatform($platformCheck))
 	$platform = $platformCheck; */
 // check $platform->authenticationUrl
 // check $platform->authorizationServerId
-//$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
+$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
+//			$resourceLink()->title;
+//			$resourceLink()->getSetting('custom_course_number');
+
 
 $showVal = function($val) {
     return $val;
