@@ -31,7 +31,7 @@ if ($dataConnector->loadPlatform($platformCheck))
 	$platform = $platformCheck; */
 // check $platform->authenticationUrl
 // check $platform->authorizationServerId
-$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
+//$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
 
 $showVal = function($val) {
     return $val;
