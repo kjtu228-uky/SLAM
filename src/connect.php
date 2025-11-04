@@ -24,14 +24,12 @@ session_destroy();
 // Initialise database
 $db = null;
 if (init($db)) {
-	Util::logError("Database initialized.\n" . json_encode($_POST, JSON_PRETTY_PRINT));
     $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 	// If the consumer (platform) was auto-registered, there may not be a deployment_id. This will add it
 	//  if the platform exists, is enabled, and is not protected.
 	if (!isset($_POST['deployment_id']) && isset($_POST['lti_deployment_id']))
 		$_POST['deployment_id'] = $_POST['lti_deployment_id'];
 	if (isset($_POST['iss']) && isset($_POST['client_id']) && isset($_POST['deployment_id'])) {
-		Util::logError("Required values present. Trying to load platform.");
 		$platformCheck = new Platform($dataConnector);
 		$platformCheck->platformId = $_POST['iss'];
 		$platformCheck->clientId = $_POST['client_id'];
@@ -61,7 +59,7 @@ if (init($db)) {
 					$platformSettings = $platformCheck->getSettings();
 					foreach ($platformSettings as $prop => $value) {
 						if (strpos($prop, 'custom_') !== 0) $platformCopy->setSetting($prop, $value);
-					}					
+					}
 					$platformCopy->save();
 				}
 			}
@@ -74,6 +72,8 @@ if (init($db)) {
 } else {
 	$tool = new SLAM(null);
 	$tool->reason = $_SESSION['error_message'];
+	Util::logError($_SESSION['error_message']);
 }
+Util::logError("Handling request.");
 $tool->handleRequest();
 ?>
