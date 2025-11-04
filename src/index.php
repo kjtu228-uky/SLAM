@@ -22,7 +22,7 @@ $db = null;
 $ok = init($db, true);
 // Initialise parameters
 $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
+//$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
 /* $platformCheck = new Platform($dataConnector);
 $platformCheck->platformId = $platform->platformId;
 $platformCheck->clientId = $platform->clientId;
@@ -62,6 +62,7 @@ if ($ok) {
 	</div>
 
 EOD;
+	$page .= "<pre>\n" . json_encode($_SESSION, JSON_PRETTY_PRINT) . "\n</pre>\n";
 /*
 	if ($slam->isAdmin())
 		$page .= <<< EOD
