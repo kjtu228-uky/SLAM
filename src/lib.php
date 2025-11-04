@@ -5,6 +5,8 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\DataConnector;
 use ceLTIc\LTI\OAuth;
 use ceLTIc\LTI\Enum\ServiceAction;
+use ceLTIc\LTI\Util;
+use ceLTIc\LTI\Enum\LogLevel;
 
 /**
  * This page provides general functions to support the application.
