@@ -37,7 +37,11 @@ if (init($db)) {
 			if ($dataConnector->loadPlatform($platformCheck)) {
 				$platformCheck = Platform::fromPlatformId($_POST['iss'], $_POST['client_id'], null, $dataConnector);
 				if ($platformCheck->enabled && !$platformCheck->protected) {
-					$platformCopy = new Platform($dataConnector);
+					$platformCheck->deploymentId = $_POST['deployment_id'];
+					$platformCheck->save();
+					
+					
+/* 					$platformCopy = new Platform($dataConnector);
 					$platformCopy->ltiVersion = $platformCheck->ltiVersion;
 					$platformCopy->name = $platformCheck->name;
 					$platformCopy->secret = $platformCheck->secret;
@@ -58,7 +62,7 @@ if (init($db)) {
 					foreach ($platformSettings as $prop => $value) {
 						if (strpos($prop, 'custom_') !== 0) $platformCopy->setSetting($prop, $value);
 					}
-					$platformCopy->save();
+					$platformCopy->save(); */
 				}
 			}
 		}
