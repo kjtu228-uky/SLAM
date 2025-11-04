@@ -32,7 +32,6 @@ if ($dataConnector->loadPlatform($platformCheck))
 // check $platform->authenticationUrl
 // check $platform->authorizationServerId
 $resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-//			$resourceLink->title;
 //			$resourceLink->getSetting('custom_course_number');
 
 
@@ -55,8 +54,7 @@ $page = <<< EOD
 
 EOD;
 
-/*if (!$slam->hasToken()) $ok = false; */
-//if (!platformHasToken($platform)) $ok = false;
+if (!platformHasToken($platform)) $ok = false;
 		
 if ($ok) {
 	$page .= <<< EOD
