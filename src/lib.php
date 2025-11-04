@@ -226,8 +226,7 @@ function isToolAdmin($user, $platform) {
 }
 
 function platformHasToken($platform, $refresh = false) {
-//Util::logError(json_encode($_SESSION['SLAM'], JSON_PRETTY_PRINT));
-	// the API URL and client secret must be defined in the platform settings, otherwise API calls won't work
+	// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
 	$api_client_id = $platform->getSetting('api_client_id');
 	$api_client_secret = $platform->getSetting('api_client_secret');
@@ -285,7 +284,7 @@ function requestNewToken($platform) {
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
 	if (!$api_url) return false;
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->clientId . 
-			'&response_type=code&state=' . $platform->id . '&scope=' . implode("%20", API_SCOPES) .
+			'&response_type=code&state=' . $_SESSION['consumer_pk'] . '&scope=' . implode("%20", API_SCOPES) .
 //			'&response_type=code&state=' . session_id() . '&scope=' . implode("%20", API_SCOPES) .
 //				'&response_type=code&scope=' . implode("%20", API_SCOPES) .
 			'&redirect_uri=' . APP_URL . 'oauth2response.php');
