@@ -74,14 +74,26 @@ class SLAM extends LTI\Tool
     {
 // Check the user has an appropriate role
         if ($this->userResult->isStaff() || $this->userResult->isAdmin()) {
+			$_SESSION['consumer_pk'] = $this->platform->getRecordId();
+			$_SESSION['resource_pk'] = $this->resourceLink->getRecordId();
+			$_SESSION['user_consumer_pk'] = $this->userResult->getResourceLink()->getPlatform()->getRecordId();
+			$_SESSION['user_resource_pk'] = $this->userResult->getResourceLink()->getRecordId();
+			$_SESSION['user_pk'] = $this->userResult->getRecordId();
+			$_SESSION['isStudent'] = $this->userResult->isLearner();
+			$_SESSION['isContentItem'] = false;
+			$_SESSION['lti_version'] = $this->platform->ltiVersion;
+			$_SESSION['course_title'] = $this->userResult->getResourceLink()->title;
+			$_SESSION['course_number'] = $this->userResult->getResourceLink()->getSetting('custom_course_number');
+			
 
+/*
 // Initialise the SLAM session
             $_SESSION['SLAM'] = array(
 				'user_id' => $this->userResult->username,
 				'course_title' => $this->userResult->getResourceLink()->title,
 				'course_number' => $this->userResult->getResourceLink()->getSetting('custom_course_number')
 			);
-
+*/
 // Redirect the user to display the list of items for the resource link
             $this->redirectUrl = getAppUrl();
         } else {
