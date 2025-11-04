@@ -285,7 +285,7 @@ function requestNewToken($platform) {
 	if (!$api_url) return false;
 	$header = 'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
 		'&response_type=code&state=' . $_SESSION['consumer_pk'] . '&scope=' . implode("%20", API_SCOPES) .
-		'&redirect_uri=' . TOOL_BASE_URL . 'oauth2response.php');
+		'&redirect_uri=' . TOOL_BASE_URL . 'oauth2response.php';
 	Util::logError($header);
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
 			'&response_type=code&state=' . $_SESSION['consumer_pk'] . '&scope=' . implode("%20", API_SCOPES) .
