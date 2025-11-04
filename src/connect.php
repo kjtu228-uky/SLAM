@@ -2,8 +2,6 @@
 
 use ceLTIc\LTI\DataConnector;
 use ceLTIc\LTI\Platform;
-use ceLTIc\LTI\Util;
-use ceLTIc\LTI\Enum\LogLevel;
 
 /**
  * This page processes a launch request from an LTI platform.
@@ -72,8 +70,6 @@ if (init($db)) {
 } else {
 	$tool = new SLAM(null);
 	$tool->reason = $_SESSION['error_message'];
-	Util::logError($_SESSION['error_message']);
 }
-Util::logError("Handling request.");
 $tool->handleRequest();
 ?>
