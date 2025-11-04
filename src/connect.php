@@ -28,7 +28,10 @@ if (init($db)) {
     $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 	// If the consumer (platform) was auto-registered, there may not be a deployment_id. This will add it
 	//  if the platform exists, is enabled, and is not protected.
+	if (!isset($_POST['deployment_id']) && isset($_POST['lti_deployment_id']))
+		$_POST['deployment_id'] = $_POST['lti_deployment_id'];
 	if (isset($_POST['iss']) && isset($_POST['client_id']) && isset($_POST['deployment_id'])) {
+		Util::logError("Required values present. Trying to load platform.");
 		$platformCheck = new Platform($dataConnector);
 		$platformCheck->platformId = $_POST['iss'];
 		$platformCheck->clientId = $_POST['client_id'];
