@@ -32,8 +32,8 @@ if ($dataConnector->loadPlatform($platformCheck))
 // check $platform->authenticationUrl
 // check $platform->authorizationServerId
 $resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-//			$resourceLink()->title;
-//			$resourceLink()->getSetting('custom_course_number');
+//			$resourceLink->title;
+//			$resourceLink->getSetting('custom_course_number');
 
 
 $showVal = function($val) {
@@ -92,7 +92,7 @@ EOD;
 	if ($slam->getCourseTitle())
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
-		<h2>LTI Tools for {$slam->getCourseTitle()}</h2>
+		<h2>LTI Tools for {$resourceLink->title}</h2>
 	</div>
 EOD;
 */
