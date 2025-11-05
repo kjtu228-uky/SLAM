@@ -219,7 +219,7 @@ function getGuid()
  * @return boolean.
  */
 function isToolAdmin($user, $platform) {
-	$tool_admins = $platform->getSetting(‘TOOL_ADMINS’);
+	$tool_admins = $platform->getSetting('TOOL_ADMINS');
 	if (!empty($tool_admins)) {
 		$tool_admin_array = explode(",", $tool_admins);
 		return in_array($user, $tool_admin_array);
