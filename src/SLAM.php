@@ -84,6 +84,9 @@ class SLAM extends LTI\Tool
 			$_SESSION['isAdmin'] = $this->userResult->isAdmin();
 			$_SESSION['isContentItem'] = false;
 			$_SESSION['lti_version'] = $this->platform->ltiVersion;
+			$_SESSION['username'] = $this->userResult->username;
+			$_SESSION['rl_settings'] = $this->userResult->getResourceLink()->getSettings();
+			//'user_id' => $this->userResult->getResourceLink()->getSetting('custom_linkblue')
 
 // Redirect the user to display the list of items for the resource link
             $this->redirectUrl = getAppUrl();
