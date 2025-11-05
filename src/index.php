@@ -59,7 +59,7 @@ if ($ok) {
 	</div>
 
 EOD;
-	$page .= "<pre>\n" . json_encode($_SESSION, JSON_PRETTY_PRINT) . "\n</pre>\n";
+//	$page .= "<pre>\n" . json_encode($_SESSION, JSON_PRETTY_PRINT) . "\n</pre>\n";
 
 	if (isToolAdmin($_SESSION['username'], $platform))
 		$page .= <<< EOD
@@ -84,6 +84,7 @@ EOD;
 	if (isset($_SESSION['course_name'])) {
 		$header_course_title = $_SESSION['course_name'];
 		if (isset($_SESSION['course_sis_id'])) $header_course_title .= " (" . $_SESSION['course_sis_id'] . ")";
+		if (isset($_SESSION['course_number'])) $header_course_title .= " - " . $_SESSION['course_number'];
 		
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
@@ -92,15 +93,14 @@ EOD;
 EOD;
 	}
 
-/*
 	$page .= <<< EOD
 
 	<div id='toolList' class='lti-tools-container'>
-
 EOD;
 
-	$lti_tools = $slam->getConfiguredLTITools();
 	$message_boxes = "";
+/*
+	$lti_tools = $slam->getConfiguredLTITools();
 	foreach ($lti_tools as $key => $lti_tool) {
 		if ($slam->getCourseNumber() && isset($lti_tool['name']) && $lti_tool['visible']) {
 			$page .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
@@ -129,9 +129,9 @@ EOD;
 		}
 	}
 	$slam->saveSession();
+*/
 	$page .= "	</div>\n";
 	$page .= $message_boxes;
-*/
 } else {
 	$page .= <<< EOD
 	<p style="font-weight: bold; color: #f00;">There was an error initializing the LTI application.</p>
