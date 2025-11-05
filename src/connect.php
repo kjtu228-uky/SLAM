@@ -39,30 +39,6 @@ if (init($db)) {
 				if ($platformCheck->enabled && !$platformCheck->protected) {
 					$platformCheck->deploymentId = $_POST['deployment_id'];
 					$platformCheck->save();
-					
-					
-/* 					$platformCopy = new Platform($dataConnector);
-					$platformCopy->ltiVersion = $platformCheck->ltiVersion;
-					$platformCopy->name = $platformCheck->name;
-					$platformCopy->secret = $platformCheck->secret;
-					$platformCopy->platformId = $platformCheck->platformId;
-					$platformCopy->clientId = $platformCheck->clientId;
-					$platformCopy->deploymentId = $_POST['deployment_id'];
-					$platformCopy->authorizationServerId = $platformCheck->authorizationServerId;
-					$platformCopy->authenticationUrl = $platformCheck->authenticationUrl;
-					$platformCopy->accessTokenUrl = $platformCheck->accessTokenUrl;
-					$platformCopy->rsaKey = $platformCheck->rsaKey;
-					$platformCopy->jku = $platformCheck->jku;
-					$platformCopy->enabled = $platformCheck->enabled;
-					$platformCopy->enableFrom = $platformCheck->enableFrom;
-					$platformCopy->enableUntil = $platformCheck->enableUntil;
-					$platformCopy->protected = $platformCheck->protected;
-					// other stuff to copy
-					$platformSettings = $platformCheck->getSettings();
-					foreach ($platformSettings as $prop => $value) {
-						if (strpos($prop, 'custom_') !== 0) $platformCopy->setSetting($prop, $value);
-					}
-					$platformCopy->save(); */
 				}
 			}
 		}
