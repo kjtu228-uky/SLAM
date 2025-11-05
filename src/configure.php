@@ -44,6 +44,7 @@ if (!isset($_GET['json'])) {
   <blti:description>{$here(APP_NAME)} LTI App</blti:description>
   <blti:icon>{$url}images/icon16.png</blti:icon>
   <blti:launch_url>{$url}connect.php</blti:launch_url>
+{$custom}
   <blti:extensions platform="canvas.instructure.com">
     <lticm:property name="tool_id">{$here(TOOL_ID)}</lticm:property>
     <lticm:property name="privacy_level">public</lticm:property>
@@ -56,7 +57,6 @@ if (!isset($_GET['json'])) {
 {$visibility}
 {$disabled_xml}
     </lticm:options>
-{$custom}
   </blti:extensions>
   <blti:vendor>
     <lticp:code>{$here(VENDOR_CODE)}</lticp:code>
