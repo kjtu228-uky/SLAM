@@ -17,19 +17,25 @@ use ceLTIc\LTI\Enum\LogLevel;
  */
 require_once('lib.php');
 
+// check if there is already an error message
+$ok = true;
+if (isset($_SESSION['error_message'])) $ok = false;
+
 // Initialise session and database
-$db = null;
-$ok = init($db, true);
-// Initialise parameters
-$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
-$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-//			$resourceLink->getSetting('custom_course_number');
+if ($ok) {
+	$db = null;
+	$ok = init($db, true);
+	// Initialise parameters
+	$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
+	$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
+	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
+	//			$resourceLink->getSetting('custom_course_number');
+	if (!platformHasToken($platform)) $ok = false;
+}
 
 $showVal = function($val) {
-    return $val;
+	return $val;
 };
-
 $page = <<< EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -45,7 +51,6 @@ $page = <<< EOD
 
 EOD;
 
-if (!platformHasToken($platform)) $ok = false;
 		
 if ($ok) {
 	$page .= <<< EOD
