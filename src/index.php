@@ -60,15 +60,14 @@ if ($ok) {
 
 EOD;
 	$page .= "<pre>\n" . json_encode($_SESSION, JSON_PRETTY_PRINT) . "\n</pre>\n";
-/*
-	if ($slam->isAdmin())
+
+	if (isToolAdmin($_SESSION['username'], $platform))
 		$page .= <<< EOD
 	<div class='tool-settings'>
 		<a href='./tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
 	</div>
 EOD;
-*/
-	
+
 	$page .= <<< EOD
 
 	<div id='slamDescription' class='slam-description'>
@@ -81,15 +80,17 @@ EOD;
 	</div>
 
 EOD;
-	
-/*
-	if ($slam->getCourseTitle())
+
+	if (isset($_SESSION['course_name'])) {
+		$header_course_title = $_SESSION['custom_course_name'];
+		if (isset($_SESSION['course_sis_id'])) $header_course_title .= " (" . $_SESSION['course_sis_id'] . ")";
+		
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
-		<h2>LTI Tools for {$resourceLink->title}</h2>
+		<h2>LTI Tools for {$header_course_title}</h2>
 	</div>
 EOD;
-*/
+	}
 
 /*
 	$page .= <<< EOD
