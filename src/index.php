@@ -90,12 +90,14 @@ EOD;
 	</div>
 EOD;
 */
+
+/*
 	$page .= <<< EOD
 
 	<div id='toolList' class='lti-tools-container'>
 
 EOD;
-/*
+
 	$lti_tools = $slam->getConfiguredLTITools();
 	$message_boxes = "";
 	foreach ($lti_tools as $key => $lti_tool) {
@@ -126,9 +128,9 @@ EOD;
 		}
 	}
 	$slam->saveSession();
-*/
 	$page .= "	</div>\n";
 	$page .= $message_boxes;
+*/
 } else {
 	$page .= <<< EOD
 	<p style="font-weight: bold; color: #f00;">There was an error initializing the LTI application.</p>
