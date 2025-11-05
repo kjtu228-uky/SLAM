@@ -262,7 +262,6 @@ function platformHasToken($platform, $refresh = false) {
 		// if there was an error using the refresh token, request a brand new token
 		if (isset($response_data['error'])) {
 			$_SESSION['error_message'] = $response_data['error'];
-//Util::logError($response_data['error']);
 			// delete the token and request a new one
 			$platform->setSetting('access_token');
 			$platform->save();
@@ -287,8 +286,6 @@ function requestNewToken($platform) {
 	if (!$api_url) return false;
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
 			'&response_type=code&state=' . $_SESSION['consumer_pk'] . '&scope=' . implode("%20", API_SCOPES) .
-//			'&response_type=code&state=' . session_id() . '&scope=' . implode("%20", API_SCOPES) .
-//				'&response_type=code&scope=' . implode("%20", API_SCOPES) .
 			'&redirect_uri=' . TOOL_BASE_URL . 'oauth2response.php');
 	exit(0);
 }
