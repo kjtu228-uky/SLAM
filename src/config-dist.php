@@ -41,8 +41,11 @@ define('VENDOR_EMAIL', 'kylejtuck@gmail.com');
 define('INSTRUCTOR_ONLY', true);
 define('DEFAULT_DISABLED', true);
 define('CUSTOM_FIELDS', array(
-#	'COURSE_NUMBER'=>"\$Canvas.course.id",
-#	'COURSE_SIS_ID'=>"\$Canvas.course.sisSourceId"
+#	'COURSE_NUMBER'=>"Canvas.course.id",
+#	'COURSE_NAME'=>"Canvas.course.name",
+#	'COURSE_SIS_ID'=>"Canvas.course.sisSourceId",
+#	'USER_DISPLAY_NAME'=>"Person.name.display",
+#	'USER_USERNAME'=>"Canvas.user.loginId"
 ));
 
 ###
