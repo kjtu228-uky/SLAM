@@ -82,7 +82,7 @@ EOD;
 EOD;
 
 	if (isset($_SESSION['course_name'])) {
-		$header_course_title = $_SESSION['custom_course_name'];
+		$header_course_title = $_SESSION['course_name'];
 		if (isset($_SESSION['course_sis_id'])) $header_course_title .= " (" . $_SESSION['course_sis_id'] . ")";
 		
 		$page .= <<< EOD
