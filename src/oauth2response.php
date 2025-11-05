@@ -39,11 +39,15 @@ if(count($_GET) > 0) {
 		// TO DO: check $header to make sure we're OK
 		//$for_session['headers'] = get_headers_from_curl_response($header);
 		$response_data = json_decode(substr($response, $header_size), true);
-		Util::logError(substr($response, $header_size));
-		if (isset($response_data['expires_in'])) $response_data['refresh_at'] = time() + intval($response_data['expires_in']);
-		// update the token values
-		$platform->setSetting('access_token', json_encode($response_data));
-		$platform->save();
+		if(is_null($response_data)) {
+			$_SESSION['error_message'] = "Did not receive valid JSON for OAuth request.";
+			$_SESSION['message'] = substr($response, $header_size);
+		} else {
+			if (isset($response_data['expires_in'])) $response_data['refresh_at'] = time() + intval($response_data['expires_in']);
+			// update the token values
+			$platform->setSetting('access_token', json_encode($response_data));
+			$platform->save();
+		}
 		// redirect
 		header('Location: ' . TOOL_BASE_URL . 'index.php');
 		exit(0);
