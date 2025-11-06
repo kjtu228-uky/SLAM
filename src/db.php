@@ -303,23 +303,16 @@ function init_db($db)
 
 function getToolsForPlatform($platform, $only_visible = false) {
 	$db = open_db();
+	$platformId = $platform->getRecordId();
 	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id";
 	$sql .= $only_visible?" AND visible >= 0":"";
 	$sql .= " ORDER BY lower(config)";
-
-
-		$statement = $db->prepare($sql);
-		$statement->bindParam("platform_id", $platform->getRecordId(), PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
-		$statement->execute();
-		$tools = $statement->fetchAll(PDO::FETCH_ASSOC);
-		$db = null;
-		return $tools;
-/*
-				$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tokens WHERE user_id = :user_id");
-				$statement->bindParam("user_id", $this->userResult->ltiUserId, PDO::PARAM_STR);
-				$statement->execute();
-				$user_tokens = $statement->fetch(PDO::FETCH_ASSOC);
-*/
+	$statement = $db->prepare($sql);
+	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+	$statement->execute();
+	$tools = $statement->fetchAll(PDO::FETCH_ASSOC);
+	$db = null;
+	return $tools;
 }
 
 ?>
