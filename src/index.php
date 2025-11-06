@@ -86,8 +86,6 @@ EOD;
 	if (isset($courseName)) {
 		$header_course_title = $courseName;
 		if (isset($courseSISId)) $header_course_title .= " (" . $courseSISId . ")";
-		if (isset($courseNumber)) $header_course_title .= " - " . $courseNumber;
-		
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
 		<h2>LTI Tools for {$header_course_title}</h2>
@@ -101,15 +99,14 @@ EOD;
 EOD;
 
 	$message_boxes = "";
-	$lti_tools = getConfiguredLTITools($platform);
-/*
+	$lti_tools = getConfiguredLTITools($platform, $courseNumber);
 	foreach ($lti_tools as $key => $lti_tool) {
-		if ($slam->getCourseNumber() && isset($lti_tool['name']) && $lti_tool['visible']) {
+		if (!empty($courseNumber) && isset($lti_tool['name']) && $lti_tool['visible']) {
 			$page .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
 				((isset($lti_tool['enabled']) && $lti_tool['enabled'] > 0)?" lti-tool-enabled":"") . "'>\n";
 			$page .= "			<div class='switch' id='switch_" . $key . "' onclick='tool_select_" . $key . ".click();'>\n" .
 				"				<input type='checkbox' id='tool_select_" . $key .
-				"' onchange='updateToolInstall(" . $key . ", " . $slam->getCourseNumber() . ");'";
+				"' onchange='updateToolInstall(" . $key . ", " . $courseNumber . ");'";
 			if (isset($lti_tool['enabled']) && $lti_tool['enabled'] > 0) $page .= " checked";
 			$page .= ">\n				<span class='slider round'></span>\n			</div>\n			<div>\n" .
 				"				<label for='tool_select_" . $key . "' class='toggle-label'>" .
@@ -130,8 +127,6 @@ EOD;
 				$key . ", false);'></div>\n</div>";
 		}
 	}
-	$slam->saveSession();
-*/
 	$page .= "	</div>\n";
 	$page .= $message_boxes;
 } else {
