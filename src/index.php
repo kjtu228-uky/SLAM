@@ -84,7 +84,7 @@ EOD;
 	if (isset($_SESSION['course_name'])) {
 		$header_course_title = $_SESSION['course_name'];
 		if (isset($_SESSION['course_sis_id'])) $header_course_title .= " (" . $_SESSION['course_sis_id'] . ")";
-		if (isset($_SESSION['course_number'])) $header_course_title .= " - " . $_SESSION['course_number'];
+		if (isset($_SESSION['course_number'])) $header_course_title .= " - " . $resourceLink->getSetting('custom_course_number');
 		
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
@@ -99,8 +99,8 @@ EOD;
 EOD;
 
 	$message_boxes = "";
+	$lti_tools = getConfiguredLTITools($platform);
 /*
-	$lti_tools = $slam->getConfiguredLTITools();
 	foreach ($lti_tools as $key => $lti_tool) {
 		if ($slam->getCourseNumber() && isset($lti_tool['name']) && $lti_tool['visible']) {
 			$page .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
