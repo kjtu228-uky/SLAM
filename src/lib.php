@@ -311,13 +311,8 @@ function getConfiguredLTITools($platform, $course = null) {
 	if (isset($enabled_tools['error'])) return $enabled_tools;
 	$all_tools = array();
 	try {
-/* 		$db = new PDO(DB_NAME, DB_USERNAME, DB_PASSWORD);
-		$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = " .
-			$platform->getRecordId() . " AND visible >= 0 ORDER BY lower(config)");
-		$statement->execute(); */
 		$platform_tools = getToolsForPlatform($platform, true);
 		foreach ($platform_tools as $tool_config) {
-//		while($tool_config = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$all_tools[$tool_config['id']]['name'] = json_decode($tool_config['config'], true)['name'];
 			$all_tools[$tool_config['id']]['enabled'] = 0;
 			$all_tools[$tool_config['id']]['visible'] = $tool_config['visible'];
