@@ -9,7 +9,7 @@ use ceLTIc\LTI\Jwt\Jwt;
  * @copyright  SPV Software Products
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
-require_once('db.php');
+//require_once('db.php');
 
 $jwt = Jwt::getJwtClient();
 $keys = $jwt::getJWKS(PRIVATE_KEY, SIGNATURE_METHOD, KID);
