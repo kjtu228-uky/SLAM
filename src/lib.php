@@ -227,9 +227,15 @@ function isToolAdmin($user, $platform) {
 	return false;
 }
 
+/**
+ * Check if the platform has a stored auth token. If it doesn't, request one.
+ * Optionally force a refresh (request new token).
+ *
+ * @return boolean.
+ */
 function platformHasToken($platform, $refresh = false) {
 	// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
-	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
+	$api_url = $platform->getSetting('api_url');
 	$api_client_id = $platform->getSetting('api_client_id');
 	$api_client_secret = $platform->getSetting('api_client_secret');
 	if (!$api_url || !$api_client_id || !$api_client_secret) return false;
@@ -281,6 +287,10 @@ function platformHasToken($platform, $refresh = false) {
 	return true;
 }
 
+/**
+ * Redirect to the platform oauth to request a new token.
+ *
+ */
 function requestNewToken($platform) {
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
 	if (!$api_url) return false;
@@ -288,5 +298,43 @@ function requestNewToken($platform) {
 			'&response_type=code&state=' . $_SESSION['consumer_pk'] . '&scope=' . implode("%20", API_SCOPES) .
 			'&redirect_uri=' . TOOL_BASE_URL . 'oauth2response.php');
 	exit(0);
+}
+
+/**
+ * Retrieve the list of configured tools from the database.
+ *
+ * @return boolean.
+ */
+function getConfiguredLTITools($platform, $course = null) {
+	$enabled_tools = array();
+//	$enabled_tools = $this->getEnabledTools();
+	if (isset($enabled_tools['error'])) return $enabled_tools;
+	$all_tools = array();
+	try {
+		$db = new PDO(DB_NAME, DB_USERNAME, DB_PASSWORD);
+		$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = " .
+			$platform->getRecordId() . " AND visible >= 0 ORDER BY lower(config)");
+		$statement->execute();
+		while($tool_config = $statement->fetch(PDO::FETCH_ASSOC)) {
+			$all_tools[$tool_config['id']]['name'] = json_decode($tool_config['config'], true)['name'];
+			$all_tools[$tool_config['id']]['enabled'] = 0;
+			$all_tools[$tool_config['id']]['visible'] = $tool_config['visible'];
+			$all_tools[$tool_config['id']]['dependency'] = $tool_config['dependency'];
+			$all_tools[$tool_config['id']]['user_notice'] = $tool_config['user_notice'];
+			$all_tools[$tool_config['id']]['support_info'] = $tool_config['support_info'];
+		}
+/*
+		foreach ($all_tools as $key => $tool) {
+			if (in_array($tool['name'], array_keys($enabled_tools))) {
+				$all_tools[$key]['enabled'] = $enabled_tools[$tool['name']]['id'];
+				$all_tools[$key]['deployment_id'] = $enabled_tools[$tool['name']]['deployment_id'];
+			}
+		}
+*/
+		$db = null;
+	} catch (PDOException $e) {
+		return array("error" => "There was a problem accessing the tools from the database.");
+	}
+	return $all_tools;
 }
 ?>
