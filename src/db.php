@@ -301,4 +301,23 @@ function init_db($db)
     return $ok;
 }
 
+function getToolsForPlatform($platform, $only_visible = false) {
+	$db = open_db();
+	$visible_option = $only_visible?" AND visible >= 0 ":"";
+
+		$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id " .
+			$visible_option . " ORDER BY lower(config)");
+		$statement->bindParam("platform_id", $platform->getRecordId(), PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+		$statement->execute();
+		$tools = $statement->fetch_all(PDO::FETCH_ASSOC);
+		$db = null;
+		return $tools;
+/*
+				$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tokens WHERE user_id = :user_id");
+				$statement->bindParam("user_id", $this->userResult->ltiUserId, PDO::PARAM_STR);
+				$statement->execute();
+				$user_tokens = $statement->fetch(PDO::FETCH_ASSOC);
+*/
+}
+
 ?>
