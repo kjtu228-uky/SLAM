@@ -85,9 +85,9 @@ class SLAM extends LTI\Tool
 			$_SESSION['isContentItem'] = false;
 			$_SESSION['lti_version'] = $this->platform->ltiVersion;
 			$_SESSION['username'] = $this->userResult->username;
-			$_SESSION['course_name'] = $this->userResult->getResourceLink()->getSetting('custom_course_name');
-			$_SESSION['course_number'] = $this->userResult->getResourceLink()->getSetting('custom_course_number');
-			$_SESSION['course_sis_id'] = $this->userResult->getResourceLink()->getSetting('custom_course_sis_id');
+			//$_SESSION['course_name'] = $this->userResult->getResourceLink()->getSetting('custom_course_name');
+			//$_SESSION['course_number'] = $this->userResult->getResourceLink()->getSetting('custom_course_number');
+			//$_SESSION['course_sis_id'] = $this->userResult->getResourceLink()->getSetting('custom_course_sis_id');
 			//$_SESSION['rl_settings'] = $this->userResult->getResourceLink()->getSettings();
 			//'user_id' => $this->userResult->getResourceLink()->getSetting('custom_linkblue')
 
