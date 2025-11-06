@@ -32,6 +32,7 @@ if ($ok) {
 	$courseName = $resourceLink->getSetting('custom_course_name');
 	$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
 	$courseNumber = $resourceLink->getSetting('custom_course_number');
+	//$resourceLink->getSettings() will return all settings
 	if (!platformHasToken($platform)) $ok = false;
 }
 
@@ -61,15 +62,12 @@ if ($ok) {
 	</div>
 
 EOD;
-//	$page .= "<pre>\n" . json_encode($_SESSION, JSON_PRETTY_PRINT) . "\n</pre>\n";
-
 	if (isToolAdmin($_SESSION['username'], $platform))
 		$page .= <<< EOD
 	<div class='tool-settings'>
 		<a href='./tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
 	</div>
 EOD;
-
 	$page .= <<< EOD
 
 	<div id='slamDescription' class='slam-description'>
@@ -82,7 +80,6 @@ EOD;
 	</div>
 
 EOD;
-
 	if (isset($courseName)) {
 		$header_course_title = $courseName;
 		if (isset($courseSISId)) $header_course_title .= " (" . $courseSISId . ")";
@@ -92,7 +89,6 @@ EOD;
 	</div>
 EOD;
 	}
-
 	$page .= <<< EOD
 
 	<div id='toolList' class='lti-tools-container'>
@@ -152,7 +148,6 @@ $page .= <<< EOD
 </body>
 </html>
 EOD;
-
 // Display page
 echo $page;
 ?>
