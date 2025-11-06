@@ -16,7 +16,6 @@ use ceLTIc\LTI\Enum\LogLevel;
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('db.php');
-require_once('SLAM.php');
 
 LTI\ResourceLink::registerApiHook(LTI\ResourceLink::$MEMBERSHIPS_SERVICE_HOOK, 'moodle',
     'ceLTIc\LTI\ApiHook\moodle\MoodleApiResourceLink');
