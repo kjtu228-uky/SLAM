@@ -29,7 +29,7 @@ if ($ok) {
 	$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 	$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
 	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-	$courseTitle = $resourceLink->getSetting('custom_course_name');
+	$courseName = $resourceLink->getSetting('custom_course_name');
 	$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
 	$courseNumber = $resourceLink->getSetting('custom_course_number');
 	if (!platformHasToken($platform)) $ok = false;
