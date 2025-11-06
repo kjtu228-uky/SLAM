@@ -29,7 +29,9 @@ if ($ok) {
 	$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 	$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
 	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-	//			$resourceLink->getSetting('custom_course_number');
+	$courseTitle = $resourceLink->getSetting('custom_course_name');
+	$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
+	$courseNumber = $resourceLink->getSetting('custom_course_number');
 	if (!platformHasToken($platform)) $ok = false;
 }
 
@@ -81,10 +83,10 @@ EOD;
 
 EOD;
 
-	if (isset($_SESSION['course_name'])) {
-		$header_course_title = $_SESSION['course_name'];
-		if (isset($_SESSION['course_sis_id'])) $header_course_title .= " (" . $_SESSION['course_sis_id'] . ")";
-		if (isset($_SESSION['course_number'])) $header_course_title .= " - " . $resourceLink->getSetting('custom_course_number');
+	if (isset($courseName)) {
+		$header_course_title = $courseName;
+		if (isset($courseSISId)) $header_course_title .= " (" . $courseSISId . ")";
+		if (isset($courseNumber)) $header_course_title .= " - " . $courseNumber;
 		
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
