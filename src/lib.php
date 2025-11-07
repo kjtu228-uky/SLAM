@@ -242,7 +242,7 @@ function platformHasToken($platform, $refresh = false) {
 	// check if the platform has an access token; if not, request one from Canvas
 	$access_token = $platform->getSetting('access_token');
 	if ($access_token) $access_token = json_decode($access_token);
-	if ((!$access_token || !$access_token->access_token)) && !requestNewToken($platform)) return false;
+	if ((!$access_token || !$access_token->access_token) && !requestNewToken($platform)) return false;
 	// check if we need to refresh the token
 	if ($refresh || (isset($access_token->refresh_at) && $access_token->refresh_at < time())) {
 		$url = $api_url . '/login/oauth2/token';
