@@ -301,11 +301,17 @@ function init_db($db)
     return $ok;
 }
 
-function getToolsForPlatform($platform, $only_visible = false) {
+/**
+ * Get the list of tools that have been defined for this platform.
+ * Optionally, only retrieve tools that are marked as visible.
+ *
+ * @return array.
+ */
+function getToolsForPlatform($platform, $onlyVisible = false) {
 	$db = open_db();
 	$platformId = $platform->getRecordId();
 	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id";
-	$sql .= $only_visible?" AND visible >= 0":"";
+	$sql .= $onlyVisible?" AND visible >= 0":"";
 	$sql .= " ORDER BY lower(config)";
 	$statement = $db->prepare($sql);
 	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
@@ -315,4 +321,23 @@ function getToolsForPlatform($platform, $only_visible = false) {
 	return $tools;
 }
 
+/**
+ * Get the configuration for the specified tool.
+ *
+ * @return array.
+ */
+function getToolConfig($toolId) {
+	try {
+		$db = new PDO(DB_NAME, DB_USERNAME, DB_PASSWORD);
+		$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE id = :toolId AND visible >= 0");
+		$statement->bindParam("toolId", $toolId, PDO::PARAM_INT);
+		$statement->execute();
+		$tool_config = $statement->fetch(PDO::FETCH_ASSOC);
+		$tool_config['config'] = json_decode($tool_config['config'], true);
+		$db = null;
+	} catch (PDOException $e) {
+		return false;
+	}
+	return $tool_config;
+}
 ?>
