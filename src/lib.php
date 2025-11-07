@@ -242,7 +242,7 @@ function platformHasToken($platform, $refresh = false) {
 	// check if the platform has an access token; if not, request one from Canvas
 	$access_token = $platform->getSetting('access_token');
 	if ($access_token) $access_token = json_decode($access_token);
-	if (!$access_token || !$access_token->access_token) requestNewToken($platform);
+	if ((!$access_token || !$access_token->access_token)) && !requestNewToken($platform)) return false;
 	// check if we need to refresh the token
 	if ($refresh || (isset($access_token->refresh_at) && $access_token->refresh_at < time())) {
 		$url = $api_url . '/login/oauth2/token';
@@ -272,7 +272,7 @@ function platformHasToken($platform, $refresh = false) {
 			// delete the token and request a new one
 			$platform->setSetting('access_token');
 			$platform->save();
-			requestNewToken($platform);
+			if (!requestNewToken($platform)) return false;
 		}
 		$access_token->access_token = null;
 		$access_token->refresh_at = null;
@@ -293,6 +293,7 @@ function platformHasToken($platform, $refresh = false) {
  *
  */
 function requestNewToken($platform) {
+	if ($_SESSION['username'] != $platform->getSetting('api_user_id')) return false;
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
 	if (!$api_url) return false;
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
