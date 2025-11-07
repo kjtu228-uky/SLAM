@@ -307,7 +307,6 @@ function requestNewToken($platform) {
  * @return array.
  */
 function getConfiguredLTITools($platform, $course_number = null) {
-	$enabled_tools = array();
 	$enabled_tools = getEnabledTools($platform, $course_number);
 	if (isset($enabled_tools['errors'])) return $enabled_tools;
 	$all_tools = array();
