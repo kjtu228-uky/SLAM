@@ -1,4 +1,9 @@
 <?php
+use ceLTIc\LTI;
+use ceLTIc\LTI\DataConnector;
+use ceLTIc\LTI\Platform;
+use ceLTIc\LTI\ResourceLink;
+
 /**
  * update_tool.php
  *
@@ -11,8 +16,10 @@
 require_once('config.php');
 require_once('lib.php');
 
+/*
 session_name(SESSION_NAME);
 session_start();
+*/
 
 header("Content-Type: application/json; ");
 $result = array('messages' => array());
