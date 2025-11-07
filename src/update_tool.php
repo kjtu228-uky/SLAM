@@ -60,7 +60,7 @@ if ($make_change) {
 	$tool_id = $_GET['tool_id'];
 	$result = array();
 	if ($_GET['action'] == 'add' && $lti_tools[$tool_id]['enabled'] == 0) {
-		if ($_SESSION['isAdmin'] || $_SESSION['isStaff'])) {
+		if ($_SESSION['isAdmin'] || $_SESSION['isStaff']) {
 			if (isset($lti_tools[$tool_id]['dependency']) && $lti_tools[$lti_tools[$tool_id]['dependency']]['enabled'] == 0)
 				$result = addLTIToolToCourse($platform, $courseNumber, $lti_tools[$tool_id]['dependency']);
 			if (!isset($result['errors'])) $result = addLTIToolToCourse($platform, $courseNumber, $tool_id);
