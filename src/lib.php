@@ -249,7 +249,8 @@ function platformHasToken($platform, $refresh = false) {
 		$ch = curl_init();
 		curl_setopt ($ch, CURLOPT_URL, $url);
 		curl_setopt ($ch, CURLOPT_HEADER, true);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded",
+			"User-Agent: LTIPHP/1.0"));
 		curl_setopt ($ch, CURLOPT_POST, true);
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
 						'grant_type' => 'refresh_token',
@@ -303,12 +304,12 @@ function requestNewToken($platform) {
 /**
  * Retrieve the list of configured tools from the database.
  *
- * @return boolean.
+ * @return array.
  */
-function getConfiguredLTITools($platform, $course = null) {
+function getConfiguredLTITools($platform, $course_number = null) {
 	$enabled_tools = array();
-//	$enabled_tools = $this->getEnabledTools();
-	if (isset($enabled_tools['error'])) return $enabled_tools;
+//	$enabled_tools = getEnabledTools($platform, $course_number);
+	if (isset($enabled_tools['errors'])) return $enabled_tools;
 	$all_tools = array();
 	try {
 		$platform_tools = getToolsForPlatform($platform, true);
@@ -320,18 +321,48 @@ function getConfiguredLTITools($platform, $course = null) {
 			$all_tools[$tool_config['id']]['user_notice'] = $tool_config['user_notice'];
 			$all_tools[$tool_config['id']]['support_info'] = $tool_config['support_info'];
 		}
-/*
 		foreach ($all_tools as $key => $tool) {
 			if (in_array($tool['name'], array_keys($enabled_tools))) {
 				$all_tools[$key]['enabled'] = $enabled_tools[$tool['name']]['id'];
 				$all_tools[$key]['deployment_id'] = $enabled_tools[$tool['name']]['deployment_id'];
 			}
 		}
-*/
 		$db = null;
 	} catch (PDOException $e) {
-		return array("error" => "There was a problem accessing the tools from the database.");
+		return array("errors" => "There was a problem accessing the tools from the database.");
 	}
 	return $all_tools;
+}
+
+/**
+ * Retrieve the list of external tools that are enabled in the course.
+ *
+ * @return array.
+ */
+function getEnabledTools($platform, $course_number) {
+	$enabled_tools = array();
+	if (platformHasToken($platform)) {
+		// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
+		$api_url = $platform->getSetting('api_url');
+		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
+		// check if the platform has an access token; if not, request one from Canvas
+		$access_token = $platform->getSetting('access_token');
+		if ($access_token) $access_token = json_decode($access_token);
+		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
+		$headers = array("Authorization: Bearer " . $access_token->access_token,
+			"User-Agent: LTIPHP/1.0");
+		$url = $api_url . '/api/v1/courses/' . $course_number . '/external_tools?per_page=100';	
+		$ch = curl_init();
+		curl_setopt ($ch, CURLOPT_URL, $url);
+		curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+		$response = json_decode(curl_exec($ch), true);
+		if (isset($response['errors'])) return $response;
+		foreach ($response as $tool_detail) {
+			$enabled_tools[$tool_detail['name']] = array('id'=>$tool_detail['id'], 'deployment_id'=>$tool_detail['deployment_id']);
+		}
+		curl_close($ch);
+	}
+	return $enabled_tools;
 }
 ?>
