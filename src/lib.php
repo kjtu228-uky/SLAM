@@ -307,8 +307,8 @@ function requestNewToken($platform) {
  *
  * @return array.
  */
-function getConfiguredLTITools($platform, $course_number = null) {
-	$enabled_tools = getEnabledTools($platform, $course_number);
+function getConfiguredLTITools($platform, $courseNumber = null) {
+	$enabled_tools = getEnabledTools($platform, $courseNumber);
 	if (isset($enabled_tools['errors'])) return $enabled_tools;
 	$all_tools = array();
 	try {
@@ -339,7 +339,7 @@ function getConfiguredLTITools($platform, $course_number = null) {
  *
  * @return array.
  */
-function getEnabledTools($platform, $course_number) {
+function getEnabledTools($platform, $courseNumber) {
 	$enabled_tools = array();
 	if (platformHasToken($platform)) {
 		// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
@@ -351,7 +351,7 @@ function getEnabledTools($platform, $course_number) {
 		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
 		$headers = array("Authorization: Bearer " . $access_token->access_token,
 			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/courses/' . $course_number . '/external_tools?per_page=100';	
+		$url = $api_url . '/api/v1/courses/' . $courseNumber . '/external_tools?per_page=100';	
 		$ch = curl_init();
 		curl_setopt ($ch, CURLOPT_URL, $url);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
@@ -364,5 +364,55 @@ function getEnabledTools($platform, $course_number) {
 		curl_close($ch);
 	}
 	return $enabled_tools;
+}
+
+/**
+ * Try to add the specified tool to the specified course.
+ *
+ * @return array.
+ */
+function addLTIToolToCourse($platform, $courseNumber, $tool_id) {
+	$response = array();
+	$tool_config = getToolConfig($tool_id);
+	if ($tool_config && isset($tool_config['config'])) {
+//Util::logError(json_encode($tool_config, JSON_PRETTY_PRINT));
+		if (is_string($tool_config['config'])) $tool_config['config'] = json_decode($tool_config['config'], true);
+		if (platformHasToken($platform)) {
+			// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
+			$api_url = $platform->getSetting('api_url');
+			if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
+			// check if the platform has an access token; if not, request one from Canvas
+			$access_token = $platform->getSetting('access_token');
+			if ($access_token) $access_token = json_decode($access_token);
+			if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
+			$headers = array("Authorization: Bearer " . $access_token->access_token,
+				"User-Agent: LTIPHP/1.0");
+			$url = $api_url . '/api/v1/courses/' . $courseNumber . '/external_tools';
+			$ch = curl_init();
+			curl_setopt ($ch, CURLOPT_URL, $url);
+			curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt ($ch, CURLOPT_POST, true);
+			curl_setopt ($ch, CURLOPT_POSTFIELDS, $tool_config['config']);
+			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+			$response = json_decode(curl_exec($ch), true);
+			curl_close($ch);
+/*
+		if ($response) $this->logToolChange($tool_id, 1, $response['id']);
+		else $this->logToolChange($tool_id, 1, -1);
+		// check the name returned by Canvas and ensure it matches the config
+		if (strcmp($response['name'], $tool_config['config']['name']) != 0 && $this->isAdmin()) {
+			$tool_config['config']['name'] = $response['name'];
+			$this->updateToolDetails($tool_config, false);
+			$response['alert'] = "The tool name was automatically updated to reflect its name in Canvas.";
+		}
+//Util::logError(json_encode($response, JSON_PRETTY_PRINT));
+*/
+		} else {
+			$response['errors'] = "There is no token for this platform.";
+		}
+	} else {
+		$response['errors'] = "Could not find a tool with id " . $tool_id;
+	}
+	return $response;
 }
 ?>
