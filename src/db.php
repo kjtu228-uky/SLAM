@@ -286,15 +286,18 @@ function init_db($db)
 	}
 	
 	if ($ok && !tableExists($db, "{$prefix}tools")) {
+		// id, consumer_pk, canvas_id, visible, dependency, config, user_notice, support_info
 		$sql = "CREATE TABLE {$prefix}tools (" .
-            'id int(11) NOT NULL AUTO_INCREMENT, ' .
-            'visible tinyint(1) NOT NULL DEFAULT 1, ' .
-            'config longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`config`)), ' .
+			'id int(11) NOT NULL AUTO_INCREMENT, ' .
+			'consumer_pk int(11) NOT NULL, ' .
+			'canvas_id int(11), ' .
 			'dependency int(11) DEFAULT NULL, ' .
+			'visible tinyint(1) NOT NULL DEFAULT 1, ' .
+			'config longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`config`)), ' .
 			'user_notice varchar(1000) DEFAULT NULL, ' .
 			'support_info varchar(1000) DEFAULT NULL, ' .
 			'PRIMARY KEY (id)' .
-            ') ENGINE=InnoDB DEFAULT CHARSET=utf8';
+			') ENGINE=InnoDB DEFAULT CHARSET=utf8';
 		$ok = $db->exec($sql) !== false;
 	}
 	
@@ -329,7 +332,7 @@ function getToolsForPlatform($platform, $onlyVisible = false) {
 function getToolConfig($toolId) {
 	try {
 		$db = new PDO(DB_NAME, DB_USERNAME, DB_PASSWORD);
-		$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE id = :toolId AND visible >= 0");
+		$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE id = :toolId");
 		$statement->bindParam("toolId", $toolId, PDO::PARAM_INT);
 		$statement->execute();
 		$tool_config = $statement->fetch(PDO::FETCH_ASSOC);
