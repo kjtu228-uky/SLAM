@@ -341,7 +341,7 @@ function getConfiguredLTITools($platform, $courseNumber = null) {
  */
 function getEnabledTools($platform, $courseNumber) {
 	$enabled_tools = array();
-	if (platformHasToken($platform)) {
+	if ($courseNumber && platformHasToken($platform)) {
 		// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
