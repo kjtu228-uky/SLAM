@@ -341,9 +341,9 @@ function getLTIRegistrations($platform) {
 			$LTIregistrations = array_merge($LTIregistrations, json_decode($body));
 			// Extract the 'next' page URL from the Link header
 			$url = null;
-			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $headers, $matches)) {
+/* 			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $headers, $matches)) {
 				$url = $matches[1];
-			}
+			} */
 		}
 	}
 	return $LTIregistrations;
