@@ -311,7 +311,7 @@ function requestNewToken($platform) {
  *
  * @return array.
  */
-function getLTIRestrations($platform) {
+function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
  	if (isToolAdmin($platform) && platformHasToken($platform)) {
 		// the API URL must be defined in the platform settings
