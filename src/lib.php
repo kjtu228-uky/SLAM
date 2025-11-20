@@ -323,27 +323,27 @@ function getLTIRegistrations($platform) {
 		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
 		$headers = array("Authorization: Bearer " . $access_token->access_token,
 			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations?per_page=100';
+		$url = $api_url . '/api/v1/accounts/self/lti_registrations?per_page=25';
 		while ($url) {
 			$ch = curl_init();
 			curl_setopt ($ch, CURLOPT_URL, $url);
 			curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
 			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
 			$response = curl_exec($ch);
-			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-			$headers = substr($response, 0, $header_size);
-			$body = substr($response, $header_size);
+			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+			$response_headers = substr($response, 0, $response_header_size);
+			$body = substr($response, $response_header_size);
 			curl_close($ch);
-			if ($http_code != 200)
-				return array("errors" => "Error: API request failed with status $http_code");
+			if ($response_http_code != 200)
+				return array("errors" => "Error: API request failed with status $response_http_code");
 			// append the decoded JSON results to the registrations
 			$LTIregistrations = array_merge($LTIregistrations, json_decode($response, true));
 			// Extract the 'next' page URL from the Link header
 			$url = null;
-/* 			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $headers, $matches)) {
+			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $response_headers, $matches)) {
 				$url = $matches[1];
-			} */
+			}
 		}
 	}
 	return $LTIregistrations;
