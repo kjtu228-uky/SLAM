@@ -313,8 +313,8 @@ function requestNewToken($platform) {
  */
 function getLTIRestrations($platform) {
 	$LTIregistrations = array();
-/* 	if (isToolAdmin() && platformHasToken($platform)) {
-		// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
+ 	if (isToolAdmin($platform) && platformHasToken($platform)) {
+		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
 		// check if the platform has an access token; if not, request one from Canvas
@@ -323,18 +323,29 @@ function getLTIRestrations($platform) {
 		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
 		$headers = array("Authorization: Bearer " . $access_token->access_token,
 			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/courses/' . $courseNumber . '/external_tools?per_page=100';	
-		$ch = curl_init();
-		curl_setopt ($ch, CURLOPT_URL, $url);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
-		$response = json_decode(curl_exec($ch), true);
-		if (isset($response['errors'])) return $response;
-		foreach ($response as $tool_detail) {
-			$enabled_tools[$tool_detail['name']] = array('id'=>$tool_detail['id'], 'deployment_id'=>$tool_detail['deployment_id']);
+		$url = $api_url . '/api/v1/accounts/self/lti_registrations?per_page=100';
+		while ($url) {
+			$ch = curl_init();
+			curl_setopt ($ch, CURLOPT_URL, $url);
+			curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+			$response = curl_exec($ch);
+			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+			$headers = substr($response, 0, $header_size);
+			$body = substr($response, $header_size);
+			curl_close($ch);
+			if ($http_code != 200)
+				return array("errors" => "Error: API request failed with status $http_code");
+			// append the decoded JSON results to the registrations
+			$LTIregistrations = array_merge($LTIregistrations, json_decode($body));
+			// Extract the 'next' page URL from the Link header
+			$url = null;
+			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $headers, $matches)) {
+				$url = $matches[1];
+			}
 		}
-		curl_close($ch);
-	} */
+	}
 	return $LTIregistrations;
 }
 
