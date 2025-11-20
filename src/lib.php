@@ -345,6 +345,7 @@ function getLTIRegistrations($platform) {
 				$url = $matches[1];
 			}
 		}
+		if (isset($LTIregistrations['data'])) return $LTIregistrations['data'];
 	}
 	return $LTIregistrations;
 }
