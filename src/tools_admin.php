@@ -1,5 +1,10 @@
 <?php
-require_once('config.php');
+use ceLTIc\LTI;
+use ceLTIc\LTI\DataConnector;
+use ceLTIc\LTI\Platform;
+use ceLTIc\LTI\Util;
+use ceLTIc\LTI\Enum\LogLevel;
+
 require_once('lib.php');
 
 $ok = true;
