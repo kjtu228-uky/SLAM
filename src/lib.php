@@ -338,7 +338,7 @@ function getLTIRegistrations($platform) {
 			if ($http_code != 200)
 				return array("errors" => "Error: API request failed with status $http_code");
 			// append the decoded JSON results to the registrations
-			$LTIregistrations = array_merge($LTIregistrations, json_decode($body));
+			$LTIregistrations = array_merge($LTIregistrations, json_decode($response, true));
 			// Extract the 'next' page URL from the Link header
 			$url = null;
 /* 			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $headers, $matches)) {
