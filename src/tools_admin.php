@@ -25,8 +25,8 @@ if (!$ok || !isToolAdmin($platform)) {
 	exit(0);
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Self LTI App Management - Tool Configuration and Availability</title>
 	<meta name="description" content="An LTI app that allows Canvas users to self-manage LTI apps in their course." />
@@ -37,6 +37,8 @@ if (!$ok || !isToolAdmin($platform)) {
 	<p>List the tools for the admin.</p>
 	<pre>
 <?php
+$registrations = getLTIRegistrations($platform);
+print(json_encode($registrations, JSON_PRETTY_PRINT));
 /*
 	foreach ($lti_tools as $key => $lti_tool) {
 		print("			<option value='" . $key . "'>" . $lti_tool['name'] . "</option>\n");
