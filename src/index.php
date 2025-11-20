@@ -62,7 +62,7 @@ if ($ok) {
 	</div>
 
 EOD;
-	if (isToolAdmin($_SESSION['username'], $platform))
+	if (isToolAdmin($platform))
 		$page .= <<< EOD
 	<div class='tool-settings'>
 		<a href='./tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
