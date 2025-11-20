@@ -218,7 +218,11 @@ function getGuid()
  *
  * @return boolean.
  */
-function isToolAdmin($user, $platform) {
+function isToolAdmin($platform, $user = null) {
+	if (is_null($user)) {
+		if (isset($_SESSION['username'])) $user = $_SESSION['username'];
+		else return false;
+	}
 	$tool_admins = $platform->getSetting('TOOL_ADMINS');
 	if (!empty($tool_admins)) {
 		$tool_admin_array = explode(",", $tool_admins);
@@ -301,6 +305,39 @@ function requestNewToken($platform) {
 			'&redirect_uri=' . TOOL_BASE_URL . 'oauth2response.php');
 	exit(0);
 }
+
+/**
+ * Retrieve the list of LTI registrations for the platform.
+ *
+ * @return array.
+ */
+function getLTIRestrations($platform) {
+	$LTIregistrations = array();
+/* 	if (isToolAdmin() && platformHasToken($platform)) {
+		// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
+		$api_url = $platform->getSetting('api_url');
+		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
+		// check if the platform has an access token; if not, request one from Canvas
+		$access_token = $platform->getSetting('access_token');
+		if ($access_token) $access_token = json_decode($access_token);
+		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
+		$headers = array("Authorization: Bearer " . $access_token->access_token,
+			"User-Agent: LTIPHP/1.0");
+		$url = $api_url . '/api/v1/courses/' . $courseNumber . '/external_tools?per_page=100';	
+		$ch = curl_init();
+		curl_setopt ($ch, CURLOPT_URL, $url);
+		curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+		$response = json_decode(curl_exec($ch), true);
+		if (isset($response['errors'])) return $response;
+		foreach ($response as $tool_detail) {
+			$enabled_tools[$tool_detail['name']] = array('id'=>$tool_detail['id'], 'deployment_id'=>$tool_detail['deployment_id']);
+		}
+		curl_close($ch);
+	} */
+	return $LTIregistrations;
+}
+
 
 /**
  * Retrieve the list of configured tools from the database.
