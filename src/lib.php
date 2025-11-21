@@ -372,7 +372,7 @@ function getAllTools($platform) {
  *
  * @return array.
  */
-function getConfiguredLTITools($platform, $courseNumber = null, $onlyVisible = false) {
+/* function getConfiguredLTITools($platform, $courseNumber = null, $onlyVisible = false) {
 	$enabled_tools = getEnabledTools($platform, $courseNumber);
 	if (isset($enabled_tools['errors'])) return $enabled_tools;
 	$registrations = getLTIRegistrations($platform);
@@ -398,7 +398,7 @@ function getConfiguredLTITools($platform, $courseNumber = null, $onlyVisible = f
 		return array("errors" => "There was a problem accessing the tools from the database.");
 	}
 	return $all_tools;
-}
+} */
 
 /**
  * Retrieve the list of external tools that are enabled in the course.
