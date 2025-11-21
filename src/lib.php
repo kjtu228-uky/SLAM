@@ -350,18 +350,35 @@ function getLTIRegistrations($platform) {
 	return $LTIregistrations;
 }
 
+/**
+ * Retrieve all available tools configured for the platform.
+ *
+ * @return array.
+ */
+function getAllTools($platform) {
+	$registrations = getLTIRegistrations($platform);
+	$all_tools = array();
+	foreach ($registrations as $registration) {
+		$registration = getRegistrationConfig($platform, $registration);
+		if ($registration) $all_tools[$registration['id']] = $registration;
+	}
+	return $all_tools;
+}
+
+
 
 /**
  * Retrieve the list of configured tools from the database.
  *
  * @return array.
  */
-function getConfiguredLTITools($platform, $courseNumber = null) {
+function getConfiguredLTITools($platform, $courseNumber = null, $onlyVisible = false) {
 	$enabled_tools = getEnabledTools($platform, $courseNumber);
 	if (isset($enabled_tools['errors'])) return $enabled_tools;
+	$registrations = getLTIRegistrations($platform);
 	$all_tools = array();
 	try {
-		$platform_tools = getToolsForPlatform($platform, true);
+		$platform_tools = getToolsForPlatform($platform, $onlyVisible);
 		foreach ($platform_tools as $tool_config) {
 			$all_tools[$tool_config['id']]['name'] = json_decode($tool_config['config'], true)['name'];
 			$all_tools[$tool_config['id']]['enabled'] = 0;
