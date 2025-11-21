@@ -290,7 +290,7 @@ function init_db($db)
 		$sql = "CREATE TABLE {$prefix}tools (" .
 			'id int(11) NOT NULL AUTO_INCREMENT, ' .
 			'consumer_pk int(11) NOT NULL, ' .
-			'canvas_id int(11), ' .
+			'canvas_id varchar(32), ' .
 			'dependency int(11) DEFAULT NULL, ' .
 			'visible tinyint(1) NOT NULL DEFAULT 1, ' .
 			'config longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`config`)), ' .
@@ -332,7 +332,6 @@ function getToolConfigs($platform, $onlyVisible = false) {
  */
 function getRegistrationConfig($platform, $registration) {
 	if (!isset($registration['id'])) return false;
-	$registration['id'] = intval($registration['id']);
 	$db = open_db();
 	$platformId = $platform->getRecordId();
 	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id AND canvas_id = :canvas_id";
@@ -354,7 +353,7 @@ function getRegistrationConfig($platform, $registration) {
 		$sql .= "(:platform_id, :canvas_id, 0)";
 		$statement = $db->prepare($sql);
 		$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
-		$statement->bindParam("canvas_id", $registration['id'], PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+		$statement->bindParam("canvas_id", $registration['id'], PDO::PARAM_STR); // PDO::PARAM_STR if replacing string
 		$statement->execute();
 		$registration['canvas_id'] = $registration['id'];
 		try {
