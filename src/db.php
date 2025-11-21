@@ -305,12 +305,12 @@ function init_db($db)
 }
 
 /**
- * Get the list of tools that have been defined for this platform.
+ * Get the list of tools that have been configured for this platform.
  * Optionally, only retrieve tools that are marked as visible.
  *
  * @return array.
  */
-function getToolsForPlatform($platform, $onlyVisible = false) {
+function getToolConfigs($platform, $onlyVisible = false) {
 	$db = open_db();
 	$platformId = $platform->getRecordId();
 	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id";
@@ -322,6 +322,46 @@ function getToolsForPlatform($platform, $onlyVisible = false) {
 	$tools = $statement->fetchAll(PDO::FETCH_ASSOC);
 	$db = null;
 	return $tools;
+}
+
+/**
+ * Get the configuration for the specified LTI registration.
+ * If it doesn't exist in the database, add it.
+ *
+ * @return array.
+ */
+function getRegistrationConfig($platform, $registration) {
+	if (!isset($registration['id'])) return false;
+	$db = open_db();
+	$platformId = $platform->getRecordId();
+	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id AND canvas_id = :canvas_id";
+	$statement = $db->prepare($sql);
+	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+	$statement->bindParam("canvas_id", $registration['id'], PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+	$statement->execute();
+	$config = $statement->fetch(PDO::FETCH_ASSOC);
+	if ($config) {
+		$registration['canvas_id'] = $registration['id'];
+		$registration['id'] = $config['id'];
+		$registration['dependency'] = $config['dependency'];
+		$registration['visible'] = $config['visible'];
+		$registration['config'] = $config['config'];
+		$registration['user_notice'] = $config['user_notice'];
+		$registration['support_info'] = $config['support_info'];
+	} else {
+		$sql = "INSERT INTO " . DB_TABLENAME_PREFIX . "tools (consumer_pk, canvas_id, visible) VALUES ";
+		$sql .= "(:platform_id, :canvas_id, 0)";
+		$statement = $db->prepare($sql);
+		$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+		$statement->bindParam("canvas_id", $registration['id'], PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+		$statement->execute();
+		$registration['canvas_id'] = $registration['id'];
+		try {
+			$registration['id'] = $db->lastInsertId();
+		} catch (Exception e) return false;
+	}
+	$db = null;
+	return $registration;
 }
 
 /**
