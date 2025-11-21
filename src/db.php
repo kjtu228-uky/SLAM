@@ -358,7 +358,7 @@ function getRegistrationConfig($platform, $registration) {
 		$registration['canvas_id'] = $registration['id'];
 		try {
 			$registration['id'] = $db->lastInsertId();
-		} catch (Exception e) return false;
+		} catch (Exception $e) return false;
 	}
 	$db = null;
 	return $registration;
