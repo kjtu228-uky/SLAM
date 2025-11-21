@@ -353,7 +353,7 @@ function getRegistrationConfig($platform, $registration) {
 		$sql .= "(:platform_id, :canvas_id, 0)";
 		$statement = $db->prepare($sql);
 		$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
-		$statement->bindParam("canvas_id", $registration['id'], PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+		$statement->bindParam("canvas_id", intval($registration['id']), PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
 		$statement->execute();
 		$registration['canvas_id'] = $registration['id'];
 		try {
