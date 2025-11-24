@@ -75,7 +75,8 @@ EOD
 define('API_SCOPES', array(	'url:GET|/api/v1/accounts/:account_id/admins',
 							'url:GET|/api/v1/courses/:course_id/external_tools',
 							'url:POST|/api/v1/courses/:course_id/external_tools',
-							'url:DELETE|/api/v1/courses/:course_id/external_tools/:external_tool_id'));
+							'url:DELETE|/api/v1/courses/:course_id/external_tools/:external_tool_id',
+							'url:GET|/api/v1/accounts/:account_id/lti_registrations'));
 
 ###
 ###  Dynamic registration settings
