@@ -325,7 +325,6 @@ function getLTIRegistrations($platform) {
 			"User-Agent: LTIPHP/1.0");
 		$url = $api_url . '/api/v1/accounts/self/lti_registrations?per_page=25';
 		while ($url) {
-Util::logError($url);
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -334,23 +333,23 @@ Util::logError($url);
 			$response = curl_exec($ch);
 			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-Util::logError("Header size: " . $response_header_size);
-
 			$response_headers = substr($response, 0, $response_header_size);
-Util::logError($response_headers);
-			$body = substr($response, $response_header_size);
+			$response_body = substr($response, $response_header_size);
 			curl_close($ch);
 			if ($response_http_code != 200)
 				return array("errors" => "Error: API request failed with status $response_http_code");
 			// append the decoded JSON results to the registrations
-			$LTIregistrations = array_merge($LTIregistrations, json_decode($body, true));
+			$pagedLTIregistrations = json_decode($response_body, true);
+			if (isset($pagedLTIregistrations['data']))
+				$LTIregistrations = array_merge($LTIregistrations, $pagedLTIregistrations['data']);
+Util::logError("Size of LTIregistrations: " . count($LTIregistrations));
 			// Extract the 'next' page URL from the Link header
 			$url = null;
 			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $response_headers, $matches)) {
 				$url = $matches[1];
 			}
 		}
-		if (isset($LTIregistrations['data'])) return $LTIregistrations['data'];
+//		if (isset($LTIregistrations['data'])) return $LTIregistrations['data'];
 	}
 	return $LTIregistrations;
 }
