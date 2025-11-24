@@ -327,12 +327,15 @@ function getLTIRegistrations($platform) {
 		while ($url) {
 Util::logError($url);
 			$ch = curl_init();
-			curl_setopt ($ch, CURLOPT_URL, $url);
-			curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, 1);
 			$response = curl_exec($ch);
 			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+Util::logError("Header size: " . $response_header_size);
+
 			$response_headers = substr($response, 0, $response_header_size);
 Util::logError($response_headers);
 			$body = substr($response, $response_header_size);
