@@ -325,6 +325,7 @@ function getLTIRegistrations($platform) {
 			"User-Agent: LTIPHP/1.0");
 		$url = $api_url . '/api/v1/accounts/self/lti_registrations?per_page=25';
 		while ($url) {
+Util::logError($url);
 			$ch = curl_init();
 			curl_setopt ($ch, CURLOPT_URL, $url);
 			curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
@@ -333,6 +334,7 @@ function getLTIRegistrations($platform) {
 			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 			$response_headers = substr($response, 0, $response_header_size);
+Util::logError($response_headers);
 			$body = substr($response, $response_header_size);
 			curl_close($ch);
 			if ($response_http_code != 200)
