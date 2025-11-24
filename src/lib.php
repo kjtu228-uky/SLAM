@@ -343,7 +343,7 @@ Util::logError($response_headers);
 			if ($response_http_code != 200)
 				return array("errors" => "Error: API request failed with status $response_http_code");
 			// append the decoded JSON results to the registrations
-			$LTIregistrations = array_merge($LTIregistrations, json_decode($response, true));
+			$LTIregistrations = array_merge($LTIregistrations, json_decode($body, true));
 			// Extract the 'next' page URL from the Link header
 			$url = null;
 			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $response_headers, $matches)) {
