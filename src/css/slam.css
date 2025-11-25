@@ -72,11 +72,19 @@ footer {
 	flex: 1;
 }
 .lti-tool {
+	display: flex;
 	width: 100%;
 	margin: 5px;
 	padding: 5px;
 	border: 2px solid #000;
 	background-color: #fbfbfb;
+}
+.lti-tool-text {
+	flex-grow: 1; /* Allow text to take up remaining space */
+	margin-right: 20px; /* Space between text and icon */
+}
+.lti-tool-icon {
+	cursor: pointer;
 }
 .lti-tool-enabled {
 	background-color: #cfeecf;
