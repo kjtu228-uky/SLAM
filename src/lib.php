@@ -349,7 +349,7 @@ function getLTIRegistrations($platform) {
 			}
 		}
 	}
-	return sortAssociativeArrayBy(array $LTIregistrations, 'name');
+	return sortAssociativeArrayBy($LTIregistrations, 'name');
 }
 
 /**
