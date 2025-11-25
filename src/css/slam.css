@@ -68,8 +68,8 @@ footer {
 	grid-gap: 5px 5px;
 	border: 1px solid #222;
 	overflow: auto;
-/*	height: 300px; */
 	margin: 10px;
+	flex: 1;
 }
 .lti-tool {
 	width: 100%;
