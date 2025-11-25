@@ -342,16 +342,14 @@ function getLTIRegistrations($platform) {
 			$pagedLTIregistrations = json_decode($response_body, true);
 			if (isset($pagedLTIregistrations['data']))
 				$LTIregistrations = array_merge($LTIregistrations, $pagedLTIregistrations['data']);
-Util::logError("Size of LTIregistrations: " . count($LTIregistrations));
 			// Extract the 'next' page URL from the Link header
 			$url = null;
 			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $response_headers, $matches)) {
 				$url = $matches[1];
 			}
 		}
-//		if (isset($LTIregistrations['data'])) return $LTIregistrations['data'];
 	}
-	return $LTIregistrations;
+	return sortAssociativeArrayBy(array $LTIregistrations, 'name');
 }
 
 /**
@@ -485,4 +483,35 @@ function addLTIToolToCourse($platform, $courseNumber, $tool_id) {
 	}
 	return $response;
 }
+
+/**
+ * Converts an associative array to a sorted array based on the "name" key.
+ *
+ * @param array $associativeArray The associative array to convert.  Must contain elements with a "name" key.
+ * @return array A numerically indexed array sorted by the "name" key.  Returns an empty array if the input is not an array.
+ * How missing keys are handled - they remain in their relative positions.
+ */
+function sortAssociativeArrayBy(array $associativeArray, string $sortKey): array
+{
+    if (!is_array($associativeArray)) {
+        return []; // Return an empty array if the input isn't an array.
+    }
+
+    // Use usort to sort the array by the "name" key.
+    usort($associativeArray, function ($a, $b) {
+        // Ensure both $a and $b have a 'name' key before comparing
+        if (!isset($a[$sortKey])) {
+            return 0; // Or throw an exception, or handle the missing key differently
+        }
+        if (!isset($b[$sortKey])) {
+            return 0;
+        }
+
+        return strcmp($a[$sortKey], $b[$sortKey]); // Compare names using strcmp (case-sensitive).
+    });
+
+    // Re-index the array to create a numerically indexed array.
+    return array_values($associativeArray);
+}
+?>
 ?>
