@@ -39,7 +39,7 @@ if (!$ok || !isToolAdmin($platform)) {
 
 $body = <<< EOD
 
-	<div id='toolList' class='lti-tools-container'>
+	<div id='toolList' class='lti-tools-container' style='height:80%;'>
 EOD;
 
 $lti_tools = getAllTools($platform);
