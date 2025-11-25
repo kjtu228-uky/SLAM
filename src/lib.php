@@ -485,33 +485,25 @@ function addLTIToolToCourse($platform, $courseNumber, $tool_id) {
 }
 
 /**
- * Converts an associative array to a sorted array based on the "name" key.
+ * Converts an associative array to a sorted array based on a specified key.
  *
- * @param array $associativeArray The associative array to convert.  Must contain elements with a "name" key.
- * @return array A numerically indexed array sorted by the "name" key.  Returns an empty array if the input is not an array.
- * How missing keys are handled - they remain in their relative positions.
+ * @param array $associativeArray The associative array to convert.
+ * @param string $sortKey The key to sort the array by.  Must be a string.
+ * @return array A numerically indexed array sorted by the specified key. Returns an empty array if the input is not an array or the sort key is invalid.
+ * If the sortKey is missing, the sort order of the item is not changed.
  */
-function sortAssociativeArrayBy(array $associativeArray, string $sortKey): array
-{
-    if (!is_array($associativeArray)) {
-        return []; // Return an empty array if the input isn't an array.
-    }
+function sortAssociativeArrayByKey(array $associativeArray, string $sortKey): array {
+	if (!is_array($associativeArray)) return [];
+	if (!is_string($sortKey) || empty($sortKey)) return []; // Invalid sort key
 
-    // Use usort to sort the array by the "name" key.
-    usort($associativeArray, function ($a, $b) {
-        // Ensure both $a and $b have a 'name' key before comparing
-        if (!isset($a[$sortKey])) {
-            return 0; // Or throw an exception, or handle the missing key differently
-        }
-        if (!isset($b[$sortKey])) {
-            return 0;
-        }
-
-        return strcmp($a[$sortKey], $b[$sortKey]); // Compare names using strcmp (case-sensitive).
-    });
-
-    // Re-index the array to create a numerically indexed array.
-    return array_values($associativeArray);
+	// Use usort to sort the array by the specified key.
+	usort($associativeArray, function ($a, $b) use ($sortKey) {
+		// Ensure both $a and $b have the sort key before comparing
+		if (!isset($a[$sortKey])) return 0; // Or throw an exception, or handle the missing key differently
+		if (!isset($b[$sortKey])) return 0;
+		return strcmp($a[$sortKey], $b[$sortKey]); // Compare values using strcmp (case-sensitive).
+	});
+	// Re-index the array to create a numerically indexed array.
+	return array_values($associativeArray);
 }
-?>
 ?>
