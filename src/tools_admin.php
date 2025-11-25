@@ -34,10 +34,9 @@ if (!$ok || !isToolAdmin($platform)) {
 	<link rel="stylesheet" href="css/slam.css">
 </head>
 <body>
-	<pre>
 <?php
-print(json_encode(getAllTools($platform), JSON_PRETTY_PRINT));
-/*
+//print(json_encode(getAllTools($platform), JSON_PRETTY_PRINT));
+
 $body = <<< EOD
 
 	<div id='toolList' class='lti-tools-container'>
@@ -45,30 +44,16 @@ EOD;
 
 $lti_tools = getAllTools($platform);
 foreach ($lti_tools as $key => $lti_tool) {
-	
-	
-	
-	if (!empty($courseNumber) && isset($lti_tool['name']) && $lti_tool['visible']) {
+	if (isset($lti_tool['name'])) {
 		$body .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
-			((isset($lti_tool['enabled']) && $lti_tool['enabled'] > 0)?" lti-tool-enabled":"") . "'>\n";
-		$body .= "			<div class='switch' id='switch_" . $key . "' onclick='tool_select_" . $key . ".click();'>\n" .
-			"				<input type='checkbox' id='tool_select_" . $key .
-			"' onchange='updateToolInstall(" . $key . ", " . $courseNumber . ");'";
-		if (isset($lti_tool['enabled']) && $lti_tool['enabled'] > 0) $body .= " checked";
-		$body .= ">\n				<span class='slider round'></span>\n			</div>\n			<div>\n" .
-			"				<label for='tool_select_" . $key . "' class='toggle-label'>" .
-			$lti_tool['name'] . "</label>\n			</div>\n";
-		if (isset($lti_tool['support_info']))
-			$body .= "			<div class='tool-support'>". 
-			preg_replace('/\[TOOL_NAME\]/', $lti_tool['name'], $lti_tool['support_info']) . 
-			"</div>\n";
+			((isset($lti_tool['visible']) && $lti_tool['visible'] > 0)?" lti-tool-enabled":"") . "'>\n";
+		$body .= $lti_tool['name'];
+		// TBD: Add an edit icon that opens the tool editor page for this specific tool.
 		$body .= "		</div>\n";
 	}
 }
 $body .= "	</div>\n";
 print($body);
-*/
 ?>
-	</pre>
 </body>
 </html>
