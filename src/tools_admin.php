@@ -33,13 +33,14 @@ if (!$ok || !isToolAdmin($platform)) {
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="css/slam.css">
 </head>
-<body style='height:100%;'>
+<body>
+<div style='display: flex; flex-direction: column; height: 98vh;'>
 <?php
 //print(json_encode(getAllTools($platform), JSON_PRETTY_PRINT));
 
 $body = <<< EOD
 
-	<div id='toolList' class='lti-tools-container' style='height:80%;'>
+	<div id='toolList' class='lti-tools-container'>
 EOD;
 
 $lti_tools = getAllTools($platform);
@@ -55,5 +56,6 @@ foreach ($lti_tools as $key => $lti_tool) {
 $body .= "	</div>\n";
 print($body);
 ?>
+</div>
 </body>
 </html>
