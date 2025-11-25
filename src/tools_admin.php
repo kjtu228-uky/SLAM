@@ -21,7 +21,7 @@ if ($ok) {
 }
 
 if (!$ok || !isToolAdmin($platform)) {
-	header(	'Location: ' . CANVAS_URL);
+	header(	'Location: ' . $platform->getSetting('api_url'));
 	exit(0);
 }
 ?>
@@ -36,19 +36,15 @@ if (!$ok || !isToolAdmin($platform)) {
 <body>
 <div style='display: flex; flex-direction: column; height: 98vh;'>
 <?php
-//print(json_encode(getAllTools($platform), JSON_PRETTY_PRINT));
-
+$showVal = function($val) {
+	return $val;
+};
 $body = <<< EOD
-	<div id='slamTitle' class='slam-title'>
-		<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
+	<div class='slam-title'>
+		<h1><img src='{$showVal(APP_NAME)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
-	<div id='slamDescription' class='slam-description'>
-		The following LTI apps are not endorsed or supported by the University of Kentucky
-		or Instructure Canvas. If you have questions or need assistance with a third-party LTI app, please contact
-		the LTI app provider.
-		<p>Clicking a toggle next to a tool will enable/disable that tool automatically. You do not need to save
-		changes. If there is a problem enabling a tool, the toggle will automatically turn off on its own. In this
-		situation, please contact <a href='mailto:elearning@uky.edu?subject=SLAM%20LTI%20App$20Issue&body=Hello%20eLearning,%0D%0A%0D%0AThe%20LTI%20App%20[please%20tell%20us%20the%20name%20of%20the%20app%20you%20are%20trying%20to%20install]%20cannot%20be%20enabled%20in%20SLAM.%0D%0A%0D%0AThank%20you.'>eLearning</a> for additional help.
+	<div class='slam-description'>
+		The following LTI apps are available for Configuration in your instance.
 	</div>
 	<div id='toolList' class='lti-tools-container'>
 EOD;
