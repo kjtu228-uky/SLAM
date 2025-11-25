@@ -33,7 +33,7 @@ if (!$ok || !isToolAdmin($platform)) {
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="css/slam.css">
 </head>
-<body>
+<body style='height:100%;'>
 <?php
 //print(json_encode(getAllTools($platform), JSON_PRETTY_PRINT));
 
