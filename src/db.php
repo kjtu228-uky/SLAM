@@ -345,7 +345,7 @@ function getRegistrationConfig($platform, $registration) {
 		$registration['id'] = $config['id'];
 		$registration['dependency'] = $config['dependency'];
 		$registration['visible'] = $config['visible'];
-		$registration['config'] = $config['config'];
+		$registration['config'] = json_decode($config['config'], true);
 		$registration['user_notice'] = $config['user_notice'];
 		$registration['support_info'] = $config['support_info'];
 	} else {
