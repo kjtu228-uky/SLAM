@@ -41,10 +41,10 @@ $showVal = function($val) {
 };
 $body = <<< EOD
 	<div class='slam-title'>
-		<h1><img src='{$showVal(APP_NAME)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div class='slam-description'>
-		The following LTI apps are available for Configuration in your instance.
+		The following LTI apps are available for configuration in your instance.
 	</div>
 	<div id='toolList' class='lti-tools-container'>
 EOD;
