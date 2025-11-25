@@ -501,7 +501,7 @@ function sortAssociativeArrayByKey(array $associativeArray, string $sortKey): ar
 		// Ensure both $a and $b have the sort key before comparing
 		if (!isset($a[$sortKey])) return 0; // Or throw an exception, or handle the missing key differently
 		if (!isset($b[$sortKey])) return 0;
-		return strcmp($a[$sortKey], $b[$sortKey]); // Compare values using strcmp (case-sensitive).
+		return strcasecmp($a[$sortKey], $b[$sortKey]); // Compare values using strcmp (case-sensitive).
 	});
 	// Re-index the array to create a numerically indexed array.
 	return array_values($associativeArray);
