@@ -49,6 +49,7 @@ foreach ($lti_tools as $key => $lti_tool) {
 		$body .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
 			((isset($lti_tool['visible']) && $lti_tool['visible'] > 0)?" lti-tool-enabled":"") . "'>\n";
 		$body .= $lti_tool['name'];
+		$body .= '<div><img src="./images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></div>';
 		// TBD: Add an edit icon that opens the tool editor page for this specific tool.
 		$body .= "		</div>\n";
 	}
