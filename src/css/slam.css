@@ -196,7 +196,7 @@ input:checked + .slider:before {
 	margin: 10px;
 	flex: 1;
 }
-.lti-tool-editor-lable {
+.lti-tool-editor-label {
 	margin: 4px 10px 2px 2px;
 	padding: 4px 10px 2px 2px;
 }
