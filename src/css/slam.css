@@ -196,6 +196,17 @@ input:checked + .slider:before {
 	margin: 10px;
 	flex: 1;
 }
+.lti-tool-editor-lable {
+	margin: 4px 10px 2px 2px;
+	padding: 4px 10px 2px 2px;
+}
+.lti-tool-editor-form-item {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: row;
+	padding: 5px;
+	margin: 5px;
+}
 /* ==================================================================================== */
 
 /* Platform admin page classes ======================================================== */
