@@ -59,9 +59,9 @@ $body = <<< EOD
 		<form action="edit_tool.php" method="get">
 			<input type="hidden" id="id" name="tool_id" value="{$_GET['id']}">
 			<input type="hidden" id="update_tool" value="true">
-			<div style="display: flex; flex-direction: row; padding: 5px; margin: 5px;">
+			<div class="lti-tool-editor-form-item">
 				<div>
-					<label for="visible" style="margin: 4px 10px 2px 2px; padding: 4px 10px 2px 2px;">Visible</label>
+					<label for="visible" class="lti-tool-editor-lable">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
 					<input type="checkbox" id="visible" {$is_visible}">
@@ -69,17 +69,18 @@ $body = <<< EOD
 				</div>
 			</div>
 
-    <div>
-      <label for="dependency">Dependency:</label>
-      <select id="dependency" name="dependency">
-        <option value="">-- Select Dependency --</option>
-        <option value="item1">Item 1</option>
-        <option value="item2">Item 2</option>
-        <option value="item3">Item 3</option>
-        <option value="item4">Item 4</option>
-        <option value="item5">Item 5</option>
-        <!-- Add more options as needed -->
-      </select>
+			<div class='lti-tool-editor-form-item'>
+				<label for="dependency" class="lti-tool-editor-lable">Dependency:</label>
+				<select id="dependency" name="dependency">
+					<option value="">-- Select Dependency --</option>
+EOD;
+	foreach ($lti_tools as $lti_tool) {
+		$body .= <<< EOD
+					<option value="{$lti_tool['id']}">{$lti_tool['name']}</option>
+EOD;
+	}
+	$body .= <<< EOD
+				</select>
     </div>
 
     <div>
