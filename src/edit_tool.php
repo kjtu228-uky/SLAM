@@ -47,6 +47,7 @@ $body = <<< EOD
 		The form to edit will follow this section. Tool id: {$_GET['id']}
 	</div>
 EOD;
+print($body);
 ?>
 </div>
 </body>
