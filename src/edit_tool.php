@@ -61,7 +61,7 @@ $body = <<< EOD
 			<input type="hidden" id="update_tool" value="true">
 			<div class="lti-tool-editor-form-item">
 				<div>
-					<label for="visible" class="lti-tool-editor-lable">Visible</label>
+					<label for="visible" class="lti-tool-editor-label">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
 					<input type="checkbox" id="visible" {$is_visible}">
@@ -70,7 +70,7 @@ $body = <<< EOD
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
-				<label for="dependency" class="lti-tool-editor-lable">Dependency:</label>
+				<label for="dependency" class="lti-tool-editor-label">Dependency:</label>
 				<select id="dependency" name="dependency">
 					<option value="">-- Select Dependency --</option>
 EOD;
@@ -81,19 +81,19 @@ EOD;
 	}
 	$body .= <<< EOD
 				</select>
-    </div>
+			</div>
 
-    <div>
-      <label for="config">Config (JSON):</label>
-      <textarea id="config" name="config" rows="5" cols="50"></textarea>
-    </div>
+			<div class='lti-tool-editor-form-item'>
+				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
+				<textarea id="config" name="config" rows="5" cols="50"></textarea>
+			</div>
 
-    <div>
+    <div class='lti-tool-editor-form-item'>
       <label for="userNotice">User Notice:</label>
       <textarea id="userNotice" name="userNotice" rows="5" cols="50"></textarea>
     </div>
 
-    <div>
+    <div class='lti-tool-editor-form-item'>
       <label for="supportInfo">Support Info:</label>
       <textarea id="supportInfo" name="supportInfo" rows="5" cols="50"></textarea>
     </div>
