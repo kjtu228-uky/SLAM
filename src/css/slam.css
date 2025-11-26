@@ -3,7 +3,6 @@ body {
 	font-weight: 200;
 }
 h1 {
-	/* font-size: 2.5em; */
 	font-size: 120%; /* Style from basic-lti */
 	color: #00f; /* Style from basic-lti */
 	word-wrap: break-word;
@@ -12,7 +11,6 @@ h1 {
 	align-items: center;
 }
 h2 {
-	/* font-size: 1.5em; */
 	font-size: 110%; /* Style from basic-lti */
 	color: #00f; /* Style from basic-lti */
 	word-wrap: break-word;
@@ -131,7 +129,6 @@ footer {
 /* Toggle switches instead of checkboxes                                                */
 .switch {
 	position: relative;
-/*	display: inline-block; */
 	width: 40px;
 	height: 24px;
 	float: left;
@@ -188,9 +185,6 @@ input:checked + .slider:before {
 /* ==================================================================================== */
 /* containing div for LTI Tool editor                                                     */
 .lti-tool-editor {
-/*	display: grid;
-	grid-template-columns: 95%;
-	grid-gap: 5px 5px; */
 	border: 1px solid #222;
 	overflow: auto;
 	margin: 10px;
@@ -200,7 +194,7 @@ input:checked + .slider:before {
 	display: flex;
 	margin: 4px 10px 2px 2px;
 	padding: 4px 10px 2px 2px;
-	width: 10em;
+	width: 7em;
 }
 .lti-tool-editor-form-item {
 	display: flex;
@@ -244,8 +238,6 @@ span.title a {
   text-align: right;
 }
 span.label {
-/*  display: inline-block;
-  width: 11em;*/
   vertical-align: top;
 }
 .box {
