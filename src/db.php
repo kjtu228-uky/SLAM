@@ -330,16 +330,26 @@ function getToolConfigs($platform, $onlyVisible = false) {
  *
  * @return array.
  */
-function getRegistrationConfig($platform, $registration) {
+function getToolConfig($platform, $registration, $configuredTools = null) {
 	if (!isset($registration['id'])) return false;
-	$db = open_db();
-	$platformId = $platform->getRecordId();
-	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id AND canvas_id = :canvas_id";
-	$statement = $db->prepare($sql);
-	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
-	$statement->bindParam("canvas_id", $registration['id'], PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
-	$statement->execute();
-	$config = $statement->fetch(PDO::FETCH_ASSOC);
+	$db = false;
+	if (isset($configuredTools)) {
+		foreach ($configuredTools as $configuredTool) {
+			if ($registration['id'] == $configuredTool['canvas_id']) {
+				$config = $configuredTool;
+				break;
+			}
+		}
+	} else {
+		$db = open_db();
+		$platformId = $platform->getRecordId();
+		$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id AND canvas_id = :canvas_id";
+		$statement = $db->prepare($sql);
+		$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+		$statement->bindParam("canvas_id", $registration['id'], PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+		$statement->execute();
+		$config = $statement->fetch(PDO::FETCH_ASSOC);
+	}
 	if ($config) {
 		$registration['canvas_id'] = $registration['id'];
 		$registration['id'] = $config['id'];
@@ -349,6 +359,7 @@ function getRegistrationConfig($platform, $registration) {
 		$registration['user_notice'] = $config['user_notice'];
 		$registration['support_info'] = $config['support_info'];
 	} else {
+		if (!$db) $db = open_db();
 		$sql = "INSERT INTO " . DB_TABLENAME_PREFIX . "tools (consumer_pk, canvas_id, visible) VALUES ";
 		$sql .= "(:platform_id, :canvas_id, 0)";
 		$statement = $db->prepare($sql);
@@ -364,25 +375,5 @@ function getRegistrationConfig($platform, $registration) {
 	}
 	$db = null;
 	return $registration;
-}
-
-/**
- * Get the configuration for the specified tool.
- *
- * @return array.
- */
-function getToolConfig($toolId) {
-	try {
-		$db = new PDO(DB_NAME, DB_USERNAME, DB_PASSWORD);
-		$statement = $db->prepare("SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE id = :toolId");
-		$statement->bindParam("toolId", $toolId, PDO::PARAM_INT);
-		$statement->execute();
-		$tool_config = $statement->fetch(PDO::FETCH_ASSOC);
-		$tool_config['config'] = json_decode($tool_config['config'], true);
-		$db = null;
-	} catch (PDOException $e) {
-		return false;
-	}
-	return $tool_config;
 }
 ?>
