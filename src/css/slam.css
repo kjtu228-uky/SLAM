@@ -199,6 +199,7 @@ input:checked + .slider:before {
 .lti-tool-editor-label {
 	margin: 4px 10px 2px 2px;
 	padding: 4px 10px 2px 2px;
+	width: 20em;
 }
 .lti-tool-editor-form-item {
 	display: flex;
