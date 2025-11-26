@@ -53,13 +53,13 @@ $body = <<< EOD
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div class='slam-description'>
-		The form to edit will follow this section. Tool : {$lti_tools[$_GET['id']]['name']}
+		<h2>Edit {$tool_name}</h2>
 	</div>
 	<div class='lti-tool-editor'>
 		<form action="edit_tool.php" method="get">
 			<input type="hidden" id="id" name="tool_id" value="{$_GET['id']}">
 			<input type="hidden" id="update_tool" value="true">
-			<div style="display: flex; flex-direction: row;">
+			<div style="display: flex; flex-direction: row; padding: 5px; margin: 5px;">
 				<div>
 					<label for="visible" style="margin: 4px 10px 2px 2px; padding: 4px 10px 2px 2px;">Visible</label>
 				</div>
