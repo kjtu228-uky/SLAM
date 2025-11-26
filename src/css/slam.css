@@ -3,7 +3,7 @@ body {
 	font-weight: 200;
 }
 h1 {
-	font-size: 120%; /* Style from basic-lti */
+	font-size: 2.0em%;
 	color: #00f; /* Style from basic-lti */
 	word-wrap: break-word;
 	margin: 5px;
@@ -11,7 +11,7 @@ h1 {
 	align-items: center;
 }
 h2 {
-	font-size: 110%; /* Style from basic-lti */
+	font-size: 1.4em; /* Style from basic-lti */
 	color: #00f; /* Style from basic-lti */
 	word-wrap: break-word;
 	/* margin: 15px; */
