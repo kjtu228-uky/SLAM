@@ -186,7 +186,7 @@ input:checked + .slider:before {
 	word-wrap: break-word;
 }
 /* ==================================================================================== */
-/* containing div for LTI Tool item                                                     */
+/* containing div for LTI Tool editor                                                     */
 .lti-tool-editor {
 	display: grid;
 	grid-template-columns: 95%;
@@ -199,7 +199,7 @@ input:checked + .slider:before {
 .lti-tool-editor-label {
 	margin: 4px 10px 2px 2px;
 	padding: 4px 10px 2px 2px;
-	width: 20em;
+	width: 10em;
 }
 .lti-tool-editor-form-item {
 	display: flex;
@@ -243,8 +243,8 @@ span.title a {
   text-align: right;
 }
 span.label {
-  display: inline-block;
-  width: 11em;
+/*  display: inline-block;
+  width: 11em;*/
   vertical-align: top;
 }
 .box {
