@@ -24,6 +24,11 @@ if (!$ok || !isToolAdmin($platform) || !isset($_GET['id'])) {
 	header('Location: ' . TOOL_BASE_URL . 'index.php');
 	exit(0);
 }
+$lti_tools = getAllTools($platform);
+if (!isset($lti_tools[$_GET['id']])) {
+	header('Location: ' . TOOL_BASE_URL . 'index.php');
+	exit(0);
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -39,12 +44,24 @@ if (!$ok || !isToolAdmin($platform) || !isset($_GET['id'])) {
 $showVal = function($val) {
 	return $val;
 };
+
 $body = <<< EOD
 	<div class='slam-title'>
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div class='slam-description'>
-		The form to edit will follow this section. Tool id: {$_GET['id']}
+		The form to edit will follow this section. Tool : {$lti_tools[$_GET['id']]['name']}
+	</div>
+	<div class='lti-tool-editor'>
+		<form action="edit_tool.php" method="get">
+			<input type="hidden" id="id" name="tool_id" value="{$_GET['id']}">
+EOD;
+
+
+
+
+$body .= <<< EOD
+		</form>
 	</div>
 EOD;
 print($body);
