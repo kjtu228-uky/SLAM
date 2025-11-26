@@ -61,7 +61,7 @@ $body = <<< EOD
 			<input type="hidden" id="update_tool" value="true">
 			<div class="lti-tool-editor-form-item">
 				<div>
-					<label for="visible" class="lti-tool-editor-label" style="width: 20em;">Visible</label>
+					<label for="visible" class="lti-tool-editor-label">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
 					<input type="checkbox" id="visible" {$is_visible}">
