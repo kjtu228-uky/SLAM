@@ -131,7 +131,7 @@ footer {
 /* Toggle switches instead of checkboxes                                                */
 .switch {
 	position: relative;
-	display: inline-block;
+/*	display: inline-block; */
 	width: 40px;
 	height: 24px;
 	float: left;
