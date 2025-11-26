@@ -68,6 +68,39 @@ $body = <<< EOD
 					<span class="slider round"></span>
 				</div>
 			</div>
+
+    <div>
+      <label for="dependency">Dependency:</label>
+      <select id="dependency" name="dependency">
+        <option value="">-- Select Dependency --</option>
+        <option value="item1">Item 1</option>
+        <option value="item2">Item 2</option>
+        <option value="item3">Item 3</option>
+        <option value="item4">Item 4</option>
+        <option value="item5">Item 5</option>
+        <!-- Add more options as needed -->
+      </select>
+    </div>
+
+    <div>
+      <label for="config">Config (JSON):</label>
+      <textarea id="config" name="config" rows="5" cols="50"></textarea>
+    </div>
+
+    <div>
+      <label for="userNotice">User Notice:</label>
+      <textarea id="userNotice" name="userNotice" rows="5" cols="50"></textarea>
+    </div>
+
+    <div>
+      <label for="supportInfo">Support Info:</label>
+      <textarea id="supportInfo" name="supportInfo" rows="5" cols="50"></textarea>
+    </div>
+
+    <button type="submit">Update Object</button>
+
+
+
 		</form>
 	</div>
 EOD;
