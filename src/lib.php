@@ -323,7 +323,7 @@ function getLTIRegistrations($platform) {
 		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
 		$headers = array("Authorization: Bearer " . $access_token->access_token,
 			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations?per_page=25';
+		$url = $api_url . '/api/v1/accounts/self/lti_registrations?per_page=50';
 		while ($url) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
@@ -359,48 +359,14 @@ function getLTIRegistrations($platform) {
  */
 function getAllTools($platform) {
 	$registrations = getLTIRegistrations($platform);
+	$configuredTools = getToolConfigs($platform);
 	$all_tools = array();
 	foreach ($registrations as $registration) {
-		$registration = getRegistrationConfig($platform, $registration);
+		$registration = getToolConfig($platform, $registration, $configuredTools);
 		if ($registration) $all_tools[$registration['id']] = $registration;
 	}
 	return $all_tools;
 }
-
-
-
-/**
- * Retrieve the list of configured tools from the database.
- *
- * @return array.
- */
-/* function getConfiguredLTITools($platform, $courseNumber = null, $onlyVisible = false) {
-	$enabled_tools = getEnabledTools($platform, $courseNumber);
-	if (isset($enabled_tools['errors'])) return $enabled_tools;
-	$registrations = getLTIRegistrations($platform);
-	$all_tools = array();
-	try {
-		$platform_tools = getToolsForPlatform($platform, $onlyVisible);
-		foreach ($platform_tools as $tool_config) {
-			$all_tools[$tool_config['id']]['name'] = json_decode($tool_config['config'], true)['name'];
-			$all_tools[$tool_config['id']]['enabled'] = 0;
-			$all_tools[$tool_config['id']]['visible'] = $tool_config['visible'];
-			$all_tools[$tool_config['id']]['dependency'] = $tool_config['dependency'];
-			$all_tools[$tool_config['id']]['user_notice'] = $tool_config['user_notice'];
-			$all_tools[$tool_config['id']]['support_info'] = $tool_config['support_info'];
-		}
-		foreach ($all_tools as $key => $tool) {
-			if (in_array($tool['name'], array_keys($enabled_tools))) {
-				$all_tools[$key]['enabled'] = $enabled_tools[$tool['name']]['id'];
-				$all_tools[$key]['deployment_id'] = $enabled_tools[$tool['name']]['deployment_id'];
-			}
-		}
-		$db = null;
-	} catch (PDOException $e) {
-		return array("errors" => "There was a problem accessing the tools from the database.");
-	}
-	return $all_tools;
-} */
 
 /**
  * Retrieve the list of external tools that are enabled in the course.
@@ -432,56 +398,6 @@ function getEnabledTools($platform, $courseNumber) {
 		curl_close($ch);
 	}
 	return $enabled_tools;
-}
-
-/**
- * Try to add the specified tool to the specified course.
- *
- * @return array.
- */
-function addLTIToolToCourse($platform, $courseNumber, $tool_id) {
-	$response = array();
-	$tool_config = getToolConfig($tool_id);
-	if ($tool_config && isset($tool_config['config'])) {
-//Util::logError(json_encode($tool_config, JSON_PRETTY_PRINT));
-		if (is_string($tool_config['config'])) $tool_config['config'] = json_decode($tool_config['config'], true);
-		if (platformHasToken($platform)) {
-			// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
-			$api_url = $platform->getSetting('api_url');
-			if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
-			// check if the platform has an access token; if not, request one from Canvas
-			$access_token = $platform->getSetting('access_token');
-			if ($access_token) $access_token = json_decode($access_token);
-			if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
-			$headers = array("Authorization: Bearer " . $access_token->access_token,
-				"User-Agent: LTIPHP/1.0");
-			$url = $api_url . '/api/v1/courses/' . $courseNumber . '/external_tools';
-			$ch = curl_init();
-			curl_setopt ($ch, CURLOPT_URL, $url);
-			curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt ($ch, CURLOPT_POST, true);
-			curl_setopt ($ch, CURLOPT_POSTFIELDS, $tool_config['config']);
-			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
-			$response = json_decode(curl_exec($ch), true);
-			curl_close($ch);
-/*
-		if ($response) $this->logToolChange($tool_id, 1, $response['id']);
-		else $this->logToolChange($tool_id, 1, -1);
-		// check the name returned by Canvas and ensure it matches the config
-		if (strcmp($response['name'], $tool_config['config']['name']) != 0 && $this->isAdmin()) {
-			$tool_config['config']['name'] = $response['name'];
-			$this->updateToolDetails($tool_config, false);
-			$response['alert'] = "The tool name was automatically updated to reflect its name in Canvas.";
-		}
-//Util::logError(json_encode($response, JSON_PRETTY_PRINT));
-*/
-		} else {
-			$response['errors'] = "There is no token for this platform.";
-		}
-	} else {
-		$response['errors'] = "Could not find a tool with id " . $tool_id;
-	}
-	return $response;
 }
 
 /**
