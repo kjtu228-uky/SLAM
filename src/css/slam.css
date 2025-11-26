@@ -186,6 +186,17 @@ input:checked + .slider:before {
 	word-wrap: break-word;
 }
 /* ==================================================================================== */
+/* containing div for LTI Tool item                                                     */
+.lti-tool-editor {
+	display: grid;
+	grid-template-columns: 95%;
+	grid-gap: 5px 5px;
+	border: 1px solid #222;
+	overflow: auto;
+	margin: 10px;
+	flex: 1;
+}
+/* ==================================================================================== */
 
 /* Platform admin page classes ======================================================== */
 table.items, table.shares, table.users, table.lineitems {
