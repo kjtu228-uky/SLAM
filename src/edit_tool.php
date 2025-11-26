@@ -61,7 +61,7 @@ $body = <<< EOD
 			<input type="hidden" id="update_tool" value="true">
 			<div class="lti-tool-editor-form-item">
 				<div>
-					<label for="visible" class="lti-tool-editor-label">Visible</label>
+					<label for="visible" class="lti-tool-editor-label" style="width: 20em;">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
 					<input type="checkbox" id="visible" {$is_visible}">
@@ -72,7 +72,7 @@ $body = <<< EOD
 			<div class='lti-tool-editor-form-item'>
 				<label for="dependency" class="lti-tool-editor-label">Dependency:</label>
 				<select id="dependency" name="dependency" style="padding-top: 8px; margin-top: 8px;>
-					<option value="">-- Select Dependency --</option>
+					<option value="">-- No dependency --</option>
 EOD;
 	foreach ($lti_tools as $lti_tool) {
 		$body .= <<< EOD
