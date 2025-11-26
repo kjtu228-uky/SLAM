@@ -59,12 +59,14 @@ $body = <<< EOD
 		<form action="edit_tool.php" method="get">
 			<input type="hidden" id="id" name="tool_id" value="{$_GET['id']}">
 			<input type="hidden" id="update_tool" value="true">
-			<div>
-				<label for="visible">Visible</label>
-			</div>
-			<div class="switch" onclick="visible.click();">
-				<input type="checkbox" id="visible" {$is_visible}">
-				<span class="slider round"></span>
+			<div style="display: flex; flex-direction: row;">
+				<div>
+					<label for="visible">Visible</label>
+				</div>
+				<div class="switch" onclick="visible.click();">
+					<input type="checkbox" id="visible" {$is_visible}">
+					<span class="slider round"></span>
+				</div>
 			</div>
 		</form>
 	</div>
