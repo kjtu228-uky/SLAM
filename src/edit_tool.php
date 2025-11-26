@@ -61,7 +61,7 @@ $body = <<< EOD
 			<input type="hidden" id="update_tool" value="true">
 			<div style="display: flex; flex-direction: row;">
 				<div>
-					<label for="visible" style="margin: 2px; padding: 2px;">Visible</label>
+					<label for="visible" style="margin: 2px 10px 2px 2px; padding: 2px 10px 2px 2px;">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
 					<input type="checkbox" id="visible" {$is_visible}">
