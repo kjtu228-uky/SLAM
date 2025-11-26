@@ -44,7 +44,10 @@ if (!isset($lti_tools[$_GET['id']])) {
 $showVal = function($val) {
 	return $val;
 };
-
+$tool_id = $_GET['id'];
+$tool_name = $lti_tools[$tool_id]['name'];
+if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
+$is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 $body = <<< EOD
 	<div class='slam-title'>
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
@@ -55,12 +58,14 @@ $body = <<< EOD
 	<div class='lti-tool-editor'>
 		<form action="edit_tool.php" method="get">
 			<input type="hidden" id="id" name="tool_id" value="{$_GET['id']}">
-EOD;
-
-
-
-
-$body .= <<< EOD
+			<input type="hidden" id="update_tool" value="true">
+			<div class="switch">
+				<input type="checkbox" id="visible" {$is_visible}">
+				<span class="slider round"></span>
+			</div>
+			<div>
+				<label for="visible">Visible</label>
+			</div>
 		</form>
 	</div>
 EOD;
