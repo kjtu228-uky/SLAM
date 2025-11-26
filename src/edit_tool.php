@@ -71,7 +71,7 @@ $body = <<< EOD
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="dependency" class="lti-tool-editor-label">Dependency:</label>
-				<select id="dependency" name="dependency">
+				<select id="dependency" name="dependency" style="padding-top: 8px; margin-top: 8px;>
 					<option value="">-- Select Dependency --</option>
 EOD;
 	foreach ($lti_tools as $lti_tool) {
@@ -88,20 +88,19 @@ EOD;
 				<textarea id="config" name="config" rows="5" cols="50"></textarea>
 			</div>
 
-    <div class='lti-tool-editor-form-item'>
-      <label for="userNotice">User Notice:</label>
-      <textarea id="userNotice" name="userNotice" rows="5" cols="50"></textarea>
-    </div>
+			<div class='lti-tool-editor-form-item'>
+				<label for="userNotice" class="lti-tool-editor-label">User Notice:</label>
+				<textarea id="userNotice" name="userNotice" rows="5" cols="50"></textarea>
+			</div>
 
-    <div class='lti-tool-editor-form-item'>
-      <label for="supportInfo">Support Info:</label>
-      <textarea id="supportInfo" name="supportInfo" rows="5" cols="50"></textarea>
-    </div>
-
-    <button type="submit">Update Object</button>
-
-
-
+			<div class='lti-tool-editor-form-item'>
+				<label for="supportInfo" class="lti-tool-editor-label">Support Info:</label>
+				<textarea id="supportInfo" name="supportInfo" rows="5" cols="50"></textarea>
+			</div>
+			
+			<div class='lti-tool-editor-form-item'>
+				<button type="submit">Update Object</button>
+			</div>
 		</form>
 	</div>
 EOD;
