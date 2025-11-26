@@ -70,9 +70,9 @@ $body = <<< EOD
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
-				<label for="dependency" class="lti-tool-editor-label">Dependency:</label>
-				<select id="dependency" name="dependency" style="padding-top: 8px; margin-top: 8px;>
-					<option value="">-- No dependency --</option>
+				<label for="dependency" class="lti-tool-editor-label">Depends on:</label>
+				<select id="dependency" name="dependency">
+					<option value="">-- None --</option>
 EOD;
 	foreach ($lti_tools as $lti_tool) {
 		$body .= <<< EOD
