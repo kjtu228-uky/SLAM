@@ -297,7 +297,9 @@ function platformHasToken($platform, $refresh = false) {
  *
  */
 function requestNewToken($platform) {
+Util::logError("Requesting token");
 	if ($_SESSION['username'] != $platform->getSetting('api_user_id')) return false;
+Util::logError("API user matches (" . $_SESSION['username'] . ")");
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
 	if (!$api_url) return false;
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
