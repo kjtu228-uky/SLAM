@@ -69,7 +69,7 @@ $body = <<< EOD
 					<label for="visible" class="lti-tool-editor-label">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
-					<input type="checkbox" id="visible" name="visible" {$is_visible}">
+					<input type="checkbox" id="visible" name="visible" {$is_visible}>
 					<span class="slider round"></span>
 				</div>
 			</div>
@@ -90,7 +90,7 @@ EOD;
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
-				<textarea id="config" name="config" rows="5" cols="50"></textarea>
+				<textarea id="config" name="config" rows="5" cols="50">{$lti_tools[$tool_id]['visible']}</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
