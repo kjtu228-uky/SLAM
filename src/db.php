@@ -391,7 +391,7 @@ function setToolConfig($platform, $toolConfig) {
 	
 	$db = open_db();
 	$sql = "UPDATE ". DB_TABLENAME_PREFIX . "tools SET ";
-	$sql .= explode(",", $updatedFields);
+	$sql .= implode(",", $updatedFields);
 	$sql .= " WHERE id = :tool_id AND consumer_pk = :platform_id";
 	$statement = $db->prepare($sql);
 	$statement->bindParam("tool_id", $toolConfig['id'], PDO::PARAM_INT);
