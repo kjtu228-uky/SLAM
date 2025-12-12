@@ -29,6 +29,10 @@ if (!isset($lti_tools[$_GET['id']])) {
 	header('Location: ' . TOOL_BASE_URL . 'index.php');
 	exit(0);
 }
+// is this a request to update the configuration of the tool settings in the database?
+if (isset($_GET['update_tool')) {
+	$updateSuccessful = setToolConfig($platform, $_GET);
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -46,8 +50,7 @@ $showVal = function($val) {
 };
 $tool_id = $_GET['id'];
 $tool_name = $lti_tools[$tool_id]['name'];
-$submitted_content = json_encode($_GET, JSON_PRETTY_PRINT);
-
+if (isset($_GET['update_tool']) && $updateSuccessful) $tool_name .= " (UPDATE SUCCESSFUL)";
 if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 $body = <<< EOD
@@ -87,9 +90,7 @@ EOD;
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
-				<textarea id="config" name="config" rows="5" cols="50">
-				{$submitted_content}
-				</textarea>
+				<textarea id="config" name="config" rows="5" cols="50"></textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
