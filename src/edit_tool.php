@@ -30,7 +30,7 @@ if (!isset($lti_tools[$_GET['id']])) {
 	exit(0);
 }
 // is this a request to update the configuration of the tool settings in the database?
-if (isset($_GET['update_tool')) {
+if (isset($_GET['update_tool'])) {
 	$updateSuccessful = setToolConfig($platform, $_GET);
 }
 ?>
