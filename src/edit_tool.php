@@ -59,14 +59,14 @@ $body = <<< EOD
 	</div>
 	<div class='lti-tool-editor'>
 		<form action="edit_tool.php" method="get">
-			<input type="hidden" id="id" name="id" value="{$_GET['id']}">
-			<input type="hidden" id="update_tool" value="true">
+			<input type="hidden" name="id" value="{$_GET['id']}">
+			<input type="hidden" name="update_tool" value="true">
 			<div class="lti-tool-editor-form-item">
 				<div>
 					<label for="visible" class="lti-tool-editor-label">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
-					<input type="checkbox" id="visible" {$is_visible}">
+					<input type="checkbox" id="visible" name="visible" {$is_visible}">
 					<span class="slider round"></span>
 				</div>
 			</div>
