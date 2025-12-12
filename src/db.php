@@ -376,4 +376,32 @@ function getToolConfig($platform, $registration, $configuredTools = null) {
 	$db = null;
 	return $registration;
 }
+/**
+ * Update the configuration for the specified LTI registration.
+ *
+ * @return boolean.
+ */
+function setToolConfig($platform, $toolConfig) {
+	if (!isToolAdmin($platform)) return false;
+	if (!isset($platform)) return false;
+	if (!isset($toolConfig) || !is_array($toolConfig) || !isset($toolConfig['id']) return false;
+	$updatedFields = array();
+	if (isset($toolConfig['visible']) && $toolConfig['visible']) $updatedFields[] = "visible = true";
+	else $updatedFields[] = "visible = false";
+	
+	$db = open_db();
+	$sql = "UPDATE ". DB_TABLENAME_PREFIX . "tools SET ";
+	$sql .= explode(",", $updatedFields);
+	$sql .= " WHERE id = :tool_id AND consumer_pk = :platform_id";
+	$statement = $db->prepare($sql);
+	$statement->bindParam("tool_id", $toolConfig['id'], PDO::PARAM_INT);
+	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT);
+	$statement->execute();
+	if ($statement->rowCount() > 0) {
+		$db = null;
+		return true;
+	}
+	$db = null;
+	return false;
+}
 ?>
