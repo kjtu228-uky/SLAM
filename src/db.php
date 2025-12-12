@@ -384,7 +384,7 @@ function getToolConfig($platform, $registration, $configuredTools = null) {
 function setToolConfig($platform, $toolConfig) {
 	if (!isToolAdmin($platform)) return false;
 	if (!isset($platform)) return false;
-	if (!isset($toolConfig) || !is_array($toolConfig) || !isset($toolConfig['id']) return false;
+	if (!isset($toolConfig) || !is_array($toolConfig) || !isset($toolConfig['id'])) return false;
 	$updatedFields = array();
 	if (isset($toolConfig['visible']) && $toolConfig['visible']) $updatedFields[] = "visible = true";
 	else $updatedFields[] = "visible = false";
