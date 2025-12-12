@@ -24,14 +24,15 @@ if (!$ok || !isToolAdmin($platform) || !isset($_GET['id'])) {
 	header('Location: ' . TOOL_BASE_URL . 'index.php');
 	exit(0);
 }
+// is this a request to update the configuration of the tool settings in the database?
+if (isset($_GET['update_tool'])) {
+	$updateSuccessful = setToolConfig($platform, $_GET);
+}
+// retrieve all of the tool configurations
 $lti_tools = getAllTools($platform);
 if (!isset($lti_tools[$_GET['id']])) {
 	header('Location: ' . TOOL_BASE_URL . 'index.php');
 	exit(0);
-}
-// is this a request to update the configuration of the tool settings in the database?
-if (isset($_GET['update_tool'])) {
-	$updateSuccessful = setToolConfig($platform, $_GET);
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
