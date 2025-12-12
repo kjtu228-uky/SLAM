@@ -46,6 +46,8 @@ $showVal = function($val) {
 };
 $tool_id = $_GET['id'];
 $tool_name = $lti_tools[$tool_id]['name'];
+$submitted_content = json_encode($_GET, JSON_PRETTY_PRINT);
+
 if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 $body = <<< EOD
@@ -85,7 +87,9 @@ EOD;
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
-				<textarea id="config" name="config" rows="5" cols="50"></textarea>
+				<textarea id="config" name="config" rows="5" cols="50">
+				{$submitted_content}
+				</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
