@@ -59,7 +59,7 @@ $body = <<< EOD
 	</div>
 	<div class='lti-tool-editor'>
 		<form action="edit_tool.php" method="get">
-			<input type="hidden" id="id" name="tool_id" value="{$_GET['id']}">
+			<input type="hidden" id="id" name="id" value="{$_GET['id']}">
 			<input type="hidden" id="update_tool" value="true">
 			<div class="lti-tool-editor-form-item">
 				<div>
