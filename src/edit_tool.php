@@ -26,7 +26,7 @@ if (!$ok || !isToolAdmin($platform) || !isset($_GET['id'])) {
 }
 // is this a request to update the configuration of the tool settings in the database?
 if (isset($_GET['update_tool'])) {
-	$updateSuccessful = setToolConfig($platform, $_GET);
+	$updateResult = setToolConfig($platform, $_GET);
 }
 // retrieve all of the tool configurations
 $lti_tools = getAllTools($platform);
@@ -51,7 +51,7 @@ $showVal = function($val) {
 };
 $tool_id = $_GET['id'];
 $tool_name = $lti_tools[$tool_id]['name'];
-if (isset($_GET['update_tool']) && $updateSuccessful) $tool_name .= " (UPDATE SUCCESSFUL)";
+if (isset($_GET['update_tool'])) $tool_name .= " (Update result: " . $updateResult . ")";
 if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 $body = <<< EOD
