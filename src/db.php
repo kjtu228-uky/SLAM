@@ -398,6 +398,7 @@ function setToolConfig($platform, $toolConfig) {
 	$statement->bindParam("tool_id", $toolConfig['id'], PDO::PARAM_INT);
 	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT);
 	$statement->execute();
+	return $statement->rowCount();
 	if ($statement->rowCount() > 0) {
 		$db = null;
 		return true;
