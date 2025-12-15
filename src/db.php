@@ -314,9 +314,8 @@ function getToolConfigs($platform, $onlyVisible = false) {
 	$db = open_db();
 	$platformId = $platform->getRecordId();
 	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id";
-	$sql .= $onlyVisible?" AND visible >= 0":"";
+	$sql .= $onlyVisible?" AND visible >= 1":"";
 	$sql .= " ORDER BY lower(config)";
-Util::logError($sql);
 	$statement = $db->prepare($sql);
 	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
 	$statement->execute();
