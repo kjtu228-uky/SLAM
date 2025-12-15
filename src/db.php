@@ -376,6 +376,7 @@ function getToolConfig($platform, $registration, $configuredTools = null) {
 	$db = null;
 	return $registration;
 }
+
 /**
  * Update the configuration for the specified LTI registration.
  *
