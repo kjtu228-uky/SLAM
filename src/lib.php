@@ -353,6 +353,44 @@ function getLTIRegistrations($platform) {
 }
 
 /**
+ * Get the details for the specified registration Id.
+ *
+ * @return array.
+ */
+function getLTIRegistration($platform, $registrationId) {
+	$LTIregistration = array();
+	// check if $registrationId is an integer
+	if (!is_numeric($registrationId)) return $LTIregistration;
+ 	if (platformHasToken($platform)) {
+		// the API URL must be defined in the platform settings
+		$api_url = $platform->getSetting('api_url');
+		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
+		// check if the platform has an access token; if not, request one from Canvas
+		$access_token = $platform->getSetting('access_token');
+		if ($access_token) $access_token = json_decode($access_token);
+		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
+		$headers = array("Authorization: Bearer " . $access_token->access_token,
+			"User-Agent: LTIPHP/1.0");
+		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HEADER, 1);
+		$response = curl_exec($ch);		
+		$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$response_headers = substr($response, 0, $response_header_size);
+		$response_body = substr($response, $response_header_size);
+		curl_close($ch);
+		if ($response_http_code != 200)
+			return array("errors" => "Error: API request failed with status $response_http_code");
+		$LTIregistration = json_decode($response_body, true);
+	}
+	return $LTIregistration;
+}
+
+/**
  * Retrieve all available tools configured for the platform.
  *
  * @return array.
@@ -366,6 +404,38 @@ function getAllTools($platform) {
 		if ($registration) $all_tools[$registration['id']] = $registration;
 	}
 	return $all_tools;
+}
+
+/**
+ * Determine if the LTI registration is enabled (available) for the specified course.
+ *
+ * @return boolean.
+ */
+function isAvailable($platform, $registrationId, $course) {
+	return true;
+}
+
+/**
+ * Retrieve the list of external tools that are enabled in the course.
+ *
+ * @return array.
+ */
+function getCourseTools($platform, $courseNumber) {
+	$courseTools = array();
+	// get the tool IDs that are enabled in SLAM for this platform
+	$platformEnabledTools = getToolConfigs($platform, true);
+	foreach ($platformEnabledTools as $tool) {
+		// get the details for the registration
+		$fullToolInfo = getLTIRegistration($platform, $tool['canvas_id']);
+		$tool['name'] = $fullToolInfo['name'];
+		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
+		// get the controls defined for the registration
+		if (isAvailable($platform, $tool['canvas_id'], $courseNumber)) $tool['enabled'] = true;
+		else $tool['enabled'] = false;
+		// append the tool to the courseTools
+		$courseTools[] = $tool;
+	}
+	return sortAssociativeArrayByKey($courseTools, "name");
 }
 
 /**
@@ -393,7 +463,7 @@ function getEnabledTools($platform, $courseNumber) {
 		$response = json_decode(curl_exec($ch), true);
 		if (isset($response['errors'])) return $response;
 		foreach ($response as $tool_detail) {
-			$enabled_tools[$tool_detail['name']] = array('id'=>$tool_detail['id'], 'deployment_id'=>$tool_detail['deployment_id']);
+			$enabled_tools[$tool_detail['name']] = array('id'=>$tool_detail['lti_registration_id'], 'deployment_id'=>$tool_detail['deployment_id']);
 		}
 		curl_close($ch);
 	}
