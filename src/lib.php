@@ -421,12 +421,17 @@ function isAvailable($platform, $registrationId, $course) {
  * @return array.
  */
 function getCourseTools($platform, $courseNumber) {
+Util::logError("Getting tools for course.");
 	$courseTools = array();
 	// get the tool IDs that are enabled in SLAM for this platform
 	$platformEnabledTools = getToolConfigs($platform, true);
+Util::logError("Retrieved tool list: " . count($platformEnabledTools));
 	foreach ($platformEnabledTools as $tool) {
+Util::logError("  Getting details for registration id: " . $tool['canvas_id']);
+
 		// get the details for the registration
 		$fullToolInfo = getLTIRegistration($platform, $tool['canvas_id']);
+		if (isset($fullToolInfo['errors'])) return $fullToolInfo;
 		$tool['name'] = $fullToolInfo['name'];
 		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
 		// get the controls defined for the registration
