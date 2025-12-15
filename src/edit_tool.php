@@ -51,8 +51,8 @@ $showVal = function($val) {
 };
 $tool_id = $_GET['id'];
 $tool_name = $lti_tools[$tool_id]['name'];
-if (isset($_GET['update_tool'])) $tool_name .= " (Update result: " . $updateResult . ")";
 if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
+if (isset($_GET['update_tool'])) $tool_name .= " (Update result: " . $updateResult . ")";
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 $body = <<< EOD
 	<div class='slam-title'>
