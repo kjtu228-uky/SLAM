@@ -105,7 +105,8 @@ EOD;
 			</div>
 			
 			<div class='lti-tool-editor-form-item'>
-				<button type="submit">Update Object</button>
+				<button onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/tools_admin.php'">Cancel</button>
+				<button type="submit">Update</button>
 			</div>
 		</form>
 	</div>
