@@ -95,8 +95,7 @@ EOD;
 EOD;
 
 	$message_boxes = "";
-/*
-	$lti_tools = getConfiguredLTITools($platform, $courseNumber, true);
+	$lti_tools = getCourseTools($platform, $courseNumber);
 	foreach ($lti_tools as $key => $lti_tool) {
 		if (!empty($courseNumber) && isset($lti_tool['name']) && $lti_tool['visible']) {
 			$page .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
@@ -124,7 +123,6 @@ EOD;
 				$key . ", false);'></div>\n</div>";
 		}
 	}
-*/
 	$page .= "	</div>\n";
 	$page .= $message_boxes;
 } else {
