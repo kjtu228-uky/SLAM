@@ -22,7 +22,7 @@ async function getCourseTools() {
 				if (data[key]['enabled']) toolHTML += " checked";
 				toolHTML += "><span class='slider round'></span></div><div><label for='tool_select_" +
 					data[key]['id'] + "' class='toggle-label'>" + data[key]['name'] + "</label>";
-				if (isset(data[key]['support_info'])) {
+				if ('support_info' in data[key] && data[key]['support_info'].length > 0) {
 //					preg_replace('/\[TOOL_NAME\]/', $lti_tool['name'], $lti_tool['support_info'])
 					toolHTML += "<div class='tool-support'>" + data[key]['support_info'] + "</div>";
 				}
