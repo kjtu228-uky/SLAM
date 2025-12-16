@@ -3,8 +3,8 @@ async function getCourseTools() {
 	
 	// remove any tools currently displayed
 	toolList = document.getElementById('toolList');
+	toolList.classList.add('loading');
 	toolList.innerHTML = "<div><img src='images/loading.gif' alt='Please wait while the list of available tools loads.'></div>";
-	
 	
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?action=list';
 /* 	fetch(url, {
@@ -29,6 +29,7 @@ async function getCourseTools() {
 				}
 				toolHTML += "</div>";
 			}
+			toolList.classList.remove('loading');
 			toolList.innerHTML = toolHTML;
 		}).catch(error => {
 			console.log(error);
