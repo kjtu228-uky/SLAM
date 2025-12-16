@@ -19,7 +19,7 @@ if ($ok) {
 	$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
 	if (!platformHasToken($platform)) $ok = false;
 }
-
+// make sure user is an admin
 if (!$ok || !isToolAdmin($platform) || !isset($_GET['id'])) {
 	header('Location: ' . TOOL_BASE_URL . 'index.php');
 	exit(0);
