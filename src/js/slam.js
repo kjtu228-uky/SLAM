@@ -13,10 +13,9 @@ async function getCourseTools() {
 		})
 		.then(response => response.json()).then(data => {
 			console.log(data);
-			for (var toolDetail in data) {
-				console.log(toolDetail);
-				toolHTML = "<div id='lti_tool_" + toolDetail['id'] + "' class='lti-tool";
-				if (toolDetail['enabled']) tool += " lti-tool-enabled";
+			for (var key in data) {
+				toolHTML = "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
+				if (data[key]['enabled']) toolHTML += " lti-tool-enabled";
 				toolHTML += "'";
 				
 				toolHTML += "</div>";
