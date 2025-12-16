@@ -7,7 +7,7 @@ async function getCourseTools() {
 	toolList.innerHTML = "<div><img src='images/loading.gif' alt='Please wait while the list of available tools loads.'></div>";
 	
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?action=list';
-/* 	fetch(url, {
+	fetch(url, {
 			method: "GET",
 			mode: "no-cors"
 		})
@@ -33,7 +33,7 @@ async function getCourseTools() {
 			toolList.innerHTML = toolHTML;
 		}).catch(error => {
 			console.log(error);
-		}); */
+		});
 }
 
 async function updateToolInstall(tool_id, course_number) {
