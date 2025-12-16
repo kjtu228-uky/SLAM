@@ -1,3 +1,44 @@
+async function getCourseTools() {
+	// maybe first show a spinny wheel
+	
+	// remove any tools currently displayed
+	toolList = document.getElementById('toolList');
+	toolList.innerHTML = '';
+	
+	
+	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?action=list';
+	fetch(url, {
+			method: "GET",
+			mode: "no-cors"
+		})
+		.then(response => response.json()).then(data => {
+			for (var toolDetail in data) {
+				toolHTML = "<div id='lti_tool_" + toolDetail['id'] + "' class='lti-tool";
+				if (toolDetail['enabled']) tool += " lti-tool-enabled";
+				toolHTML += "'";
+				
+				toolHTML += "</div>";
+				toolDiv = document.createElement("div");
+				toolDiv.innerHTML = toolHTML;
+				toolList.appendChild(toolDiv);
+			}
+			
+			
+/* 			updateToggles(data);
+			if (action == 'add' && document.getElementById("tool_message_" + tool_id) != null) {
+				message_box = document.getElementById("tool_message_text_" + tool_id);
+				message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
+				message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data[tool_id]['name']);
+				document.getElementById("tool_message_" + tool_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
+				document.getElementById("tool_message_" + tool_id).style.display = "block";
+			} */
+		}).catch(error => {
+			console.log(error);
+		});
+	// hide the spinny
+	
+}
+
 async function updateToolInstall(tool_id, course_number) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
 	update_path = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/update_tool.php?';
