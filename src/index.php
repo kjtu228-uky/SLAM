@@ -96,16 +96,16 @@ EOD;
 
 	$message_boxes = "";
 	$lti_tools = getCourseTools($platform, $courseNumber);
-	foreach ($lti_tools as $key => $lti_tool) {
+	foreach ($lti_tools as $lti_tool) {
 		if (!empty($courseNumber) && isset($lti_tool['name']) && $lti_tool['visible']) {
-			$page .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
+			$page .= "\n		<div id='lti_tool_" . $lti_tool['id'] . "' class='lti-tool" .
 				((isset($lti_tool['enabled']) && $lti_tool['enabled'] > 0)?" lti-tool-enabled":"") . "'>\n";
-			$page .= "			<div class='switch' id='switch_" . $key . "' onclick='tool_select_" . $key . ".click();'>\n" .
-				"				<input type='checkbox' id='tool_select_" . $key .
-				"' onchange='updateToolInstall(" . $key . ", " . $courseNumber . ");'";
+			$page .= "			<div class='switch' id='switch_" . $lti_tool['id'] . "' onclick='tool_select_" . $lti_tool['id'] . ".click();'>\n" .
+				"				<input type='checkbox' id='tool_select_" . $lti_tool['id'] .
+				"' onchange='updateToolInstall(" . $lti_tool['id'] . ", " . $courseNumber . ");'";
 			if (isset($lti_tool['enabled']) && $lti_tool['enabled'] > 0) $page .= " checked";
 			$page .= ">\n				<span class='slider round'></span>\n			</div>\n			<div>\n" .
-				"				<label for='tool_select_" . $key . "' class='toggle-label'>" .
+				"				<label for='tool_select_" . $lti_tool['id'] . "' class='toggle-label'>" .
 				$lti_tool['name'] . "</label>\n			</div>\n";
 			if (isset($lti_tool['support_info']))
 				$page .= "			<div class='tool-support'>". 
@@ -115,12 +115,12 @@ EOD;
 		}
 
 		if (isset($lti_tool['user_notice']) && $lti_tool['user_notice'] != '') {
-			$message_boxes .= "<div class='tool-message' id='tool_message_" . $key . "'>\n" .
-				"	<div id='tool_message_text_" . $key . "'>" . $lti_tool['user_notice'] . "</div>\n" .
+			$message_boxes .= "<div class='tool-message' id='tool_message_" . $lti_tool['id'] . "'>\n" .
+				"	<div id='tool_message_text_" . $lti_tool['id'] . "'>" . $lti_tool['user_notice'] . "</div>\n" .
 				" <div style='clear: both; text-align: center;'>" .
 				"<input type='button' class='tool-message-button' value='Cancel' onclick='toolNoticeResponse(" .
-				$key . ", true);'>" . "<input type='button' class='tool-message-button' value='OK' onclick='toolNoticeResponse(" .
-				$key . ", false);'></div>\n</div>";
+				$lti_tool['id'] . ", true);'>" . "<input type='button' class='tool-message-button' value='OK' onclick='toolNoticeResponse(" .
+				$lti_tool['id'] . ", false);'></div>\n</div>";
 		}
 	}
 	$page .= "	</div>\n";
