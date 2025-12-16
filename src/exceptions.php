@@ -19,42 +19,53 @@ require_once('lib.php');
 header("Content-Type: application/json; ");
 $result = array('messages' => array());
 
-// must include in $_GET: tool_id, action
+// must include in $_GET: action
 // actions:
+//		list: list the tools for a course
 //		add: add the tool to a course
 //		remove: remove the tool from a course
+if (!isset($_GET['action'])) {
+	print(json_encode(array('errors' => 'No action specified.')));
+	exit;
+}
+
+// Initialise parameters
+$db = null;
+if (!init($db, true)) {
+	print(json_encode(array('errors' => 'Unable to initialize.')));
+	exit;
+}
+$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
+$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
+$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
+$courseNumber = $resourceLink->getSetting('custom_course_number');
+
+// make sure we have an API token
+if (!platformHasToken($platform)) {
+	print(json_encode(array('errors' => 'No API token available.')));
+	exit;
+}
+
+if ($_GET['action'] == 'list') {
+	print(json_encode(getCourseTools($platform, $courseNumber)));
+	exit;
+}
 
 $make_change = true;
 if (!isset($_GET['tool_id'])) {
 	$result['messages'][] = "tool_id not provided";
 	$make_change = false;
 }
-if (!isset($_GET['action'])) {
-	$result['messages'][] = "action not provided";
-	$make_change = false;
-}
+
 
 // check if there is already an error message
 $ok = true;
 if (isset($_SESSION['error_message'])) $make_change = false;
 
-// Initialise session and database
-if ($make_change) {
-	$db = null;
-	$make_change = init($db, true);
-	// Initialise parameters
-	$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-	$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
-	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-	$courseName = $resourceLink->getSetting('custom_course_name');
-	$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
-	$courseNumber = $resourceLink->getSetting('custom_course_number');
-	//$resourceLink->getSettings() will return all settings
-	if (!platformHasToken($platform)) $make_change = false;
-}
+
 
 if ($make_change) {
-	$lti_tools = getConfiguredLTITools($platform, $courseNumber);
+/* 	$lti_tools = getConfiguredLTITools($platform, $courseNumber);
 	$tool_id = $_GET['tool_id'];
 	$result = array();
 	if ($_GET['action'] == 'add' && $lti_tools[$tool_id]['enabled'] == 0) {
@@ -66,7 +77,7 @@ if ($make_change) {
 		} else {
 			$result['errors'] = "You are not authorized to add a tool to this course.";
 		}
-	}
+	} */
 	
 /*
 		$user_id = $slam->getUserId();
