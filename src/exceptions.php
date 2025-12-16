@@ -16,11 +16,6 @@ use ceLTIc\LTI\ResourceLink;
 require_once('config.php');
 require_once('lib.php');
 
-/*
-session_name(SESSION_NAME);
-session_start();
-*/
-
 header("Content-Type: application/json; ");
 $result = array('messages' => array());
 
@@ -28,10 +23,6 @@ $result = array('messages' => array());
 // actions:
 //		add: add the tool to a course
 //		remove: remove the tool from a course
-//		update: change the details of the tool in the database
-//		detail: get the configuration details of the tool from the database
-
-//		delete: remove the tool from the database
 
 $make_change = true;
 if (!isset($_GET['tool_id'])) {
