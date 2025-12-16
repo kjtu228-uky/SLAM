@@ -85,9 +85,11 @@ footer {
 }
 .lti-tool-text {
 	flex-grow: 1; /* Allow text to take up remaining space */
+	float: left;
 	margin-right: 20px; /* Space between text and icon */
 }
 .lti-tool-icon {
+	float: right;
 	cursor: pointer;
 }
 .lti-tool-enabled {
