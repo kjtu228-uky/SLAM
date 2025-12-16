@@ -65,7 +65,7 @@ EOD;
 	if (isToolAdmin($platform))
 		$page .= <<< EOD
 	<div class='tool-settings'>
-		<a href='./tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
+		<a href='./admin/tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
 	</div>
 EOD;
 	$page .= <<< EOD
