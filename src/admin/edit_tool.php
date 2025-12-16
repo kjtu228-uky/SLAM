@@ -5,7 +5,7 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
-require_once('lib.php');
+require_once('../lib.php');
 
 $ok = true;
 if (isset($_SESSION['error_message'])) $ok = false;
@@ -41,7 +41,7 @@ if (!isset($lti_tools[$_GET['id']])) {
 	<title>Self LTI App Management - Tool Configuration</title>
 	<meta name="description" content="An LTI app that allows Canvas users to self-manage LTI apps in their course." />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="css/slam.css">
+	<link rel="stylesheet" href="../css/slam.css">
 </head>
 <body>
 <div style='display: flex; flex-direction: column; height: 98vh;'>
@@ -105,7 +105,7 @@ EOD;
 			</div>
 			
 			<div class='lti-tool-editor-form-item'>
-				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/tools_admin.php'">Cancel</button>
+				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'">Cancel</button>
 				<button type="submit">Update</button>
 			</div>
 		</form>
