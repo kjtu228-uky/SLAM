@@ -50,7 +50,7 @@ $page = <<< EOD
   <link rel="stylesheet" href="css/slam.css">
   <script type="text/javascript" src="js/slam.js"></script>
 </head>
-<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize();">
+<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools();">
 
 EOD;
 
@@ -95,7 +95,7 @@ EOD;
 EOD;
 
 	$message_boxes = "";
-	$lti_tools = getCourseTools($platform, $courseNumber);
+/* 	$lti_tools = getCourseTools($platform, $courseNumber);
 	foreach ($lti_tools as $lti_tool) {
 		if (!empty($courseNumber) && isset($lti_tool['name']) && $lti_tool['visible']) {
 			$page .= "\n		<div id='lti_tool_" . $lti_tool['id'] . "' class='lti-tool" .
@@ -122,7 +122,7 @@ EOD;
 				$lti_tool['id'] . ", true);'>" . "<input type='button' class='tool-message-button' value='OK' onclick='toolNoticeResponse(" .
 				$lti_tool['id'] . ", false);'></div>\n</div>";
 		}
-	}
+	} */
 	$page .= "	</div>\n";
 	$page .= $message_boxes;
 } else {
