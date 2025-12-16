@@ -5,7 +5,7 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
-require_once('lib.php');
+require_once('../lib.php');
 
 $ok = true;
 if (isset($_SESSION['error_message'])) $ok = false;
@@ -31,7 +31,7 @@ if (!$ok || !isToolAdmin($platform)) {
 	<title>Self LTI App Management - Tool Configuration and Availability</title>
 	<meta name="description" content="An LTI app that allows Canvas users to self-manage LTI apps in their course." />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="css/slam.css">
+	<link rel="stylesheet" href="../css/slam.css">
 </head>
 <body>
 <div style='display: flex; flex-direction: column; height: 98vh;'>
@@ -56,7 +56,7 @@ foreach ($lti_tools as $key => $lti_tool) {
 			((isset($lti_tool['visible']) && $lti_tool['visible'] > 0)?" lti-tool-enabled":"") . "'>\n";
 		$body .= '<div class="lti-tool-text">' . $lti_tool['name'] . '</div>';
 		$body .= '<div class="lti-tool-icon"><a href="./edit_tool.php?id=' . $key . '">';
-		$body .= '<img src="./images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
+		$body .= '<img src="{$showVal(TOOL_BASE_URL)}/images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
 		$body .= "		</div>\n";
 	}
 }
