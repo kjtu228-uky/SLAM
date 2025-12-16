@@ -3,7 +3,7 @@ async function getCourseTools() {
 	
 	// remove any tools currently displayed
 	toolList = document.getElementById('toolList');
-	toolList.innerHTML = '';
+	toolList.innerHTML = "<img src='images/loading.gif' alt='Please wait while the list of available tools loads.'>";
 	
 	
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?action=list';
@@ -13,8 +13,9 @@ async function getCourseTools() {
 		})
 		.then(response => response.json()).then(data => {
 			console.log(data);
+			toolHTML = '';
 			for (var key in data) {
-				toolHTML = "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
+				toolHTML += "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
 				if (data[key]['enabled']) toolHTML += " lti-tool-enabled";
 				toolHTML += "'><div class='switch' id='switch_" + data[key]['id'] + "' onclick='tool_select_" +
 					data[key]['id'] + ".click();'><input type='checkbox' id='tool_select_" + data[key]['id'] +
@@ -27,8 +28,8 @@ async function getCourseTools() {
 					toolHTML += "<div class='tool-support'>" + data[key]['support_info'] + "</div>";
 				}
 				toolHTML += "</div>";
-				toolList.innerHTML += toolHTML;
 			}
+			toolList.innerHTML = toolHTML;
 			
 			
 /* 			updateToggles(data);
