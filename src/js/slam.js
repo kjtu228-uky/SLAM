@@ -36,31 +36,30 @@ async function getCourseTools() {
 		});
 }
 
-async function updateToolInstall(tool_id, course_number) {
+async function updateToolInstall(tool_id) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
-	update_path = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/update_tool.php?';
-	update_path = update_path + 'tool_id=' + tool_id + '&action=';
-	action = tool_toggle.checked ? 'add' : 'remove';
-	update_path += action;
+	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
+	url += tool_id + '&action=';
+	url += tool_toggle.checked ? 'add' : 'remove';
 	tool_toggle.disabled = true;
 
 	if (document.getElementById("tool_message_" + tool_id) != null) {
 		document.getElementById("tool_message_" + tool_id).style.display = "none";
 	}
 	tool_toggle.disabled = false;
-	fetch(update_path, {
+	fetch(url, {
 			method: "GET",
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
-			updateToggles(data);
+/* 			updateToggles(data);
 			if (action == 'add' && document.getElementById("tool_message_" + tool_id) != null) {
 				message_box = document.getElementById("tool_message_text_" + tool_id);
 				message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
 				message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data[tool_id]['name']);
 				document.getElementById("tool_message_" + tool_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
 				document.getElementById("tool_message_" + tool_id).style.display = "block";
-			}
+			} */
 		}).catch(error => {
 			console.log(error);
 		});
