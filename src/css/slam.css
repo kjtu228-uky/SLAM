@@ -70,7 +70,7 @@ footer {
 	margin: 10px;
 	flex: 1;
 }
-.lti-tools-container loading {
+.lti-tools-container.loading {
 	flex-wrap: wrap;
 	align-content: space-around;
 	justify-content: space-around;
