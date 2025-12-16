@@ -61,9 +61,10 @@ footer {
 /* ==================================================================================== */
 /* containing div for LTI Tool item                                                     */
 .lti-tools-container {
-	display: grid;
-	grid-template-columns: 95%;
-	grid-gap: 5px 5px;
+	display: flex;
+	flex-direction: column;
+/*	grid-template-columns: 95%;
+	grid-gap: 5px 5px; */
 	border: 1px solid #222;
 	overflow: auto;
 	margin: 10px;
