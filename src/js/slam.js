@@ -3,11 +3,11 @@ async function getCourseTools() {
 	
 	// remove any tools currently displayed
 	toolList = document.getElementById('toolList');
-	toolList.innerHTML = "<img src='images/loading.gif' alt='Please wait while the list of available tools loads.'>";
+	toolList.innerHTML = "<div><img src='images/loading.gif' alt='Please wait while the list of available tools loads.'></div>";
 	
 	
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?action=list';
-	fetch(url, {
+/* 	fetch(url, {
 			method: "GET",
 			mode: "no-cors"
 		})
@@ -30,21 +30,9 @@ async function getCourseTools() {
 				toolHTML += "</div>";
 			}
 			toolList.innerHTML = toolHTML;
-			
-			
-/* 			updateToggles(data);
-			if (action == 'add' && document.getElementById("tool_message_" + tool_id) != null) {
-				message_box = document.getElementById("tool_message_text_" + tool_id);
-				message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
-				message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data[tool_id]['name']);
-				document.getElementById("tool_message_" + tool_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
-				document.getElementById("tool_message_" + tool_id).style.display = "block";
-			} */
 		}).catch(error => {
 			console.log(error);
-		});
-	// hide the spinny
-	
+		}); */
 }
 
 async function updateToolInstall(tool_id, course_number) {
