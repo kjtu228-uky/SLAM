@@ -16,7 +16,7 @@ async function getCourseTools() {
 			for (var key in data) {
 				toolHTML = "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
 				if (data[key]['enabled']) toolHTML += " lti-tool-enabled";
-				toolHTML += "' <div class='switch' id='switch_" + data[key]['id'] + "' onclick='tool_select_" +
+				toolHTML += "'><div class='switch' id='switch_" + data[key]['id'] + "' onclick='tool_select_" +
 					data[key]['id'] + ".click();'><input type='checkbox' id='tool_select_" + data[key]['id'] +
 					"' onchange='updateToolInstall(" + data[key]['id'] + ");'";
 				if (data[key]['enabled']) toolHTML += " checked";
