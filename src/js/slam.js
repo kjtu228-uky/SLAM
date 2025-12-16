@@ -12,6 +12,7 @@ async function getCourseTools() {
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
+			console.log(data);
 			for (var toolDetail in data) {
 				console.log(toolDetail);
 				toolHTML = "<div id='lti_tool_" + toolDetail['id'] + "' class='lti-tool";
