@@ -445,16 +445,17 @@ Util::logError("HTTP Code: " . $response_http_code);
 			if ($response_http_code != 200)
 				return array("errors" => "Error: API request failed with status $response_http_code");
 			$controls = json_decode($response_body, true);
-			if (is_array($controls) && count($controls) > 0 && isset($controls[0]['context_controls']) &&
-				is_array($controls[0]['context_controls']) && count($controls[0]['context_controls']) > 0){
-Util::logError($response_body);
-					foreach ($controls[0]['context_controls'] as $control) {
-						if (isset($control['course_id']) && !is_null($control['course_id']) && $control['course_id'] == $courseNumber &&
-							isset($control['available']) && $control['available'])
-								return true;
+			if (is_array($controls) && count($controls) > 0) {
+				foreach ($controls as $control) {
+					if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
+						foreach ($control['context_controls'] as $context_control) {
+							if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
+								$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
+									return true;
+						}
 					}
+				}
 			}
-
 			// Extract the 'next' page URL from the Link header
 			$url = null;
 			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $response_headers, $matches)) {
@@ -561,7 +562,10 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 		$response_body = substr($response, $response_header_size);
 		curl_close($ch);
 Util::logError("HTTP Code: " . $response_http_code);
-		if ($response_http_code != 200) return false;
+		if ($response_http_code != 200) {
+			Util::logError($response_body);
+			return false;
+		}
 		$controls = json_decode($response_body, true);
 Util::logError("Course ID: " . $controls['course_id'] . ", available: " . $controls['available']);
 		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available'])
