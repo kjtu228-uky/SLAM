@@ -59,7 +59,6 @@ if (!isset($_GET['tool_id'])) {
 }
 
 if ($_GET['action'] == "add") {
-	// get the registration ID from the database
 	if (addToolToCourse($platform, $_GET['tool_id'], $courseNumber)) {
 		print(json_encode(array('success' => true)));
 		exit;
@@ -68,6 +67,13 @@ if ($_GET['action'] == "add") {
 		exit;
 	}
 } else if ($_GET['action'] == 'remove') {
+	if (removeToolFromCourse($platform, $_GET['tool_id'], $courseNumber)) {
+		print(json_encode(array('success' => true)));
+		exit;
+	} else {
+		print(json_encode(array('success' => false, 'errors' => 'Unable to remove tool from course.')));
+		exit;
+	}
 } else {
 	print(json_encode(array('success' => false, 'errors' => 'Invalid action.')));
 	exit;
