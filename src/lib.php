@@ -508,6 +508,52 @@ function getEnabledTools($platform, $courseNumber) {
 }
 
 /**
+ * Add an exception for a tool to a course.
+ *
+ * @return boolean.
+ */
+function addToolToCourse($platform, $tool_id, $courseNumber) {
+	$tool_config = getToolConfigById($tool_id);
+	if ($tool_config) {
+		// the API URL must be defined in the platform settings
+		$api_url = $platform->getSetting('api_url');
+		if (!$api_url) return false;
+		// check if the platform has an access token; if not, request one from Canvas
+		$access_token = $platform->getSetting('access_token');
+		if ($access_token) $access_token = json_decode($access_token);
+		if (!$access_token || !$access_token->access_token) return false;
+		$headers = array("Authorization: Bearer " . $access_token->access_token,
+			"User-Agent: LTIPHP/1.0");
+		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls';
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+
+		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
+						'course_id' => $courseNumber,
+						'available' => true)));
+
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HEADER, 1);
+		$response = curl_exec($ch);
+
+
+		$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$response_headers = substr($response, 0, $response_header_size);
+		$response_body = substr($response, $response_header_size);
+		curl_close($ch);
+		if ($response_http_code != 200) return false;
+		$controls = json_decode($response_body, true);
+		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available'])
+			return true;
+	}
+	return false;
+}
+	
+/**
  * Converts an associative array to a sorted array based on a specified key.
  *
  * @param array $associativeArray The associative array to convert.
