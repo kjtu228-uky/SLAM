@@ -127,7 +127,6 @@ footer {
 	cursor: pointer;
 	margin: 5px;
 }
-/* Save and Cancel buttons for the admin interface */
 .admin-button {
 	margin: 0px 15px;
 	padding: 5px 20px;
@@ -191,7 +190,7 @@ input:checked + .slider:before {
 	word-wrap: break-word;
 }
 /* ==================================================================================== */
-/* containing div for LTI Tool editor                                                     */
+/* styles for the tool editor                                                           */
 .lti-tool-editor {
 	border: 1px solid #222;
 	overflow: auto;
@@ -208,6 +207,21 @@ input:checked + .slider:before {
 	display: flex;
 	align-items: flex-start;
 	flex-direction: row;
+	padding: 5px;
+	margin: 5px;
+}
+.lti-tool-editor-textarea {
+	width: 100%;
+}
+.lti-tool-editor-button-panel {
+	width: 100%;
+	display: flex;
+	align-items: flex-start;
+	flex-direction: row;
+	padding: 5px;
+	margin: 5px;
+}
+.lti-tool-editor-button {
 	padding: 5px;
 	margin: 5px;
 }

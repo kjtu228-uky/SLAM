@@ -91,22 +91,22 @@ EOD;
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
-				<textarea id="config" name="config" rows="5" cols="50">{$lti_tools[$tool_id]['visible']}</textarea>
+				<textarea id="config" name="config" rows="5" class="lti-tool-editor-textarea">{$lti_tools[$tool_id]['visible']}</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="userNotice" class="lti-tool-editor-label">User Notice:</label>
-				<textarea id="userNotice" name="userNotice" rows="5" cols="50"></textarea>
+				<textarea id="userNotice" name="userNotice" rows="5" class="lti-tool-editor-textarea"></textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="supportInfo" class="lti-tool-editor-label">Support Info:</label>
-				<textarea id="supportInfo" name="supportInfo" rows="5" cols="50"></textarea>
+				<textarea id="supportInfo" name="supportInfo" rows="5" class="lti-tool-editor-textarea"></textarea>
 			</div>
 			
-			<div class='lti-tool-editor-form-item'>
-				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'">Cancel</button>
-				<button type="submit">Update</button>
+			<div class='lti-tool-editor-button-panel'>
+				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='lti-tool-editor-button'>Cancel</button>
+				<button type="submit" class='lti-tool-editor-button'>Update</button>
 			</div>
 		</form>
 	</div>
