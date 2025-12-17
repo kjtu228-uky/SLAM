@@ -214,10 +214,10 @@ input:checked + .slider:before {
 	width: 100%;
 }
 .lti-tool-editor-button-panel {
-	width: 100%;
+	width: 95%;
 	display: flex;
-	align-items: flex-start;
 	flex-direction: row;
+	justify-content: center;
 	padding: 5px;
 	margin: 5px;
 }
