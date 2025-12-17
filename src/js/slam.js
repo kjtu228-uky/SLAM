@@ -1,7 +1,5 @@
 async function getCourseTools() {
-	// maybe first show a spinny wheel
-	
-	// remove any tools currently displayed
+	// remove any tools currently displayed and show a loading wheel
 	toolList = document.getElementById('toolList');
 	toolList.classList.add('loading');
 	toolList.innerHTML = "<div><img src='images/loading.gif' alt='Please wait while the list of available tools loads.'></div>";
@@ -56,13 +54,20 @@ async function updateToolInstall(tool_id) {
 		})
 		.then(response => response.json()).then(data => {
 			console.log(data);
-			if (Object.hasOwn(data, 'success') && data['success']) {
+			setToggleOn = false;
+			if (Object.hasOwn(data, 'success') && data['success'] && tool_toggle.checked)
+				setToggleOn = true;
+			if (Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked)
+				setToggleOn = true;
+			
+			if (setToggleOn) {
 				tool_toggle.checked = true;
 				tool_container.classList.add("lti-tool-enabled");
 			} else {
 				tool_toggle.checked = false;
 				tool_container.classList.remove("lti-tool-enabled");
 			}
+			
 /* 			updateToggles(data);
 			if (action == 'add' && document.getElementById("tool_message_" + tool_id) != null) {
 				message_box = document.getElementById("tool_message_text_" + tool_id);
