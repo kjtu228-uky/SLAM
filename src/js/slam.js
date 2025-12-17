@@ -39,6 +39,7 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
+	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
 	url += tool_id + '&action=';
 	url += tool_toggle.checked ? 'add' : 'remove';
@@ -53,6 +54,14 @@ async function updateToolInstall(tool_id) {
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
+			console.log(data);
+			if (Object.hasOwn(data, 'success') && data['success']) {
+				tool_toggle.checked = true;
+				tool_container.classList.add("lti-tool-enabled");
+			} else {
+				tool_toggle.checked = false;
+				tool_container.classList.remove("lti-tool-enabled");
+			}
 /* 			updateToggles(data);
 			if (action == 'add' && document.getElementById("tool_message_" + tool_id) != null) {
 				message_box = document.getElementById("tool_message_text_" + tool_id);
@@ -64,6 +73,7 @@ async function updateToolInstall(tool_id) {
 		}).catch(error => {
 			console.log(error);
 		});
+	tool_toggle.disabled = false;
 }
 
 function toolNoticeResponse(tool_id, cancelAdd) {
