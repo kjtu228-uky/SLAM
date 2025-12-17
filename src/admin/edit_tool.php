@@ -56,8 +56,14 @@ if (isset($_GET['update_tool'])) $tool_name .= " (Update result: " . $updateResu
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 // prepare text for textareas
 $html_tool_support = "";
+$html_tool_adv_config = "";
+$html_tool_notice = "";
 if ($lti_tools[$tool_id]['support_info'] != null)
 	$html_tool_support = htmlspecialchars($lti_tools[$tool_id]['support_info'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
+if ($lti_tools[$tool_id]['user_notice'] != null)
+	$html_tool_notice = htmlspecialchars($lti_tools[$tool_id]['user_notice'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
+if ($lti_tools[$tool_id]['config'] != null)
+	$html_tool_adv_config = htmlspecialchars($lti_tools[$tool_id]['config'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
 $body = <<< EOD
 	<div class='slam-title'>
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
@@ -98,18 +104,22 @@ EOD;
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
-				<textarea id="config" name="config" rows="5" class="lti-tool-editor-textarea">{$lti_tools[$tool_id]['visible']}</textarea>
+				<textarea id="config" name="config" rows="5" class="lti-tool-editor-textarea">
+				{$html_tool_adv_config}
+				</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="userNotice" class="lti-tool-editor-label">User Notice:</label>
-				<textarea id="userNotice" name="userNotice" rows="5" class="lti-tool-editor-textarea"></textarea>
+				<textarea id="userNotice" name="userNotice" rows="5" class="lti-tool-editor-textarea">
+				{$html_tool_notice}
+				</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="supportInfo" class="lti-tool-editor-label">Support Info:</label>
 				<textarea id="supportInfo" name="supportInfo" rows="5" class="lti-tool-editor-textarea">
-				{html_tool_support}
+				{$html_tool_support}
 				</textarea>
 			</div>
 			
