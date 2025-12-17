@@ -42,9 +42,6 @@ async function updateToolInstall(tool_id) {
 	url += tool_id + '&action=';
 	url += tool_toggle.checked ? 'add' : 'remove';
 	tool_toggle.disabled = true;
-	
-	console.log(url);
-
 	if (document.getElementById("tool_message_" + tool_id) != null) {
 		document.getElementById("tool_message_" + tool_id).style.display = "none";
 	}
@@ -59,7 +56,6 @@ async function updateToolInstall(tool_id) {
 				setToggleOn = true;
 			if (Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked)
 				setToggleOn = true;
-			
 			if (setToggleOn) {
 				tool_toggle.checked = true;
 				tool_container.classList.add("lti-tool-enabled");
@@ -67,15 +63,6 @@ async function updateToolInstall(tool_id) {
 				tool_toggle.checked = false;
 				tool_container.classList.remove("lti-tool-enabled");
 			}
-			
-/* 			updateToggles(data);
-			if (action == 'add' && document.getElementById("tool_message_" + tool_id) != null) {
-				message_box = document.getElementById("tool_message_text_" + tool_id);
-				message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
-				message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data[tool_id]['name']);
-				document.getElementById("tool_message_" + tool_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
-				document.getElementById("tool_message_" + tool_id).style.display = "block";
-			} */
 		}).catch(error => {
 			console.log(error);
 		});
