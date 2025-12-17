@@ -409,19 +409,19 @@ function getAllTools($platform) {
 /**
  * Determine if the LTI registration is enabled (available) for the specified course.
  *
- * @return boolean.
+ * @return array: array('available' => false or context_control['id'], 'errors' => if_any).
  */
 function isAvailable($platform, $registrationId, $courseNumber) {
 	// check if $registrationId is an integer
-	if (!is_numeric($registrationId)) return false;
+	if (!is_numeric($registrationId)) return array('available' => false, 'errors' => 'The API URL is not defined for the platform.');
  	if (platformHasToken($platform)) {
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
+		if (!$api_url) return array('available' => false, 'errors' => 'The API URL is not defined for the platform.');
 		// check if the platform has an access token; if not, request one from Canvas
 		$access_token = $platform->getSetting('access_token');
 		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
+		if (!$access_token || !$access_token->access_token) return array('available' => false, 'errors' => 'The platform does not have an access token.');
 		$headers = array("Authorization: Bearer " . $access_token->access_token,
 			"User-Agent: LTIPHP/1.0");
 		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls?per_page=100';
@@ -438,7 +438,7 @@ function isAvailable($platform, $registrationId, $courseNumber) {
 			$response_body = substr($response, $response_header_size);
 			curl_close($ch);
 			if ($response_http_code != 200)
-				return array("errors" => "Error: API request failed with status $response_http_code");
+				return array('available' => false, 'errors' => 'API request failed with status $response_http_code');
 			$controls = json_decode($response_body, true);
 			if (is_array($controls) && count($controls) > 0) {
 				foreach ($controls as $control) {
@@ -446,7 +446,7 @@ function isAvailable($platform, $registrationId, $courseNumber) {
 						foreach ($control['context_controls'] as $context_control) {
 							if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
 								$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
-									return true;
+									return array('available' => true, 'context_id' => $context_control['id']);
 						}
 					}
 				}
@@ -458,7 +458,7 @@ function isAvailable($platform, $registrationId, $courseNumber) {
 			}
 		}
 	}
-	return false;
+	return array('available' => false, 'errors' => 'No API token for the platform.');
 }
 
 /**
@@ -477,7 +477,8 @@ function getCourseTools($platform, $courseNumber) {
 		$tool['name'] = $fullToolInfo['name'];
 		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
 		// get the controls defined for the registration
-		if (isAvailable($platform, $tool['canvas_id'], $courseNumber)) $tool['enabled'] = true;
+		$availability = isAvailable($platform, $tool['canvas_id'], $courseNumber);
+		if ($availability['available']) $tool['enabled'] = true;
 		else $tool['enabled'] = false;
 		// append the tool to the courseTools
 		$courseTools[] = $tool;
@@ -526,7 +527,8 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 	$tool_config = getToolConfigById($tool_id);
 	if ($tool_config) {
 		// check if it's already enabled/available
-		if (isAvailable($platform, $tool_config['canvas_id'], $courseNumber)) return true;
+		$availability = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+		if ($availability['available']) return true;
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return false;
@@ -561,7 +563,61 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 	}
 	return false;
 }
-	
+
+/**
+ * Remove an exception for a tool from a course.
+ *
+ * @return boolean.
+ */
+function removeToolFromCourse($platform, $tool_id, $courseNumber) {
+	$tool_config = getToolConfigById($tool_id);
+	if ($tool_config) {
+		// check if it's already enabled/available
+		$availability = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+		if ($availability['available']) {
+			// the API URL must be defined in the platform settings
+			$api_url = $platform->getSetting('api_url');
+			if (!$api_url) return false;
+			// check if the platform has an access token; if not, request one from Canvas
+			$access_token = $platform->getSetting('access_token');
+			if ($access_token) $access_token = json_decode($access_token);
+			if (!$access_token || !$access_token->access_token) return false;
+			$headers = array("Authorization: Bearer " . $access_token->access_token,
+				"User-Agent: LTIPHP/1.0");
+			$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls/' . $availability['context_id'];
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, 1);
+			$response = curl_exec($ch);
+			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+			$response_headers = substr($response, 0, $response_header_size);
+			$response_body = substr($response, $response_header_size);
+			curl_close($ch);
+Util::logError("HTTP Code: " . $response_http_code . "Response: " . $response_body);
+			
+		} else {
+			return true;
+		}
+		
+		
+		
+		
+
+/* 		if ($response_http_code != 201) {
+			Util::logError("HTTP Code: " . $response_http_code . ": Unable to add tool ID " . $tool_id . " to " . $courseNumber . "\n" . $response_body);
+			return false;
+		}
+		$controls = json_decode($response_body, true);
+		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available'])
+			return true;
+ */	}
+	return false;
+}
+
 /**
  * Converts an associative array to a sorted array based on a specified key.
  *
