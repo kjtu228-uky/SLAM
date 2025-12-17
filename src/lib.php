@@ -551,7 +551,7 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 		$response_headers = substr($response, 0, $response_header_size);
 		$response_body = substr($response, $response_header_size);
 		curl_close($ch);
-		if ($response_http_code != 200) {
+		if ($response_http_code != 201) {
 			Util::logError("HTTP Code: " . $response_http_code . ": Unable to add tool ID " . $tool_id . " to " . $courseNumber . "\n" . $response_body);
 			return false;
 		}
