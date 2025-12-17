@@ -524,7 +524,7 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 		if (!$access_token || !$access_token->access_token) return false;
 		$headers = array("Authorization: Bearer " . $access_token->access_token,
 			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls';
+		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $tool['canvas_id'] . '/controls';
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
