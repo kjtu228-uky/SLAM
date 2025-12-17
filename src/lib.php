@@ -597,13 +597,12 @@ function removeToolFromCourse($platform, $tool_id, $courseNumber) {
 			$response_headers = substr($response, 0, $response_header_size);
 			$response_body = substr($response, $response_header_size);
 			curl_close($ch);
-Util::logError("HTTP Code: " . $response_http_code . "Response: " . $response_body);
 			if ($response_http_code != 200) {
 				Util::logError("HTTP Code: " . $response_http_code . ": Unable to remove tool ID " . $tool_id . " from " . $courseNumber . "\n" . $response_body);
 				return false;
 			}
 			$context_control = json_decode($response_body, true);
-			if (isset($context_control['course_id']) && isset($controls['available']) && $controls['available'])
+			if (isset($context_control['course_id']) && isset($context_control['available']) && $context_control['available'])
 				return true;
 		} else {
 			return true;
