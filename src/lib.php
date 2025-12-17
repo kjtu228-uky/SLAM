@@ -441,11 +441,13 @@ function isAvailable($platform, $registrationId, $courseNumber) {
 			$response_headers = substr($response, 0, $response_header_size);
 			$response_body = substr($response, $response_header_size);
 			curl_close($ch);
+Util::logError("HTTP Code: " . $response_http_code);
 			if ($response_http_code != 200)
 				return array("errors" => "Error: API request failed with status $response_http_code");
 			$controls = json_decode($response_body, true);
 			if (is_array($controls) && count($controls) > 0 && isset($controls[0]['context_controls']) &&
 				is_array($controls[0]['context_controls']) && count($controls[0]['context_controls']) > 0){
+Util::logError($response_body);
 					foreach ($controls[0]['context_controls'] as $control) {
 						if (isset($control['course_id']) && !is_null($control['course_id']) && $control['course_id'] == $courseNumber &&
 							isset($control['available']) && $control['available'])
@@ -558,9 +560,10 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 		$response_headers = substr($response, 0, $response_header_size);
 		$response_body = substr($response, $response_header_size);
 		curl_close($ch);
-Util::logError("HTTP Code: " . $response_http_code . ", Course ID: " . $controls['course_id'] . ", available: " . $controls['available']);
+Util::logError("HTTP Code: " . $response_http_code);
 		if ($response_http_code != 200) return false;
 		$controls = json_decode($response_body, true);
+Util::logError("Course ID: " . $controls['course_id'] . ", available: " . $controls['available']);
 		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available'])
 			return true;
 	}
