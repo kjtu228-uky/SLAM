@@ -60,7 +60,6 @@ if (!isset($_GET['tool_id'])) {
 
 if ($_GET['action'] == "add") {
 	// get the registration ID from the database
-	$registrationId = get
 	if (addToolToCourse($platform, $_GET['tool_id'], $courseNumber)) {
 		print(json_encode(array('success' => true)));
 		exit;
