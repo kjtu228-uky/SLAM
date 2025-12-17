@@ -44,11 +44,12 @@ async function updateToolInstall(tool_id) {
 	url += tool_id + '&action=';
 	url += tool_toggle.checked ? 'add' : 'remove';
 	tool_toggle.disabled = true;
+	
+	console.log(url);
 
 	if (document.getElementById("tool_message_" + tool_id) != null) {
 		document.getElementById("tool_message_" + tool_id).style.display = "none";
 	}
-	tool_toggle.disabled = false;
 	fetch(url, {
 			method: "GET",
 			mode: "no-cors"
