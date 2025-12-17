@@ -54,6 +54,10 @@ $tool_name = $lti_tools[$tool_id]['name'];
 if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
 if (isset($_GET['update_tool'])) $tool_name .= " (Update result: " . $updateResult . ")";
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
+// prepare text for textareas
+$html_tool_support = "";
+if ($lti_tools[$tool_id]['support_info'] != null)
+	$html_tool_support = htmlspecialchars($lti_tools[$tool_id]['support_info'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
 $body = <<< EOD
 	<div class='slam-title'>
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
@@ -81,9 +85,12 @@ $body = <<< EOD
 					<option value="">-- None --</option>
 EOD;
 	foreach ($lti_tools as $lti_tool) {
-		$body .= <<< EOD
+		// don't allow a tool to depend on itself
+		if ($lti_tool['id'] != $_GET['id']) {
+			$body .= <<< EOD
 					<option value="{$lti_tool['id']}">{$lti_tool['name']}</option>
 EOD;
+		}
 	}
 	$body .= <<< EOD
 				</select>
@@ -101,7 +108,9 @@ EOD;
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="supportInfo" class="lti-tool-editor-label">Support Info:</label>
-				<textarea id="supportInfo" name="supportInfo" rows="5" class="lti-tool-editor-textarea"></textarea>
+				<textarea id="supportInfo" name="supportInfo" rows="5" class="lti-tool-editor-textarea">
+				{html_tool_support}
+				</textarea>
 			</div>
 			
 			<div class='lti-tool-editor-button-panel'>
