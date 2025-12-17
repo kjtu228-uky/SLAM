@@ -407,7 +407,10 @@ function setToolConfig($platform, $toolConfig) {
 	$updatedFields = array();
 	if (isset($toolConfig['visible']) && $toolConfig['visible']) $updatedFields[] = "visible = true";
 	else $updatedFields[] = "visible = false";
-	
+	if (isset($toolConfig['dependency']) && $toolConfig['dependency']) $updatedFields[] = "dependency = :dependency";
+	if (isset($toolConfig['config']) && $toolConfig['config']) $updatedFields[] = "config = :config";
+	if (isset($toolConfig['userNotice']) && $toolConfig['userNotice']) $updatedFields[] = "user_notice = :user_notice";
+	if (isset($toolConfig['supportInfo']) && $toolConfig['supportInfo']) $updatedFields[] = "support_info = :support_info";
 	$db = open_db();
 	$sql = "UPDATE ". DB_TABLENAME_PREFIX . "tools SET ";
 	$sql .= implode(",", $updatedFields);
@@ -415,6 +418,14 @@ function setToolConfig($platform, $toolConfig) {
 	$statement = $db->prepare($sql);
 	$statement->bindParam("tool_id", $toolConfig['id'], PDO::PARAM_INT);
 	$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT);
+	if (isset($toolConfig['dependency']) && $toolConfig['dependency'])
+		$statement->bindParam("dependency", $toolConfig['dependency'], PDO::PARAM_INT);
+	if (isset($toolConfig['config']) && $toolConfig['config'])
+		$statement->bindParam("config", $toolConfig['config'], PDO::PARAM_STR);
+	if (isset($toolConfig['userNotice']) && $toolConfig['userNotice'])
+		$statement->bindParam("user_notice", $toolConfig['userNotice'], PDO::PARAM_STR);
+	if (isset($toolConfig['supportInfo']) && $toolConfig['supportInfo'])
+		$statement->bindParam("support_info", $toolConfig['supportInfo'], PDO::PARAM_STR);
 	$statement->execute();
 	return $statement->rowCount();
 	if ($statement->rowCount() > 0) {
