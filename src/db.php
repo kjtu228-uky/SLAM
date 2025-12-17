@@ -325,6 +325,24 @@ function getToolConfigs($platform, $onlyVisible = false) {
 }
 
 /**
+ * Get the list of tools that have been configured for this platform.
+ * Optionally, only retrieve tools that are marked as visible.
+ *
+ * @return array.
+ */
+function getToolConfigById($tool_id) {
+	$db = open_db();
+	$platformId = $platform->getRecordId();
+	$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE id = :tool_id";
+	$statement = $db->prepare($sql);
+	$statement->bindParam("tool_id", $tool_id, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
+	$statement->execute();
+	$tool = $statement->fetch(PDO::FETCH_ASSOC);
+	$db = null;
+	return $tool;
+}
+
+/**
  * Get the configuration for the specified LTI registration.
  * If it doesn't exist in the database, add it.
  *
