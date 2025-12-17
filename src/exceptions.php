@@ -25,14 +25,14 @@ $result = array();
 //		add: add the tool to a course
 //		remove: remove the tool from a course
 if (!isset($_GET['action'])) {
-	print(json_encode(array('errors' => 'No action specified.')));
+	print(json_encode(array('success' => false, 'errors' => 'No action specified.')));
 	exit;
 }
 
 // Initialise parameters
 $db = null;
 if (!init($db, true)) {
-	print(json_encode(array('errors' => 'Unable to initialize.')));
+	print(json_encode(array('success' => false, 'errors' => 'Unable to initialize.')));
 	exit;
 }
 $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
@@ -42,7 +42,7 @@ $courseNumber = $resourceLink->getSetting('custom_course_number');
 
 // make sure we have an API token
 if (!platformHasToken($platform)) {
-	print(json_encode(array('errors' => 'No API token available.')));
+	print(json_encode(array('success' => false, 'errors' => 'No API token available.')));
 	exit;
 }
 
@@ -54,17 +54,25 @@ if ($_GET['action'] == 'list') {
 
 // if not just checking for the tool list, the tool_id must be specified in addition to the action
 if (!isset($_GET['tool_id'])) {
-	print(json_encode(array('errors' => 'No tool_id provided.')));
+	print(json_encode(array('success' => false, 'errors' => 'No tool_id provided.')));
 	exit;
 }
 
 if ($_GET['action'] == "add") {
-	addToolToCourse($_GET['tool_id'], $courseNumber);
+	// get the registration ID from the database
+	$registrationId = get
+	if (addToolToCourse($platform, $_GET['tool_id'], $courseNumber)) {
+		print(json_encode(array('success' => true)));
+		exit;
+	} else {
+		print(json_encode(array('success' => false, 'errors' => 'Unable to add tool to course.')));
+		exit;
+	}
 } else if ($_GET['action'] == 'remove') {
 } else {
-	print(json_encode(array('errors' => 'Invalid action.')));
+	print(json_encode(array('success' => false, 'errors' => 'Invalid action.')));
 	exit;
 }
 
-print(json_encode($result));
+print(json_encode(array('success' => false, 'errors' => 'Unexpected result.')));
 ?>
