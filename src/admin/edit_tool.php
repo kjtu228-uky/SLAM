@@ -104,23 +104,17 @@ EOD;
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
-				<textarea id="config" name="config" rows="5" class="lti-tool-editor-textarea">
-				{$html_tool_adv_config}
-				</textarea>
+				<textarea id="config" name="config" rows="5" class="lti-tool-editor-textarea">{$html_tool_adv_config}</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="userNotice" class="lti-tool-editor-label">User Notice:</label>
-				<textarea id="userNotice" name="userNotice" rows="5" class="lti-tool-editor-textarea">
-				{$html_tool_notice}
-				</textarea>
+				<textarea id="userNotice" name="userNotice" rows="5" class="lti-tool-editor-textarea">{$html_tool_notice}</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="supportInfo" class="lti-tool-editor-label">Support Info:</label>
-				<textarea id="supportInfo" name="supportInfo" rows="5" class="lti-tool-editor-textarea">
-				{$html_tool_support}
-				</textarea>
+				<textarea id="supportInfo" name="supportInfo" rows="5" class="lti-tool-editor-textarea">{$html_tool_support}</textarea>
 			</div>
 			
 			<div class='lti-tool-editor-button-panel'>
