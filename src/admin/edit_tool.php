@@ -66,10 +66,12 @@ if ($lti_tools[$tool_id]['config'] != null)
 	$html_tool_adv_config = htmlspecialchars($lti_tools[$tool_id]['config'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
 $body = <<< EOD
 	<div class='slam-title'>
-		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
-	</div>
-	<div class='tool-settings'>
-		<a href='./tools_admin.php'><img src='../images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
+		<div>
+			<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		</div>
+		<div class='tool-settings'>
+			<a href='./tools_admin.php'><img src='../images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
+		</div>
 	</div>
 	<div class='slam-description'>
 		<h2>{$tool_name} Configuration</h2>

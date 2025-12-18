@@ -48,7 +48,8 @@ footer {
 /* ==================================================================================== */
 /* Tool page header divs                                                                */
 .slam-title {
-	float: left;
+	display: flex;
+	flex-direction: row;
 }
 .slam-description {
 	float: left;
