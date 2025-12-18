@@ -52,10 +52,10 @@ async function updateToolInstall(tool_id) {
 			if ( (Object.hasOwn(data, 'success') && data['success'] && tool_toggle.checked) ||
 				(Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked) ) {
 					console.log(data);
-					for (var id in data['installed']) {
-						console.log("Update toggle: " + id);
-						var toggle_id = 'tool_select_' + id;
-						var tool_container_id = 'lti_tool_' + id;
+					for (var key in data['installed']) {
+						console.log("Update toggle: " + data['installed'][key]);
+						var toggle_id = 'tool_select_' + data['installed'][key];
+						var tool_container_id = 'lti_tool_' + data['installed'][key];
 						if (document.getElementById(toggle_id) != null) {
 							document.getElementById(toggle_id).checked = true;
 							document.getElementById(tool_container_id).classList.add("lti-tool-enabled");
