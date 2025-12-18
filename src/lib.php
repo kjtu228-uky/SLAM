@@ -526,9 +526,15 @@ function getEnabledTools($platform, $courseNumber) {
 function addToolToCourse($platform, $tool_id, $courseNumber) {
 	$tool_config = getToolConfigById($tool_id);
 	if ($tool_config) {
+		$success = array($tool_id);
+		if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
+			$dependency_result = addToolToCourse($platform, $tool_config['dependency'], $courseNumber);
+			if ($dependency_result) $success = array_merge($success, $dependency_result);
+			else return false;
+		}
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
-		if ($availability['available']) return true;
+		if ($availability['available']) return $success;
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return false;
@@ -559,7 +565,7 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 		}
 		$controls = json_decode($response_body, true);
 		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available'])
-			return true;
+			return $success;
 	}
 	return false;
 }
