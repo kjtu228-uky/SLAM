@@ -49,14 +49,16 @@ async function updateToolInstall(tool_id) {
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
-			setToggleOn = false;
-			if (Object.hasOwn(data, 'success') && data['success'] && tool_toggle.checked)
-				setToggleOn = true;
-			if (Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked)
-				setToggleOn = true;
-			if (setToggleOn) {
-				tool_toggle.checked = true;
-				tool_container.classList.add("lti-tool-enabled");
+			if ( (Object.hasOwn(data, 'success') && data['success'] && tool_toggle.checked) ||
+				(Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked) ) {
+					for (var id in data['installed']) {
+						var toggle_id = 'tool_select_' + id;
+						var tool_container_id = 'lti_tool_' + id;
+						if (document.getElementById(toggle_id) != null) {
+							document.getElementById(toggle_id).checked = true;
+							document.getElementById(tool_container_id).classList.add("lti-tool-enabled");
+						}
+					}
 			} else {
 				tool_toggle.checked = false;
 				tool_container.classList.remove("lti-tool-enabled");
