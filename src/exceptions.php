@@ -59,11 +59,12 @@ if (!isset($_GET['tool_id'])) {
 }
 
 if ($_GET['action'] == "add") {
-	if (addToolToCourse($platform, $_GET['tool_id'], $courseNumber)) {
-		print(json_encode(array('success' => true)));
+	$result = addToolToCourse($platform, $_GET['tool_id'], $courseNumber);
+	if (!$result) {
+		print(json_encode(array('success' => false, 'errors' => 'Unable to add tool to course.')));
 		exit;
 	} else {
-		print(json_encode(array('success' => false, 'errors' => 'Unable to add tool to course.')));
+		print(json_encode(array('success' => true, 'installed' => $result)));
 		exit;
 	}
 } else if ($_GET['action'] == 'remove') {
