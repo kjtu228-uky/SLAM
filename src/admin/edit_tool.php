@@ -66,7 +66,7 @@ if ($lti_tools[$tool_id]['config'] != null)
 	$html_tool_adv_config = htmlspecialchars($lti_tools[$tool_id]['config'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
 $body = <<< EOD
 	<div class='slam-title'>
-		<div>
+		<div style='width: 100%;'>
 			<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 		</div>
 		<div class='tool-settings'>

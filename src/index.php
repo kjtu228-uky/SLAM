@@ -58,17 +58,18 @@ EOD;
 if ($ok) {
 	$page .= <<< EOD
 	<div id='slamTitle' class='slam-title'>
-		<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
-	</div>
-
+		<div style='width: 100%;'>
+			<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		</div>
 EOD;
 	if (isToolAdmin($platform))
 		$page .= <<< EOD
-	<div class='tool-settings'>
-		<a href='./admin/tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
-	</div>
+		<div class='tool-settings'>
+			<a href='./admin/tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
+		</div>
 EOD;
 	$page .= <<< EOD
+	</div>
 
 	<div id='slamDescription' class='slam-description'>
 		The following LTI apps are not endorsed or supported by the University of Kentucky
