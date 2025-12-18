@@ -52,7 +52,7 @@ $showVal = function($val) {
 $tool_id = $_GET['id'];
 $tool_name = $lti_tools[$tool_id]['name'];
 if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
-if (isset($_GET['update_tool']) && $updateResult) $changes_saved = "<span class='update_notification'>Changes saved</span>";
+if (isset($_GET['update_tool']) && $updateResult) $changes_saved = "<span class='update-notification'>Changes saved</span>";
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 // prepare text for textareas
 $html_tool_support = "";
@@ -70,7 +70,6 @@ $body = <<< EOD
 	</div>
 	<div class='slam-description'>
 		<h2>{$tool_name} Configuration</h2>
-			{$changes_saved}
 	</div>
 	<div class='lti-tool-editor'>
 		<form action="edit_tool.php" method="get">
@@ -121,6 +120,9 @@ EOD;
 			<div class='lti-tool-editor-button-panel'>
 				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='lti-tool-editor-button'>Cancel</button>
 				<button type="submit" class='lti-tool-editor-button'>Update</button>
+			</div>
+			<div class='lti-tool-editor-button-panel'>
+				{$changes_saved}
 			</div>
 		</form>
 	</div>
