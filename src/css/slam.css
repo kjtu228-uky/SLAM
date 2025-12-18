@@ -226,6 +226,8 @@ input:checked + .slider:before {
 	margin: 5px;
 }
 .update-notification {
+	color: red;
+	font-weight: bold;
 }
 /* ==================================================================================== */
 
