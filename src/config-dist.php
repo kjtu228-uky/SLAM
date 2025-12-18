@@ -71,9 +71,12 @@ EOD
 ###
 ###  Canvas API Settings
 ###
-/*define('CANVAS_URL', 'https://uk.instructure.com');*/
-define('API_SCOPES', array(	'url:GET|/api/v1/accounts/:account_id/admins',
-							'url:GET|/api/v1/accounts/:account_id/lti_registrations'));
+### NOTE: The "controls" endpoints are not yet available for enforced scopes
+define('API_SCOPES', array('url:GET|/api/v1/accounts/:account_id/lti_registrations',
+							'url:GET|/api/v1/accounts/:account_id/lti_registrations/:id',
+							'url:GET|/api/v1/accounts/:account_id/lti_registrations/:id/controls',
+							'url:POST|/api/v1/accounts/:account_id/lti_registrations/:id/controls',
+							'url:DELETE|/api/v1/accounts/:account_id/lti_registrations/:id/controls/:id'));
 
 ###
 ###  Dynamic registration settings
