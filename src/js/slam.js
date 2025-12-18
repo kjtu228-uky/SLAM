@@ -51,7 +51,9 @@ async function updateToolInstall(tool_id) {
 		.then(response => response.json()).then(data => {
 			if ( (Object.hasOwn(data, 'success') && data['success'] && tool_toggle.checked) ||
 				(Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked) ) {
+					console.log(data);
 					for (var id in data['installed']) {
+						console.log("Update toggle: " + id);
 						var toggle_id = 'tool_select_' + id;
 						var tool_container_id = 'lti_tool_' + id;
 						if (document.getElementById(toggle_id) != null) {
