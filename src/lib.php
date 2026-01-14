@@ -521,19 +521,22 @@ function getEnabledTools($platform, $courseNumber) {
 /**
  * Add an exception for a tool to a course.
  *
- * @return boolean.
+ * @return array of tool ids that were added, or false if tool (or dependency) could not be added.
  */
-function addToolToCourse($platform, $tool_id, $courseNumber) {
+function addToolToCourse($platform, $tool_id, $course_number) {
 	$tool_config = getToolConfigById($tool_id);
 	if ($tool_config) {
 		$success = array($tool_id);
 		if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
-			$dependency_result = addToolToCourse($platform, $tool_config['dependency'], $courseNumber);
+			$dependency_result = addToolToCourse($platform, $tool_config['dependency'], $course_number);
 			if ($dependency_result) $success = array_merge($success, $dependency_result);
-			else return false;
+			else {
+				logToolChange($platform, $tool_id, 1, $course_number, 0);
+				return false;
+			}
 		}
 		// check if it's already enabled/available
-		$availability = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
 		if ($availability['available']) return $success;
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
@@ -549,7 +552,7 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
-						'course_id' => $courseNumber,
+						'course_id' => $course_number,
 						'available' => true)));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HEADER, 1);
@@ -560,13 +563,17 @@ function addToolToCourse($platform, $tool_id, $courseNumber) {
 		$response_body = substr($response, $response_header_size);
 		curl_close($ch);
 		if ($response_http_code != 201) {
-			Util::logError("HTTP Code: " . $response_http_code . ": Unable to add tool ID " . $tool_id . " to " . $courseNumber . "\n" . $response_body);
+			Util::logError("HTTP Code: " . $response_http_code . ": Unable to add tool ID " . $tool_id . " to " . $course_number . "\n" . $response_body);
+			logToolChange($platform, $tool_id, 1, $course_number, 0);
 			return false;
 		}
 		$controls = json_decode($response_body, true);
-		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available'])
+		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available']) {
+			logToolChange($platform, $tool_id, 1, $course_number, 1);
 			return $success;
+		}
 	}
+	logToolChange($platform, $tool_id, 1, $course_number, 0);
 	return false;
 }
 
