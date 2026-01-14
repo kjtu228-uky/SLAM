@@ -277,6 +277,7 @@ function init_db($db)
 		$sql = "CREATE TABLE {$prefix}log (" .
             'user_id varchar(250) NOT NULL, ' .
             'action tinyint(3) unsigned NOT NULL, ' .
+            'consumer_pk int(11) NOT NULL, ' .
             'tool_id int(11) NOT NULL, ' .
             'changed_at timestamp NOT NULL DEFAULT current_timestamp(), ' .
             'result int(11) NOT NULL, ' .
@@ -434,5 +435,36 @@ function setToolConfig($platform, $toolConfig) {
 	}
 	$db = null;
 	return false;
+}
+
+/**
+ * Log the addition or removal of a tool to/from a course.
+ * $action is either 1 (add) or 0 (remove)
+ *
+ * @return boolean.
+ */
+function logToolChange($platform, $tool_id, $action, $course_number, $success) {
+	if (!isset($platform)) return false;
+	if (!is_numeric($tool_id)) return false;
+	if (!isset($_SESSION['username'])) return false;
+	if (!is_numeric($action) || ($action != 0 && $action != 1)) return false;
+	if (!is_numeric($course_number)) return false;
+	$platformId = $platform->getRecordId();
+	try {
+		$db = open_db();
+		$statement = $db->prepare("INSERT INTO " . DB_TABLENAME_PREFIX .
+			"log (user_id, action, consumer_pk, tool_id, course_number, result) VALUES (:user_id, :action, :platform_id, :tool_id, :course_number, :result)");
+		$statement->bindParam("user_id", $_SESSION['username'], PDO::PARAM_STR);
+		$statement->bindParam("action", $action, PDO::PARAM_INT);
+		$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT);
+		$statement->bindParam("tool_id", $tool_id, PDO::PARAM_INT);
+		$statement->bindParam("course_number", $course_number, PDO::PARAM_INT);
+		$statement->bindParam("result", $success, PDO::PARAM_INT);
+		$statement->execute();
+		$db = null;
+		return true;
+	} catch (Exception $e) {
+			return false;
+	}
 }
 ?>
