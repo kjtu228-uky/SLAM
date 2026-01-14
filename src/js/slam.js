@@ -50,19 +50,29 @@ async function updateToolInstall(tool_id) {
 		})
 		.then(response => response.json()).then(data => {
 			console.log(data);
-			if ( (Object.hasOwn(data, 'success') && data['success'] && tool_toggle.checked) ||
-				(Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked) ) {
-					for (var key in data['installed']) {
-						var toggle_id = 'tool_select_' + data['installed'][key];
-						var tool_container_id = 'lti_tool_' + data['installed'][key];
-						if (document.getElementById(toggle_id) != null) {
+			if (Object.hasOwn(data, 'success') && data['success']) {
+				for (var key in data['changed']) {
+					var toggle_id = 'tool_select_' + data['changed'][key];
+					var tool_container_id = 'lti_tool_' + data['changed'][key];
+					if (document.getElementById(toggle_id) != null) {
+						if (data['action'] == 'add') {
 							document.getElementById(toggle_id).checked = true;
 							document.getElementById(tool_container_id).classList.add("lti-tool-enabled");
+						} else {
+							document.getElementById(toggle_id).checked = false;
+							document.getElementById(tool_container_id).classList.remove("lti-tool-enabled");
 						}
 					}
+				}
 			} else {
-				tool_toggle.checked = false;
-				tool_container.classList.remove("lti-tool-enabled");
+				console.log(data['errors']);
+				if (data['action'] == 'add') {
+					tool_toggle.checked = false;
+					tool_container.classList.remove("lti-tool-enabled");
+				} else {
+					tool_toggle.checked = true;
+					tool_container.classList.add("lti-tool-enabled");
+				}				
 			}
 		}).catch(error => {
 			console.log(error);
