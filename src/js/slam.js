@@ -10,7 +10,6 @@ async function getCourseTools() {
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
-			console.log(data);
 			toolHTML = '';
 			for (var key in data) {
 				toolHTML += "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
@@ -50,6 +49,7 @@ async function updateToolInstall(tool_id) {
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
+			console.log(data);
 			if ( (Object.hasOwn(data, 'success') && data['success'] && tool_toggle.checked) ||
 				(Object.hasOwn(data, 'success') && !data['success'] && !tool_toggle.checked) ) {
 					for (var key in data['installed']) {
