@@ -60,19 +60,20 @@ if (!isset($_GET['tool_id'])) {
 
 if ($_GET['action'] == "add") {
 	$result = addToolToCourse($platform, $_GET['tool_id'], $courseNumber);
-	if (!$result) {
-		print(json_encode(array('success' => false, 'errors' => 'Unable to add tool to course.')));
-		exit;
+	if ($result) {
+		print(json_encode(array('success' => true, 'action' => 'add', 'changed' => $result)));
+		exit;		
 	} else {
-		print(json_encode(array('success' => true, 'installed' => $result)));
+		print(json_encode(array('success' => false, 'action' => 'add', 'errors' => 'Unable to add tool to course.')));
 		exit;
 	}
 } else if ($_GET['action'] == 'remove') {
-	if (removeToolFromCourse($platform, $_GET['tool_id'], $courseNumber)) {
-		print(json_encode(array('success' => true)));
+	$result = removeToolFromCourse($platform, $_GET['tool_id'], $courseNumber);
+	if ($result) {
+		print(json_encode(array('success' => true, 'action' => 'remove', 'changed' => $result)));
 		exit;
 	} else {
-		print(json_encode(array('success' => false, 'errors' => 'Unable to remove tool from course.')));
+		print(json_encode(array('success' => false, 'action' => 'remove', 'errors' => 'Unable to remove tool from course.')));
 		exit;
 	}
 } else {
