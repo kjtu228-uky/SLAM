@@ -71,7 +71,7 @@ if ($_GET['action'] == "add") {
 	$result = removeToolFromCourse($platform, $_GET['tool_id'], $courseNumber);
 	if (is_array($result)) {
 		if ($result) print(json_encode(array('success' => true, 'action' => 'remove', 'changed' => $result)));
-		else print(json_encode(array('success' => true, 'action' => 'add', 'changed' => array($_GET['tool_id']))));
+		else print(json_encode(array('success' => true, 'message' => 'Other app(s) depends on this app', 'action' => 'add', 'changed' => array($_GET['tool_id']))));
 		exit;
 	} else {
 		print(json_encode(array('success' => false, 'action' => 'remove', 'errors' => 'Unable to remove tool from course.')));
