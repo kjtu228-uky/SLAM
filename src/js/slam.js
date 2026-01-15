@@ -72,6 +72,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 							document.getElementById(tool_container_id).classList.add("lti-tool-enabled");
 							// check if there is a notification associated with the tool and show it when trying to add it
 							if (document.getElementById(message_box_id) != null) {
+								console.log("Show notification for " + data['changed'][key]);
 								message_box = document.getElementById("tool_message_text_" + data['changed'][key]);
 								// need a way to get the deployment ID and tool name in the response!
 								//message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
