@@ -582,30 +582,27 @@ function addToolToCourse($platform, $tool_id, $course_number) {
  *
  * @return array of tool ids that were removed, or false if tool (or dependency) could not be removed.
  */
-function removeToolFromCourse($platform, $tool_id, $course_number) {
+function removeToolFromCourse($platform, $tool_id, $course_number, $dependents = array()) {
+	$tool_id = intval($tool_id);
 	$tool_config = getToolConfigById($tool_id);
 	if ($tool_config) {
+		// check if other enabled tools are dependent on this one
+		$otherEnabledTools = getCourseTools($platform, $course_number);
+		foreach ($otherEnabledTools as $tool) {
+			if ($tool['dependency'] == $tool_id && !in_array($tool['id'], $dependents))
+				return array();
+		}
 		$success = array($tool_id);
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
 		if ($availability['available']) {
 			if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
-				// check if any other tools depend on the dependency
-				$disableDependency = true;
-				$otherEnabledTools = getCourseTools($platform, $course_number);
-				foreach ($otherEnabledTools as $tool) {
-					if ($tool['id'] != $tool_id && $tool['dependency'] == $tool_config['dependency']) {
-						$disableDependency = false;
-						break;
-					}
-				}
-				if ($disableDependency) {
-					$dependency_result = removeToolFromCourse($platform, $tool_config['dependency'], $course_number);
-					if ($dependency_result) $success = array_merge($success, $dependency_result);
-					else {
-						logToolChange($platform, $tool_id, 0, $course_number, 0);
-						return false;
-					}
+				$dependents[] = $tool_id;
+				$dependency_result = removeToolFromCourse($platform, $tool_config['dependency'], $course_number, $dependents);
+				if ($dependency_result) $success = array_merge($success, $dependency_result);
+				else {
+					logToolChange($platform, $tool_id, 0, $course_number, 0);
+					return false;
 				}
 			}
 			// the API URL must be defined in the platform settings
