@@ -69,7 +69,7 @@ if ($_GET['action'] == "add") {
 	}
 } else if ($_GET['action'] == 'remove') {
 	$result = removeToolFromCourse($platform, $_GET['tool_id'], $courseNumber);
-	if ($result) {
+	if (is_array($result)) {
 		print(json_encode(array('success' => true, 'action' => 'remove', 'changed' => $result)));
 		exit;
 	} else {
