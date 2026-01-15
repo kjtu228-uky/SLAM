@@ -11,6 +11,8 @@ async function getCourseTools() {
 		})
 		.then(response => response.json()).then(data => {
 			toolHTML = '';
+			notificationsHTML = '';
+			console.log(data);
 			for (var key in data) {
 				toolHTML += "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
 				if (data[key]['enabled']) toolHTML += " lti-tool-enabled";
@@ -25,10 +27,19 @@ async function getCourseTools() {
 					toolHTML += data[key]['support_info'].replaceAll('\[TOOL_NAME\]', data[key]['name']);
 					toolHTML += "</div>";
 				}
+				if ('user_notice' in data[key] && data[key]['user_notice'] !== null && data[key]['user_notice'].length > 0) {
+					notificationsHTML += "<div class='tool-message' id='tool_message_'" + data[key]['id'] + "'>\n";
+					notificationsHTML += "  <div id='tool_message_text_" + data[key]['id'] + "'>Placeholder</div>\n";
+					notificationsHTML += "  <div style='clear:both; text-align:center;'>\n";
+					notificationsHTML += "    <input type='button' class='tool-message-button' value='Cancel' onclick='toolNoticeResponse(" + data[key]['id'] + ", true);'>\n";
+					notificationsHTML += "    <input type='button' class='tool-message-button' value='OK' onclick='toolNoticeResponse(" + data[key]['id'] + ", false);'>\n";
+					notificationsHTML += "  </div>\n</div>";
+				}
 				toolHTML += "</div>";
 			}
 			toolList.classList.remove('loading');
 			toolList.innerHTML = toolHTML;
+			document.getElementById('messageBoxes').innerHTML = notificationsHTML;
 		}).catch(error => {
 			console.log(error);
 		});
