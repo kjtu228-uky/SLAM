@@ -70,7 +70,8 @@ if ($_GET['action'] == "add") {
 } else if ($_GET['action'] == 'remove') {
 	$result = removeToolFromCourse($platform, $_GET['tool_id'], $courseNumber);
 	if (is_array($result)) {
-		print(json_encode(array('success' => true, 'action' => 'remove', 'changed' => $result)));
+		if ($result) print(json_encode(array('success' => true, 'action' => 'remove', 'changed' => $result)));
+		else print(json_encode(array('success' => true, 'action' => 'add', 'changed' => array($_GET['tool_id']))));
 		exit;
 	} else {
 		print(json_encode(array('success' => false, 'action' => 'remove', 'errors' => 'Unable to remove tool from course.')));
