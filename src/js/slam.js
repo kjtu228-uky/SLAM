@@ -28,7 +28,7 @@ async function getCourseTools() {
 					toolHTML += "</div>";
 				}
 				if ('user_notice' in data[key] && data[key]['user_notice'] !== null && data[key]['user_notice'].length > 0) {
-					notificationsHTML += "<div class='tool-message' id='tool_message_'" + data[key]['id'] + "'>\n";
+					notificationsHTML += "<div class='tool-message' id='tool_message_" + data[key]['id'] + "'>\n";
 					notificationsHTML += "  <div id='tool_message_text_" + data[key]['id'] + "'>Placeholder</div>\n";
 					notificationsHTML += "  <div style='clear:both; text-align:center;'>\n";
 					notificationsHTML += "    <input type='button' class='tool-message-button' value='Cancel' onclick='toolNoticeResponse(" + data[key]['id'] + ", true);'>\n";
@@ -45,7 +45,7 @@ async function getCourseTools() {
 		});
 }
 
-async function updateToolInstall(tool_id) {
+async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
 	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
@@ -65,10 +65,20 @@ async function updateToolInstall(tool_id) {
 				for (var key in data['changed']) {
 					var toggle_id = 'tool_select_' + data['changed'][key];
 					var tool_container_id = 'lti_tool_' + data['changed'][key];
+					var message_box_id = 'tool_message_' + data['changed'][key];
 					if (document.getElementById(toggle_id) != null) {
 						if (data['action'] == 'add') {
 							document.getElementById(toggle_id).checked = true;
 							document.getElementById(tool_container_id).classList.add("lti-tool-enabled");
+							// check if there is a notification associated with the tool and show it when trying to add it
+							if (document.getElementById(message_box_id) != null) {
+								message_box = document.getElementById("tool_message_text_" + data['changed'][key]);
+								// need a way to get the deployment ID and tool name in the response!
+								//message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
+								//message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data[tool_id]['name']);
+								message_box.style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
+								message_box.style.display = "block";
+							}
 						} else {
 							document.getElementById(toggle_id).checked = false;
 							document.getElementById(tool_container_id).classList.remove("lti-tool-enabled");
@@ -101,7 +111,7 @@ function toolNoticeResponse(tool_id, cancelAdd) {
 		document.getElementById("tool_select_"+tool_id).click();
 }
 
-function updateToggles(toolsStatus) {
+/* function updateToggles(toolsStatus) {
  	for (var key in toolsStatus) {
 		var toggle = 'tool_select_' + key;
 		var tool_container = 'lti_tool_' + key;
@@ -115,7 +125,7 @@ function updateToggles(toolsStatus) {
 			}
 		}
 	}
-}
+} */
 
 function setToolContainerSize() {
 	toolContainerHeight = parseInt(window.innerHeight) -
