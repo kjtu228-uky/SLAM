@@ -96,6 +96,7 @@ EOD;
 	</div>
 	<div id='messageBoxes'>
 	</div>
+
 EOD;
 } else {
 	$page .= <<< EOD
