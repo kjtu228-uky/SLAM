@@ -524,6 +524,7 @@ function getEnabledTools($platform, $course_number) {
  * @return array of tool ids that were added, or false if tool (or dependency) could not be added.
  */
 function addToolToCourse($platform, $tool_id, $course_number) {
+	$tool_id = intval($tool_id);
 	$tool_config = getToolConfigById($tool_id);
 	if ($tool_config) {
 		$success = array($tool_id);
