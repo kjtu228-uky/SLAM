@@ -94,6 +94,8 @@ EOD;
 
 	<div id='toolList' class='lti-tools-container'>
 	</div>
+	<div id='messageBoxes'>
+	</div>
 EOD;
 } else {
 	$page .= <<< EOD
