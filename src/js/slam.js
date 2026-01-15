@@ -77,8 +77,8 @@ async function updateToolInstall(tool_id, confirmed = false) {
 								// need a way to get the deployment ID and tool name in the response!
 								//message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
 								//message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data[tool_id]['name']);
-								message_box.style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
-								message_box.style.display = "block";
+								document.getElementById(message_box_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
+								document.getElementById(message_box_id).style.display = "block";
 							}
 						} else {
 							document.getElementById(toggle_id).checked = false;
