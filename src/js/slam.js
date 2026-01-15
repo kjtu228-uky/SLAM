@@ -64,6 +64,9 @@ async function updateToolInstall(tool_id) {
 						}
 					}
 				}
+				if (Object.hasOwn(data, 'message')) {
+					// display the message somehow
+				}
 			} else {
 				console.log(data['errors']);
 				if (data['action'] == 'add') {
