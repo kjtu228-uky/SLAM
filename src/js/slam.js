@@ -74,7 +74,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 							if (document.getElementById(message_box_id) != null) {
 								//console.log("Show notification for " + data['changed'][key]);
 								message_box = document.getElementById("tool_message_text_" + data['changed'][key]);
-								tool_detail = data[details][data['changed'][key]];
+								tool_detail = data['details'][data['changed'][key]];
 								console.log(tool_detail);
 								//if (Object.hasOwn(data, 'details') && data['details'][key]['deployment_id'] != '')
 									//message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data['details'][key]['deployment_id']);
