@@ -52,7 +52,7 @@ $showVal = function($val) {
 $tool_id = $_GET['id'];
 $tool_name = $lti_tools[$tool_id]['name'];
 if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
-if (isset($_GET['update_tool']) && $updateResult) $changes_saved = "<span class='update-notification'>Changes saved</span>";
+$changes_saved = (isset($_GET['update_tool']) && $updateResult)?"<span class='update-notification'>Changes saved</span>":"";
 $is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
 // prepare text for textareas
 $html_tool_support = "";
@@ -100,7 +100,7 @@ EOD;
 		if ($lti_tool['id'] != $_GET['id']) {
 			$selected_option = ($lti_tool['id'] == $lti_tools[$tool_id]['dependency'])?" selected":"";
 			$body .= <<< EOD
-					<option value="{$lti_tool['id']}">{$lti_tool['name']}{$selected_option}</option>
+					<option value="{$lti_tool['id']}"{$selected_option}>{$lti_tool['name']}</option>
 EOD;
 		}
 	}
