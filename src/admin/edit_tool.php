@@ -98,8 +98,9 @@ EOD;
 	foreach ($lti_tools as $lti_tool) {
 		// don't allow a tool to depend on itself
 		if ($lti_tool['id'] != $_GET['id']) {
+			$selected_option = ($lti_tool['id'] == $lti_tools[$tool_id]['dependency'])?" selected":"";
 			$body .= <<< EOD
-					<option value="{$lti_tool['id']}">{$lti_tool['name']}</option>
+					<option value="{$lti_tool['id']}">{$lti_tool['name']}{$selected_option}</option>
 EOD;
 		}
 	}
