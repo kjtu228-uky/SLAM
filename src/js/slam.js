@@ -80,7 +80,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', tool_detail['deployment_id']);
 								else
 									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', '(No course-level Deployment ID)');
-								//message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data['details'][key]['name']);
+								message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', tool_detail['name']);
 								document.getElementById(message_box_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
 								document.getElementById(message_box_id).style.display = "block";
 							}
