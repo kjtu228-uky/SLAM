@@ -12,7 +12,6 @@ async function getCourseTools() {
 		.then(response => response.json()).then(data => {
 			toolHTML = '';
 			notificationsHTML = '';
-			console.log(data);
 			for (var key in data) {
 				toolHTML += "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
 				if (data[key]['enabled']) toolHTML += " lti-tool-enabled";
@@ -60,7 +59,6 @@ async function updateToolInstall(tool_id, confirmed = false) {
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
-			console.log(data);
 			if (Object.hasOwn(data, 'success') && data['success']) {
 				for (var key in data['changed']) {
 					var toggle_id = 'tool_select_' + data['changed'][key];
@@ -72,10 +70,8 @@ async function updateToolInstall(tool_id, confirmed = false) {
 							document.getElementById(tool_container_id).classList.add("lti-tool-enabled");
 							// check if there is a notification associated with the tool and show it when trying to add it
 							if (document.getElementById(message_box_id) != null) {
-								//console.log("Show notification for " + data['changed'][key]);
 								message_box = document.getElementById("tool_message_text_" + data['changed'][key]);
 								tool_detail = data['details'][data['changed'][key]];
-								console.log(tool_detail);
 								if (Object.hasOwn(tool_detail, 'deployment_id') && tool_detail['deployment_id'] != '')
 									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', tool_detail['deployment_id']);
 								else
