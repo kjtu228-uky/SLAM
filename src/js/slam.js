@@ -29,7 +29,7 @@ async function getCourseTools() {
 				}
 				if ('user_notice' in data[key] && data[key]['user_notice'] !== null && data[key]['user_notice'].length > 0) {
 					notificationsHTML += "<div class='tool-message' id='tool_message_" + data[key]['id'] + "'>\n";
-					notificationsHTML += "  <div id='tool_message_text_" + data[key]['id'] + "'>Placeholder</div>\n";
+					notificationsHTML += "  <div id='tool_message_text_" + data[key]['id'] + "'>" + data[key]['user_notice'] + "</div>\n";
 					notificationsHTML += "  <div style='clear:both; text-align:center;'>\n";
 					notificationsHTML += "    <input type='button' class='tool-message-button' value='Cancel' onclick='toolNoticeResponse(" + data[key]['id'] + ", true);'>\n";
 					notificationsHTML += "    <input type='button' class='tool-message-button' value='OK' onclick='toolNoticeResponse(" + data[key]['id'] + ", false);'>\n";
