@@ -68,7 +68,7 @@ if ($_GET['action'] == "add") {
 				$fullToolInfo = getLTIRegistration($platform, $tool_config['canvas_id']);
 				$addedToolsDetail[$tool_id] = array(
 					'name' => $fullToolInfo['name'],
-					'deployment_id' => getDeploymentId($platform, $tool_config['canvas_id'], $courseNumber);
+					'deployment_id' => getDeploymentId($platform, $tool_config['canvas_id'], $courseNumber)
 				);
 			}
 		}
