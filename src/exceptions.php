@@ -61,7 +61,18 @@ if (!isset($_GET['tool_id'])) {
 if ($_GET['action'] == "add") {
 	$result = addToolToCourse($platform, $_GET['tool_id'], $courseNumber);
 	if ($result) {
-		print(json_encode(array('success' => true, 'action' => 'add', 'changed' => $result)));
+		if (is_array($result)) {
+			$addedToolsDetail = array();
+			foreach ($result as $tool_id) {
+				$tool_config = getToolConfigById($tool_id);
+				$fullToolInfo = getLTIRegistration($platform, $tool_config['canvas_id']);
+				$addedToolsDetail[$tool_id] = array(
+					'name' => $fullToolInfo['name'],
+					'deployment_id' => getDeploymentId($platform, $tool_config['canvas_id'], $courseNumber);
+				);
+			}
+		}
+		print(json_encode(array('success' => true, 'action' => 'add', 'changed' => $result, 'details' => $addedToolsDetail)));
 		exit;		
 	} else {
 		print(json_encode(array('success' => false, 'action' => 'add', 'errors' => 'Unable to add tool to course.')));
