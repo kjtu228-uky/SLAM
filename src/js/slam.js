@@ -74,11 +74,11 @@ async function updateToolInstall(tool_id, confirmed = false) {
 							if (document.getElementById(message_box_id) != null) {
 								console.log("Show notification for " + data['changed'][key]);
 								message_box = document.getElementById("tool_message_text_" + data['changed'][key]);
-								if (Object.hasOwn(data[tool_id], 'deployment_id') && data[tool_id]['deployment_id'] != '')
-									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data[tool_id]['deployment_id']);
+								if (Object.hasOwn(data, 'details') && data['details'][key]['deployment_id'] != '')
+									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data['details'][key]['deployment_id']);
 								else
 									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', '(No course-level Deployment ID)');
-								message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data[tool_id]['name']);
+								message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data['details'][key]['name']);
 								document.getElementById(message_box_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
 								document.getElementById(message_box_id).style.display = "block";
 							}
