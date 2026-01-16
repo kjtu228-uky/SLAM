@@ -198,16 +198,12 @@ function getGuid()
 {
     return sprintf('%04x%04x-%04x-%04x-%02x%02x-%04x%04x%04x', mt_rand(0, 65535), mt_rand(0, 65535), // 32 bits for "time_low"
         mt_rand(0, 65535), // 16 bits for "time_mid"
-        mt_rand(0, 4096) + 16384, // 16 bits for "time_hi_and_version", with
-// the most significant 4 bits being 0100
-// to indicate randomly generated version
-        mt_rand(0, 64) + 128, // 8 bits  for "clock_seq_hi", with
-// the most significant 2 bits being 10,
-// required by version 4 GUIDs.
+        mt_rand(0, 4096) + 16384, // 16 bits for "time_hi_and_version", with the most significant 4 bits being 0100 to indicate randomly generated version
+        mt_rand(0, 64) + 128, // 8 bits  for "clock_seq_hi", with the most significant 2 bits being 10, required by version 4 GUIDs.
         mt_rand(0, 256), // 8 bits  for "clock_seq_low"
         mt_rand(0, 65535), // 16 bits for "node 0" and "node 1"
         mt_rand(0, 65535), // 16 bits for "node 2" and "node 3"
-        mt_rand(0, 65535)         // 16 bits for "node 4" and "node 5"
+        mt_rand(0, 65535)  // 16 bits for "node 4" and "node 5"
     );
 }
 
@@ -389,50 +385,6 @@ function getLTIRegistration($platform, $registrationId) {
 	}
 	return $LTIregistration;
 }
-
-/**
- * Get a course level deployment ID.
- *
- * @return string.
- */
-/* function getDeploymentId($platform, $registrationId, $course_number) {
-	$deploymentId = "";
-	if (!is_numeric($registrationId)) return $deploymentId;
-	if (!is_numeric($course_number)) return $deploymentId;
-	if (platformHasToken($platform)) {
-		// the API URL must be defined in the platform settings
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return $deploymentId;
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return $deploymentId;
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/deployments';
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, 1);
-		$response = curl_exec($ch);		
-		$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-		$response_headers = substr($response, 0, $response_header_size);
-		$response_body = substr($response, $response_header_size);
-		curl_close($ch);
-		if ($response_http_code != 200)
-			return "Error: API request failed with status $response_http_code";
-		$deployments = json_decode($response_body, true);
-		if (is_array($deployments)) {
-			foreach ($deployments as $deployment) {
-				if (isset($deployment['context_type']) && $deployment['context_type'] == "Course" && $deployment['context_id'] == $course_number)
-					return $deployment['deployment_id'];
-			}
-		}
-	}
-	return $deploymentId;
-} */
 
 /**
  * Retrieve all available tools configured for the platform.
