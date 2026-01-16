@@ -409,6 +409,7 @@ function setToolConfig($platform, $toolConfig) {
 	if (isset($toolConfig['visible']) && $toolConfig['visible']) $updatedFields[] = "visible = true";
 	else $updatedFields[] = "visible = false";
 	if (isset($toolConfig['dependency']) && $toolConfig['dependency']) $updatedFields[] = "dependency = :dependency";
+	else $updatedFields[] = "dependency = NULL";
 	if (isset($toolConfig['config']) && $toolConfig['config']) $updatedFields[] = "config = :config";
 	if (isset($toolConfig['userNotice']) && $toolConfig['userNotice']) $updatedFields[] = "user_notice = :user_notice";
 	if (isset($toolConfig['supportInfo']) && $toolConfig['supportInfo']) $updatedFields[] = "support_info = :support_info";
