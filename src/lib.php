@@ -395,7 +395,7 @@ function getLTIRegistration($platform, $registrationId) {
  *
  * @return string.
  */
-function getDeploymentId($platform, $registrationId, $course_number) {
+/* function getDeploymentId($platform, $registrationId, $course_number) {
 	$deploymentId = "";
 	if (!is_numeric($registrationId)) return $deploymentId;
 	if (!is_numeric($course_number)) return $deploymentId;
@@ -432,7 +432,7 @@ function getDeploymentId($platform, $registrationId, $course_number) {
 		}
 	}
 	return $deploymentId;
-}
+} */
 
 /**
  * Retrieve all available tools configured for the platform.
@@ -490,7 +490,7 @@ function isAvailable($platform, $registrationId, $courseNumber) {
 						foreach ($control['context_controls'] as $context_control) {
 							if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
 								$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
-									return array('available' => true, 'context_id' => $context_control['id']);
+									return array('available' => true, 'context_id' => $context_control['id'], 'deployment_id' => $control['deployment_id']);
 						}
 					}
 				}
