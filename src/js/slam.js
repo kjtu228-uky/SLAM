@@ -72,13 +72,14 @@ async function updateToolInstall(tool_id, confirmed = false) {
 							document.getElementById(tool_container_id).classList.add("lti-tool-enabled");
 							// check if there is a notification associated with the tool and show it when trying to add it
 							if (document.getElementById(message_box_id) != null) {
-								console.log("Show notification for " + data['changed'][key]);
+								//console.log("Show notification for " + data['changed'][key]);
 								message_box = document.getElementById("tool_message_text_" + data['changed'][key]);
-								if (Object.hasOwn(data, 'details') && data['details'][key]['deployment_id'] != '')
-									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data['details'][key]['deployment_id']);
-								else
-									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', '(No course-level Deployment ID)');
-								message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data['details'][key]['name']);
+								console.log(data['details'][key]);
+								//if (Object.hasOwn(data, 'details') && data['details'][key]['deployment_id'] != '')
+									//message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', data['details'][key]['deployment_id']);
+								//else
+									//message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', '(No course-level Deployment ID)');
+								//message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', data['details'][key]['name']);
 								document.getElementById(message_box_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
 								document.getElementById(message_box_id).style.display = "block";
 							}
