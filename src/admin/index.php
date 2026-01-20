@@ -444,19 +444,14 @@ EOD;
         $v1p3Selected = ' selected';
     }
 
-    $page .= <<< EOD
+	if ($mode == 'Update') {
+		$page .= <<< EOD
 <h2><a name="edit">{$mode} platform</a></h2>
 
 <form action="./" method="post">
 <div class="box">
-  <span class="label">LTI version:</span>&nbsp;<select name="ltiversion" id="id_ltiversion" onchange="onVersionChange(this);">
-    <option value="{$v1}"{$v1Selected}>1.0/1.1/1.2/2.0</option>
-    <option value="{$v1p3}"{$v1p3Selected}>1.3</option>
-  </select><br />
-  <br />
+	<input type="hidden" id="id_ltiversion" name="ltiversion" value="{$v1p3}">
   <span class="label">Name:<span class="required" title="required">*</span></span>&nbsp;<input name="name" type="text" size="50" maxlength="50" value="{$name}" /><br /><br />
-  <span id="id_key"><span class="label">Key:</span>&nbsp;<input name="key" type="text" size="75" maxlength="50" value="{$key}"{$update} /><br /></span>
-  <span id="id_secret"><span class="label">Secret:</span>&nbsp;<input name="secret" type="text" size="75" maxlength="200" value="{$secret}"{$lti2} /><br /></span>
   <span id="id_platformid"><span class="label">Platform ID:</span>&nbsp;<input name="platformid" type="text" size="75" maxlength="255" value="{$platformId}" /><br /></span>
   <span id="id_clientid"><span class="label">Client ID:</span>&nbsp;<input name="clientid" type="text" size="75" maxlength="255" value="{$clientId}" /><br /></span>
   <span id="id_deploymentid"><span class="label">Deployment ID:</span>&nbsp;<input name="deploymentid" type="text" size="75" maxlength="255" value="{$deploymentId}" /><br /></span>
@@ -497,6 +492,7 @@ EOD;
 </form>
 
 EOD;
+	}
 }
 
 // Page footer
