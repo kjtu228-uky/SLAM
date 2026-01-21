@@ -52,7 +52,6 @@ if (!isset($lti_tools[$_GET['id']])) {
 		}
 
 		function onIdle() {
-			console.log("User has been idle for a while. Taking action (e.g., logout, show message).");
 			// Set the body of the page to ask user to relaunch SLAM
 			relaunchSLAM = `
 	<div id='slamTitle' class='slam-title'>
