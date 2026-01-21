@@ -60,8 +60,16 @@ $page = <<< EOD
 
 	function onIdle() {
 		console.log("User has been idle for a while. Taking action (e.g., logout, show message).");
-		// Add your action here:
-		alert("You've been idle!");
+		// Set the body of the page to ask user to relaunch SLAM
+		relaunchSLAM = `
+	<div id='slamTitle' class='slam-title'>
+		<div style='width: 100%;'>
+			<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		</div>
+	</div>
+	<h2>Page timeout</h2>
+	<p>You have been idle and the session has timed out. Please re-launch SLAM from the course menu.</p>`;
+		document.body.innerHTML = relaunchSLAM;
 	}
 
 	// Event listeners to detect user activity
