@@ -109,7 +109,7 @@ footer {
 .tool-message {
 	border: 5px solid #888;
 	border-radius: 5px;
-	box-shadow: 3px 3px #AABBCC;
+	box-shadow: 4px 4px 3px #AABBCC;
 	position: absolute;
 	background: #fffbe6;
 	top: 50%;
