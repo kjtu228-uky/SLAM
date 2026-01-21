@@ -34,7 +34,7 @@ if (!$ok || !isToolAdmin($platform)) {
 	<link rel="stylesheet" href="../css/slam.css">
 	<script>
 		let idleTimer; // Variable to hold the timeout ID
-		const timeoutDuration = {$showVal(IDLE_TIME)};
+		const timeoutDuration = <?php echo IDLE_TIME; ?>;
 
 		function resetTimer() {
 			clearTimeout(idleTimer); // Clear the previous timer
