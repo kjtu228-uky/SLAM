@@ -51,7 +51,7 @@ $page = <<< EOD
   <script type="text/javascript" src="js/slam.js"></script>
   <script>
 	let idleTimer; // Variable to hold the timeout ID
-	const timeoutDuration = 30000; // 30 seconds in milliseconds
+	const timeoutDuration = {$showVal(IDLE_TIME)};
 
 	function resetTimer() {
 		clearTimeout(idleTimer); // Clear the previous timer
@@ -68,7 +68,7 @@ $page = <<< EOD
 		</div>
 	</div>
 	<h2>Page timeout</h2>
-	<p>You have been idle and the session has timed out. Please re-launch SLAM from the course menu.</p>`;
+	<p>Your session has timed out. Please re-launch SLAM from the course menu.</p>`;
 		document.body.innerHTML = relaunchSLAM;
 	}
 
