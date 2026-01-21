@@ -51,7 +51,7 @@ $page = <<< EOD
   <script type="text/javascript" src="js/slam.js"></script>
   <script>
 	let idleTimer; // Variable to hold the timeout ID
-	const timeoutDuration = 300000; // 5 minutes in milliseconds
+	const timeoutDuration = 30000; // 30 seconds in milliseconds
 
 	function resetTimer() {
 		clearTimeout(idleTimer); // Clear the previous timer
