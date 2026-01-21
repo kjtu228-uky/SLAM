@@ -46,6 +46,7 @@ define('CUSTOM_FIELDS', array( // you shouldn't need anything here unless you ar
 #	'USER_DISPLAY_NAME'=>"Person.name.display",
 #	'USER_USERNAME'=>"Canvas.user.loginId"
 ));
+define('IDLE_TIME', 300000); // the amount of time (milliseconds) a user is idle before asking the user to relaunch SLAM from course menu
 
 ###
 ###  Database connection settings
