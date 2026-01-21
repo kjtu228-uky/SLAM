@@ -49,6 +49,30 @@ $page = <<< EOD
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="css/slam.css">
   <script type="text/javascript" src="js/slam.js"></script>
+  <script>
+	let idleTimer; // Variable to hold the timeout ID
+	const timeoutDuration = 300000; // 5 minutes in milliseconds
+
+	function resetTimer() {
+		clearTimeout(idleTimer); // Clear the previous timer
+		idleTimer = setTimeout(onIdle, timeoutDuration); // Set a new one
+	}
+
+	function onIdle() {
+		console.log("User has been idle for a while. Taking action (e.g., logout, show message).");
+		// Add your action here:
+		alert("You've been idle!");
+	}
+
+	// Event listeners to detect user activity
+	document.addEventListener('mousemove', resetTimer);
+	document.addEventListener('keydown', resetTimer);
+	document.addEventListener('click', resetTimer);
+	document.addEventListener('scroll', resetTimer);
+
+	// Start the timer initially
+	resetTimer();
+  </script>
 </head>
 <body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools();">
 
