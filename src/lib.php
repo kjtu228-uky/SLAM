@@ -296,10 +296,10 @@ function platformHasToken($platform, $refresh = false) {
  *
  */
 function requestNewToken($platform) {
-	if ($_SESSION['username'] != $platform->getSetting('api_user_id')) {
+/* 	if ($_SESSION['username'] != $platform->getSetting('api_user_id')) {
 		Util::logError("The logged in user is not the one to get a token. " . $_SESSION['username'] . " is not " . $platform->getSetting('api_user_id'));
 		return false;
-	}
+	} */
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
 	if (!$api_url) return false;
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
