@@ -50,7 +50,7 @@ $page = <<< EOD
   <link rel="stylesheet" href="css/slam.css">
   <script type="text/javascript" src="js/slam.js"></script>
 </head>
-<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools(); initializeTimer({$showVal(IDLE_TIME)});">
+<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools();">
 
 EOD;
 
