@@ -32,10 +32,10 @@ if ($ok) {
 	$courseName = $resourceLink->getSetting('custom_course_name');
 	$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
 	$courseNumber = $resourceLink->getSetting('custom_course_number');
-	$allSettings = $resourceLink->getSettings(); // will return all settings
+/* 	$allSettings = $resourceLink->getSettings(); // will return all settings
 	foreach ($allSettings as $key => $setting) {
 		Util::logError("key: " . $key . ", setting: " . $setting);
-	}
+	} */
 	if (!platformHasToken($platform)) $ok = false;
 }
 
@@ -53,7 +53,7 @@ $page = <<< EOD
   <link rel="stylesheet" href="css/slam.css">
   <script type="text/javascript" src="js/slam.js"></script>
 </head>
-<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools();">
+<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools(); initializeTimer({$showVal(IDLE_TIME)});">
 
 EOD;
 
