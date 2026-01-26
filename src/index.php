@@ -33,6 +33,8 @@ if ($ok) {
 	$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
 	$courseNumber = $resourceLink->getSetting('custom_course_number');
 	//$resourceLink->getSettings() will return all settings
+	Util::logError("ok: " . $ok);
+
 	if (!platformHasToken($platform)) $ok = false;
 }
 
