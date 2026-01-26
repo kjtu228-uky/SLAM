@@ -42,7 +42,7 @@ if (!isset($lti_tools[$_GET['id']])) {
 	<meta name="description" content="An LTI app that allows Canvas users to self-manage LTI apps in their course." />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="../css/slam.css">
-	<script type="text/javascript" src="js/slam.js"></script>
+	<script type="text/javascript" src="../js/slam.js"></script>
 </head>
 <body onload="initializeTimer(<?php echo IDLE_TIME; ?>);">
 <div style='display: flex; flex-direction: column; height: 98vh;'>
