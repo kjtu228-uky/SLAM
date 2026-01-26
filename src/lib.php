@@ -238,7 +238,10 @@ function platformHasToken($platform, $refresh = false) {
 	$api_url = $platform->getSetting('api_url');
 	$api_client_id = $platform->getSetting('api_client_id');
 	$api_client_secret = $platform->getSetting('api_client_secret');
-	if (!$api_url || !$api_client_id || !$api_client_secret) return false;
+	if (!$api_url || !$api_client_id || !$api_client_secret) {
+		Util::logError("Platform settings are not fully configured (ID: " . $platform->getRecordId() . ")");
+		return false;
+	}
 	// check if the platform has an access token; if not, request one from Canvas
 	$access_token = $platform->getSetting('access_token');
 	if ($access_token) $access_token = json_decode($access_token);
