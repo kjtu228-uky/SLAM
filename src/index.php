@@ -49,39 +49,8 @@ $page = <<< EOD
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="css/slam.css">
   <script type="text/javascript" src="js/slam.js"></script>
-  <script>
-	let idleTimer; // Variable to hold the timeout ID
-	const timeoutDuration = {$showVal(IDLE_TIME)};
-
-	function resetTimer() {
-		clearTimeout(idleTimer); // Clear the previous timer
-		idleTimer = setTimeout(onIdle, timeoutDuration); // Set a new one
-	}
-
-	function onIdle() {
-		// Set the body of the page to ask user to relaunch SLAM
-		relaunchSLAM = `
-	<div id='slamTitle' class='slam-title'>
-		<div style='width: 100%;'>
-			<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
-		</div>
-	</div>
-	<h2>Page timeout</h2>
-	<p>Your session has timed out. Please re-launch SLAM from the course menu.</p>`;
-		document.body.innerHTML = relaunchSLAM;
-	}
-
-	// Event listeners to detect user activity
-	document.addEventListener('mousemove', resetTimer);
-	document.addEventListener('keydown', resetTimer);
-	document.addEventListener('click', resetTimer);
-	document.addEventListener('scroll', resetTimer);
-
-	// Start the timer initially
-	resetTimer();
-  </script>
 </head>
-<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools();">
+<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools(); initializeTimer({$showVal(IDLE_TIME)});">
 
 EOD;
 
