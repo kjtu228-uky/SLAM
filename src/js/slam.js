@@ -1,4 +1,5 @@
-
+let idleTimer; // Variable to hold the timeout ID
+let timeoutDuration; // Variable to hold the timeout duration (in milliseconds)
 
 async function getCourseTools() {
 	// remove any tools currently displayed and show a loading wheel
@@ -120,4 +121,33 @@ function setToolContainerSize() {
 		parseInt(document.getElementById('slamDescription').clientHeight) -
 		parseInt(document.getElementById('courseTitle').clientHeight) - 100;
 	document.getElementById('toolList').style.height = toolContainerHeight + "px";
+}
+
+function initializeTimer(duration = 120000) { // set the default value of the timer to 2 minutes
+	timeoutDuration = duration;
+	// Event listeners to detect user activity
+	document.addEventListener('mousemove', resetTimer);
+	document.addEventListener('keydown', resetTimer);
+	document.addEventListener('click', resetTimer);
+
+	// Start the timer initially
+	resetTimer();
+}
+
+function onIdle() {
+	// Set the body of the page to ask user to relaunch SLAM
+	relaunchSLAM = `
+<div id='slamTitle' class='slam-title'>
+<div style='width: 100%;'>
+	<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
+</div>
+</div>
+<h2>Page timeout</h2>
+<p>Your session has timed out. Please re-launch SLAM from the course menu.</p>`;
+	document.body.innerHTML = relaunchSLAM;
+}
+
+function resetTimer() {
+	clearTimeout(idleTimer); // Clear the previous timer
+	idleTimer = setTimeout(onIdle, timeoutDuration); // Set a new one
 }
