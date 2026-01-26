@@ -1,3 +1,6 @@
+let idleTimer; // Variable to hold the timeout ID
+let timeoutDuration; // Variable to hold the timeout duration (in milliseconds)
+
 async function getCourseTools() {
 	// remove any tools currently displayed and show a loading wheel
 	toolList = document.getElementById('toolList');
@@ -112,26 +115,39 @@ function toolNoticeResponse(tool_id, cancelAdd) {
 		document.getElementById("tool_select_"+tool_id).click();
 }
 
-/* function updateToggles(toolsStatus) {
- 	for (var key in toolsStatus) {
-		var toggle = 'tool_select_' + key;
-		var tool_container = 'lti_tool_' + key;
-		if (document.getElementById(toggle) != null) {
-			if (toolsStatus[key]['enabled'] > 0) {
-				document.getElementById(toggle).checked = true;
-				document.getElementById(tool_container).classList.add("lti-tool-enabled");
-			} else {
-				document.getElementById(toggle).checked = false;
-				document.getElementById(tool_container).classList.remove("lti-tool-enabled");
-			}
-		}
-	}
-} */
-
 function setToolContainerSize() {
 	toolContainerHeight = parseInt(window.innerHeight) -
 		parseInt(document.getElementById('slamTitle').clientHeight) -
 		parseInt(document.getElementById('slamDescription').clientHeight) -
 		parseInt(document.getElementById('courseTitle').clientHeight) - 100;
 	document.getElementById('toolList').style.height = toolContainerHeight + "px";
+}
+
+function initializeTimer(duration = 120000) { // set the default value of the timer to 2 minutes
+	timeoutDuration = duration;
+	// Event listeners to detect user activity
+	document.addEventListener('mousemove', resetTimer);
+	document.addEventListener('keydown', resetTimer);
+	document.addEventListener('click', resetTimer);
+
+	// Start the timer initially
+	resetTimer();
+}
+
+function onIdle() {
+	// Set the body of the page to ask user to relaunch SLAM
+	relaunchSLAM = `
+<div id='slamTitle' class='slam-title'>
+<div style='width: 100%;'>
+	<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
+</div>
+</div>
+<h2>Page timeout</h2>
+<p>Your session has timed out. Please re-launch SLAM from the course menu.</p>`;
+	document.body.innerHTML = relaunchSLAM;
+}
+
+function resetTimer() {
+	clearTimeout(idleTimer); // Clear the previous timer
+	idleTimer = setTimeout(onIdle, timeoutDuration); // Set a new one
 }
