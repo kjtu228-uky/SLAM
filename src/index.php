@@ -34,8 +34,8 @@ if ($ok) {
 	$courseNumber = $resourceLink->getSetting('custom_course_number');
 	//$resourceLink->getSettings() will return all settings
 	Util::logError("ok: " . $ok);
-
 	if (!platformHasToken($platform)) $ok = false;
+	Util::logError("ok: " . $ok);
 }
 
 $showVal = function($val) {
