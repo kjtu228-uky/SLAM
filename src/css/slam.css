@@ -225,7 +225,7 @@ input:checked + .slider:before {
 	height: 2em;
 }
 .lti-tool-editor-textarea {
-	width: 100%;
+	flex-grow: 1;
 }
 .lti-tool-editor-button-panel {
 	width: 95%;
