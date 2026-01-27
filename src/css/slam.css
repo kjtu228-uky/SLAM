@@ -212,6 +212,7 @@ input:checked + .slider:before {
 	top: -3px;
 }
 .lti-tool-editor-text {
+	margin: 10px 15px;
 }
 .lti-tool-editor-form-item {
 	display: flex;
