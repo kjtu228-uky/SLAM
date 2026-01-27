@@ -130,7 +130,7 @@ EOD;
 			<div class='lti-tool-editor-button-panel'>
 				{$changes_saved}
 			</div>
-			<div class='lti-tool-editor-form-item'>
+			<div class='lti-tool-editor-text'>
 				<p>The <strong>User Notice</strong> and <strong>Support Info</strong> text fields will accept a subset of HTML tags (strong, href, i).</p>
 				<p>The <strong>User Notice</strong> text field supports custom tags &#91;DEPLOYMENT_ID&#93; and &#91;TOOL_NAME&#93;.
 					SLAM will substitute the corresponding values in the message displayed to the instructor.</p>
