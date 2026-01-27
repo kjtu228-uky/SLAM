@@ -162,7 +162,7 @@ function pageFooter()
 
     return <<< EOD
     <footer>
-      <div>{$here(APP_NAME)} version {$here(APP_VERSION)} &copy; {$here(date('Y'))} <a href="//celtic-project.org/" target="_blank">ceLTIc Project</a> (powered by its open source <a href="https://github.com/celtic-project/LTI-PHP" target="_blank">LTI-PHP library</a>)</div>
+      <div>{$here(APP_NAME)} version {$here(APP_VERSION)} &copy; {$here(date('Y'))} <a href="https://online.uky.edu/" target="_blank">UK Online</a> (powered by <a href="https://celtic-project.org/" target="_blank">the ceLTIc Project's</a> open source <a href="https://github.com/celtic-project/LTI-PHP" target="_blank">LTI-PHP library</a>)</div>
     </footer>
 
 EOD;
@@ -296,10 +296,10 @@ function platformHasToken($platform, $refresh = false) {
  *
  */
 function requestNewToken($platform) {
-/* 	if ($_SESSION['username'] != $platform->getSetting('api_user_id')) {
-		Util::logError("The logged in user is not the one to get a token. " . $_SESSION['username'] . " is not " . $platform->getSetting('api_user_id'));
+	if ($_SESSION['username'] != $platform->getSetting('api_user_id')) {
+		Util::logError("The logged in user (" . $_SESSION['username'] . ") is not the user configured to request a token for SLAM (" . $platform->getSetting('api_user_id') . "). Platform ID: " . $platform->getRecordId());
 		return false;
-	} */
+	}
 	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
 	if (!$api_url) return false;
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
