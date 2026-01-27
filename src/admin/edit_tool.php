@@ -110,18 +110,17 @@ EOD;
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
-				<label for="config" class="lti-tool-editor-label">Config (JSON):</label>
-				<textarea id="config" name="config" rows="5" class="lti-tool-editor-textarea">{$html_tool_adv_config}</textarea>
-			</div>
-
-			<div class='lti-tool-editor-form-item'>
 				<label for="userNotice" class="lti-tool-editor-label">User Notice:</label>
-				<textarea id="userNotice" name="userNotice" rows="5" class="lti-tool-editor-textarea">{$html_tool_notice}</textarea>
+				<textarea id="userNotice"
+					name="userNotice" rows="5" class="lti-tool-editor-textarea"
+					placeholder="This will be displayed to the instructor as a pop-up when they enable the tool.">{$html_tool_notice}</textarea>
 			</div>
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="supportInfo" class="lti-tool-editor-label">Support Info:</label>
-				<textarea id="supportInfo" name="supportInfo" rows="5" class="lti-tool-editor-textarea">{$html_tool_support}</textarea>
+				<textarea id="supportInfo"
+					name="supportInfo" rows="5" class="lti-tool-editor-textarea"
+					placeholder="Information displayed beneath the tool name to provide support information to the instructor.">{$html_tool_support}</textarea>
 			</div>
 			
 			<div class='lti-tool-editor-button-panel'>
@@ -130,6 +129,11 @@ EOD;
 			</div>
 			<div class='lti-tool-editor-button-panel'>
 				{$changes_saved}
+			</div>
+			<div class='lti-tool-editor-button-panel'>
+				<p>The <strong>User Notice</strong> and <strong>Support Info</strong> text fields will accept a subset of HTML tags (strong, href, i).</p>
+				<p>The <strong>User Notice</strong> text field supports custom tags &#91;DEPLOYMENT_ID&#93; and &#91;TOOL_NAME&#93;.
+					SLAM will substitute the corresponding values in the message displayed to the instructor.</p>
 			</div>
 		</form>
 	</div>
