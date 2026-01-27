@@ -93,7 +93,7 @@ $body = <<< EOD
 
 			<div class='lti-tool-editor-form-item'>
 				<label for="dependency" class="lti-tool-editor-label">Depends on:</label>
-				<select id="dependency" name="dependency">
+				<select id="dependency" name="dependency" class="lti-tool-editor-select">
 					<option value="">-- None --</option>
 EOD;
 	foreach ($lti_tools as $lti_tool) {
@@ -132,6 +132,8 @@ EOD;
 			</div>
 			<div class='lti-tool-editor-button-panel'>
 				<p>The <strong>User Notice</strong> and <strong>Support Info</strong> text fields will accept a subset of HTML tags (strong, href, i).</p>
+			</div>
+			<div class='lti-tool-editor-button-panel'>
 				<p>The <strong>User Notice</strong> text field supports custom tags &#91;DEPLOYMENT_ID&#93; and &#91;TOOL_NAME&#93;.
 					SLAM will substitute the corresponding values in the message displayed to the instructor.</p>
 			</div>
