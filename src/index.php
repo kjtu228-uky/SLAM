@@ -71,16 +71,12 @@ EOD;
 			<a href='./admin/tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
 		</div>
 EOD;
+	$tool_list_header = htmlspecialchars($platform->getSetting('tool_list_header'), ENT_QUOTES | ENT_HTML401, 'UTF-8');
 	$page .= <<< EOD
 	</div>
 
 	<div id='slamDescription' class='slam-description'>
-		The following LTI apps are not endorsed or supported by the University of Kentucky
-		or Instructure Canvas. If you have questions or need assistance with a third-party LTI app, please contact
-		the LTI app provider.
-		<p>Clicking a toggle next to a tool will enable/disable that tool automatically. You do not need to save
-		changes. If there is a problem enabling a tool, the toggle will automatically turn off on its own. In this
-		situation, please contact <a href='mailto:elearning@uky.edu?subject=SLAM%20LTI%20App$20Issue&body=Hello%20eLearning,%0D%0A%0D%0AThe%20LTI%20App%20[please%20tell%20us%20the%20name%20of%20the%20app%20you%20are%20trying%20to%20install]%20cannot%20be%20enabled%20in%20SLAM.%0D%0A%0D%0AThank%20you.'>eLearning</a> for additional help.
+		{$tool_list_header}
 	</div>
 
 EOD;
