@@ -229,6 +229,20 @@ function isToolAdmin($platform, $user = null) {
 	return false;
 }
 
+function updatePlatformSettings($platform, $settings) {
+	// only update recognized settings: tool_admins, tool_list_header
+	if (!is_array($settings)) return false;
+	if (isset($settings['tool_admins'])) {
+		// make sure it is a comma-separated string with login ID format checks
+	}
+	if (isset($settings['tool_list_header'])) {
+		// strip unsupported HTML tags
+		$tool_list_header = strip_tags($settings['tool_list_header'], ['p', 'a', 'br', 'strong']);
+		$platform->setSetting('tool_list_header', $tool_list_header);
+	}
+	return true;
+}
+
 /**
  * Check if the platform has a stored auth token. If it doesn't, request one.
  * Optionally force a refresh (request new token).
