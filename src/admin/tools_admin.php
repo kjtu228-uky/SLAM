@@ -58,7 +58,6 @@ $body = <<< EOD
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div class='tool-admin-panel'>
-
 		<form action="tools_admin.php" method="get">
 			<input type="hidden" name="update_platform_settings" value="true">
 			<div class='tool-admin-form-item'>
@@ -86,7 +85,7 @@ $body = <<< EOD
 				<p>The <strong>Tool List Header</strong> text is displayed above the tools instructors see.<br>
 					This text can contain a subset of HTML tags (p, br, strong, href, i).</p>
 			</div>
-		</div>
+		</form>
 	</div>
 	<div class='tool-admin-text'>
 		The following LTI apps are available for configuration in your instance.
