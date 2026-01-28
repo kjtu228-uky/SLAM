@@ -26,7 +26,7 @@ if (!$ok || !isToolAdmin($platform)) {
 }
 // is this a request to update the configuration of the tool settings in the database?
 if (isset($_GET['update_platform_settings'])) {
-	// $updateResult = updatePlatformSettings($platform, $_GET);
+	$updateResult = updatePlatformSettings($platform, $_GET);
 }
 $changes_saved = (isset($_GET['update_tool']) && $updateResult)?"<span class='update-notification'>Changes saved</span>":"";
 $tool_admins = $platform->getSetting('tool_admins');
@@ -61,16 +61,16 @@ $body = <<< EOD
 		<form action="tools_admin.php" method="get">
 			<input type="hidden" name="update_platform_settings" value="true">
 			<div class='tool-admin-form-item'>
-				<label for="toolAdmins" class="tool-admin-label">Tool Admins:</label>
-				<textarea id="toolAdmins"
-					name="toolAdmins" rows="1" class="tool-admin-textarea"
+				<label for="tool_admins" class="tool-admin-label">Tool Admins:</label>
+				<textarea id="tool_admins"
+					name="tool_admins" rows="1" class="tool-admin-textarea"
 					placeholder="A comma-separated list of login IDs of tool administrators (people who can access this page).">{$tool_admins}</textarea>
 			</div>
 
 			<div class='tool-admin-form-item'>
-				<label for="toolListHeader" class="tool-admin-label">Tool List Header:</label>
-				<textarea id="toolListHeader"
-					name="toolListHeader" rows="5" class="tool-admin-textarea"
+				<label for="tool_list_header" class="tool-admin-label">Tool List Header:</label>
+				<textarea id="tool_list_header"
+					name="tool_list_header" rows="5" class="tool-admin-textarea"
 					placeholder="This text appears above the list of tools that instructors see.">{$tool_list_header}</textarea>
 			</div>
 			
@@ -83,7 +83,7 @@ $body = <<< EOD
 			<div class='tool-admin-text'>
 				<p>The <strong>Tool Admins</strong> is a comma-separated list of login IDs.</p>
 				<p>The <strong>Tool List Header</strong> text is displayed above the tools instructors see.<br>
-					This text can contain a subset of HTML tags (p, br, strong, href, i).</p>
+					This text can contain a subset of HTML tags (a, p, br, strong, i).</p>
 			</div>
 		</form>
 	</div>
