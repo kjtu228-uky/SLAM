@@ -28,7 +28,7 @@ if (!$ok || !isToolAdmin($platform)) {
 if (isset($_GET['update_platform_settings'])) {
 	$updateResult = updatePlatformSettings($platform, $_GET);
 }
-$changes_saved = (isset($_GET['update_tool']) && $updateResult)?"<span class='update-notification'>Changes saved</span>":"";
+$changes_saved = (isset($_GET['update_platform_settings']) && $updateResult)?"<span class='update-notification'>Changes saved</span>":"";
 $tool_admins = $platform->getSetting('tool_admins');
 if ($tool_admins)
 	$tool_admins = htmlspecialchars($tool_admins, ENT_QUOTES | ENT_HTML401, 'UTF-8');
