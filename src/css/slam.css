@@ -78,8 +78,6 @@ footer {
 	justify-content: space-around;
 }
 .lti-tool {
-/*	display: flex; */
-/*	width: 100%; */
 	margin: 5px;
 	padding: 5px;
 	border: 2px solid #000;
@@ -196,14 +194,14 @@ input:checked + .slider:before {
 	word-wrap: break-word;
 }
 /* ==================================================================================== */
-/* styles for the tool editor                                                           */
-.lti-tool-editor {
+/* styles for the tool admin elements                                                   */
+.tool-admin-panel {
 	border: 1px solid #222;
 	overflow: auto;
 	margin: 10px;
 	flex: 1;
 }
-.lti-tool-editor-label {
+.tool-admin-label {
 	display: flex;
 	margin: 4px 10px 2px 2px;
 	padding: 4px 10px 2px 2px;
@@ -211,23 +209,23 @@ input:checked + .slider:before {
 	position: relative;
 	top: -3px;
 }
-.lti-tool-editor-text {
+.tool-admin-text {
 	margin: 10px 15px;
 }
-.lti-tool-editor-form-item {
+.tool-admin-form-item {
 	display: flex;
 	align-items: flex-start;
 	flex-direction: row;
 	padding: 5px;
 	margin: 5px;
 }
-.lti-tool-editor-select {
+.tool-admin-select {
 	height: 2em;
 }
-.lti-tool-editor-textarea {
+.tool-admin-textarea {
 	flex-grow: 1;
 }
-.lti-tool-editor-button-panel {
+.tool-admin-button-panel {
 	width: 95%;
 	display: flex;
 	flex-direction: row;
@@ -235,7 +233,7 @@ input:checked + .slider:before {
 	padding: 5px;
 	margin: 5px;
 }
-.lti-tool-editor-button {
+.tool-admin-button {
 	padding: 5px;
 	margin: 5px;
 }

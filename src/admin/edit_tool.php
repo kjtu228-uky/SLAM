@@ -77,13 +77,13 @@ $body = <<< EOD
 	<div class='slam-description'>
 		<h2>{$tool_name} Configuration</h2>
 	</div>
-	<div class='lti-tool-editor'>
+	<div class='tool-admin-panel'>
 		<form action="edit_tool.php" method="get">
 			<input type="hidden" name="id" value="{$_GET['id']}">
 			<input type="hidden" name="update_tool" value="true">
-			<div class="lti-tool-editor-form-item">
+			<div class="tool-admin-form-item">
 				<div>
-					<label for="visible" class="lti-tool-editor-label">Visible</label>
+					<label for="visible" class="tool-admin-label">Visible</label>
 				</div>
 				<div class="switch" onclick="visible.click();">
 					<input type="checkbox" id="visible" name="visible" {$is_visible}>
@@ -91,9 +91,9 @@ $body = <<< EOD
 				</div>
 			</div>
 
-			<div class='lti-tool-editor-form-item'>
-				<label for="dependency" class="lti-tool-editor-label">Depends on:</label>
-				<select id="dependency" name="dependency" class="lti-tool-editor-select">
+			<div class='tool-admin-form-item'>
+				<label for="dependency" class="tool-admin-label">Depends on:</label>
+				<select id="dependency" name="dependency" class="tool-admin-select">
 					<option value="">-- None --</option>
 EOD;
 	foreach ($lti_tools as $lti_tool) {
@@ -109,28 +109,28 @@ EOD;
 				</select>
 			</div>
 
-			<div class='lti-tool-editor-form-item'>
-				<label for="userNotice" class="lti-tool-editor-label">User Notice:</label>
+			<div class='tool-admin-form-item'>
+				<label for="userNotice" class="tool-admin-label">User Notice:</label>
 				<textarea id="userNotice"
-					name="userNotice" rows="5" class="lti-tool-editor-textarea"
+					name="userNotice" rows="5" class="tool-admin-textarea"
 					placeholder="This will be displayed to the instructor as a pop-up when they enable the tool.">{$html_tool_notice}</textarea>
 			</div>
 
-			<div class='lti-tool-editor-form-item'>
-				<label for="supportInfo" class="lti-tool-editor-label">Support Info:</label>
+			<div class='tool-admin-form-item'>
+				<label for="supportInfo" class="tool-admin-label">Support Info:</label>
 				<textarea id="supportInfo"
-					name="supportInfo" rows="5" class="lti-tool-editor-textarea"
+					name="supportInfo" rows="5" class="tool-admin-textarea"
 					placeholder="Information displayed beneath the tool name to provide support information to the instructor.">{$html_tool_support}</textarea>
 			</div>
 			
-			<div class='lti-tool-editor-button-panel'>
-				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='lti-tool-editor-button'>Cancel</button>
-				<button type="submit" class='lti-tool-editor-button'>Update</button>
+			<div class='tool-admin-button-panel'>
+				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='tool-admin-button'>Cancel</button>
+				<button type="submit" class='tool-admin-button'>Update</button>
 			</div>
-			<div class='lti-tool-editor-button-panel'>
+			<div class='tool-admin-text'>
 				{$changes_saved}
 			</div>
-			<div class='lti-tool-editor-text'>
+			<div class='tool-admin-text'>
 				<p>The <strong>User Notice</strong> and <strong>Support Info</strong> text fields will accept a subset of HTML tags (strong, href, i).</p>
 				<p>The <strong>User Notice</strong> text field supports custom tags &#91;DEPLOYMENT_ID&#93; and &#91;TOOL_NAME&#93;.
 					SLAM will substitute the corresponding values in the message displayed to the instructor.</p>
