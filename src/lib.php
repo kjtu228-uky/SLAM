@@ -234,12 +234,15 @@ function updatePlatformSettings($platform, $settings) {
 	if (!is_array($settings)) return false;
 	if (isset($settings['tool_admins'])) {
 		// make sure it is a comma-separated string with login ID format checks
+		$tool_admins = explode(',', $settings['tool_admins']);
+		if (!is_array($tool_admins)) return false;
 	}
 	if (isset($settings['tool_list_header'])) {
 		// strip unsupported HTML tags
 		$tool_list_header = strip_tags($settings['tool_list_header'], ['p', 'a', 'br', 'strong']);
 		$platform->setSetting('tool_list_header', $tool_list_header);
 	}
+	$platform->save();
 	return true;
 }
 
