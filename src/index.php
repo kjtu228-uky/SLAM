@@ -71,7 +71,7 @@ EOD;
 			<a href='./admin/tools_admin.php'><img src='images/settings_icon.png' alt='Configure user-selectable LTI tools' style='width: 1em; height: 1em;'></a>
 		</div>
 EOD;
-	$tool_list_header = htmlspecialchars($platform->getSetting('tool_list_header'), ENT_QUOTES | ENT_HTML401, 'UTF-8');
+	$tool_list_header = $platform->getSetting('tool_list_header');
 	$page .= <<< EOD
 	</div>
 
