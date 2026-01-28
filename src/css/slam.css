@@ -197,8 +197,10 @@ input:checked + .slider:before {
 /* styles for the tool admin elements                                                   */
 .tool-admin-panel {
 	border: 1px solid #222;
-	overflow: auto;
 	margin: 10px;
+}
+.tool-admin-panel.full {
+	overflow: auto;
 	flex: 1;
 }
 .tool-admin-label {
