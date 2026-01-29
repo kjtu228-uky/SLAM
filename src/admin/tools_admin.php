@@ -62,9 +62,9 @@ $body = <<< EOD
 			<input type="hidden" name="update_platform_settings" value="true">
 			<div class='tool-admin-form-item'>
 				<label for="tool_admins" class="tool-admin-label">Tool Admins:</label>
-				<textarea id="tool_admins"
+				<input type="text" id="tool_admins"
 					name="tool_admins" rows="1" class="tool-admin-textarea"
-					placeholder="A comma-separated list of login IDs of tool administrators (people who can access this page).">{$tool_admins}</textarea>
+					placeholder="A comma-separated list of login IDs of tool administrators (people who can access this page).">{$tool_admins}</input>
 			</div>
 
 			<div class='tool-admin-form-item'>
