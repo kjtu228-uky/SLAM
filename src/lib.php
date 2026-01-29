@@ -239,7 +239,7 @@ function updatePlatformSettings($platform, $settings) {
 	}
 	if (isset($settings['tool_list_header'])) {
 		// strip unsupported HTML tags
-		$tool_list_header = strip_tags($settings['tool_list_header'], ['p', 'a', 'br', 'strong']);
+		$tool_list_header = strip_tags($settings['tool_list_header'], ['p', 'a', 'br', 'strong', 'i']);
 		$platform->setSetting('tool_list_header', $tool_list_header);
 	}
 	$platform->save();
