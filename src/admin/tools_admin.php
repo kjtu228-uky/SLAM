@@ -35,7 +35,7 @@ if ($tool_admins)
 else $tool_admins = "";
 $tool_list_header = $platform->getSetting('tool_list_header');
 if ($tool_list_header)
-	$tool_list_header = htmlspecialchars($tool_list_header, ENT_QUOTES | ENT_HTML401, 'UTF-8');
+	$tool_list_header = htmlspecialchars(json_decode($tool_list_header), ENT_QUOTES | ENT_HTML401, 'UTF-8');
 else $tool_list_header = "";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
