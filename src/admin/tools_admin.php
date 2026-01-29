@@ -79,7 +79,7 @@ $body = <<< EOD
 			<div class='tool-admin-button-panel'>
 				<button type="submit" class='tool-admin-button'>Update</button>
 			</div>
-			<div class='tool-admin-text'>
+			<div class='tool-admin-button-panel'>
 				{$changes_saved}
 			</div>
 			<div class='tool-admin-text'>
