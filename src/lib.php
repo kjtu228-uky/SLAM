@@ -225,6 +225,8 @@ function isToolAdmin($platform, $user = null) {
 		// the api_user_id can be considered a tool admin that can define other tool admins
 		$tool_admin_array[] = $platform->getSetting('api_user_id');
 		return in_array($user, $tool_admin_array);
+	} else {
+		if ($user == $platform->getSetting('api_user_id')) return true;
 	}
 	return false;
 }
@@ -233,7 +235,7 @@ function updatePlatformSettings($platform, $settings) {
 	// only update recognized settings: tool_admins, tool_list_header
 	if (!is_array($settings)) return false;
 	if (isset($settings['tool_admins'])) {
-		// make sure it is a comma-separated string with login ID format checks
+		// make sure it is a comma-separated string
 		$tool_admins = explode(',', $settings['tool_admins']);
 		if (!is_array($tool_admins)) return false;
 		$platform->setSetting('tool_admins', $settings['tool_admins']);
