@@ -233,11 +233,10 @@ function updatePlatformSettings($platform, $settings) {
 	// only update recognized settings: tool_admins, tool_list_header
 	if (!is_array($settings)) return false;
 	if (isset($settings['tool_admins'])) {
-		Util::logError($settings['tool_admins']);
 		// make sure it is a comma-separated string with login ID format checks
 		$tool_admins = explode(',', $settings['tool_admins']);
-		Util::logError($tool_admins);
 		if (!is_array($tool_admins)) return false;
+		$platform->setSetting('tool_admins', $settings['tool_admins']);
 	}
 	if (isset($settings['tool_list_header'])) {
 		// strip unsupported HTML tags
