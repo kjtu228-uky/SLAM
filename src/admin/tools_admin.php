@@ -58,7 +58,7 @@ else $tool_list_header = "";
 				'removeFormat'
 			],
 			onChange: (content) => {
-				console.log('Content changed:', content);
+				//console.log('Content changed:', content);
 			}
 		}); 
 	</script>
