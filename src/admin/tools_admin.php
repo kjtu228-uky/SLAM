@@ -51,7 +51,7 @@ else $tool_list_header = "";
 	<script>
 		Wysi({
 			el: '#tool_list_header',
-			autoGrow: true,
+			autoGrow: false,
 			tools: [
 				'bold', 'italic', 'underline', '|', 
 				'link', 'hr', '|', 
@@ -100,8 +100,7 @@ $body = <<< EOD
 			</div>
 			<div class='tool-admin-text'>
 				<p>The <strong>Tool Admins</strong> is a comma-separated list of login IDs.</p>
-				<p>The <strong>Tool List Header</strong> text is displayed above the tools instructors see.<br>
-					This text can contain a subset of HTML tags (a, p, br, strong, i).</p>
+				<p>The <strong>Tool List Header</strong> text is displayed above the tools instructors see.</p>
 			</div>
 		</form>
 	</div>
