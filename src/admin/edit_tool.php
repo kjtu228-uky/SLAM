@@ -51,7 +51,7 @@ if (!isset($lti_tools[$_GET['id']])) {
 			autoGrow: true,
 			tools: [
 				'bold', 'italic', 'underline', '|', 
-				'link', 'hr', '|', 
+				'link', '|', 
 				'removeFormat'
 			],
 			onChange: (content) => {
@@ -147,7 +147,6 @@ EOD;
 				{$changes_saved}
 			</div>
 			<div class='tool-admin-text'>
-				<p>The <strong>User Notice</strong> and <strong>Support Info</strong> text fields will accept a subset of HTML tags (a, strong, i).</p>
 				<p>The <strong>User Notice</strong> text field supports custom tags &#91;DEPLOYMENT_ID&#93; and &#91;TOOL_NAME&#93;.
 					SLAM will substitute the corresponding values in the message displayed to the instructor.</p>
 			</div>
