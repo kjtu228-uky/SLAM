@@ -51,7 +51,7 @@ else $tool_list_header = "";
 	<script>
 		Wysi({
 			el: '#tool_list_header',
-			autoGrow: true;
+			autoGrow: true,
 			tools: [
 				'bold', 'italic', 'underline', '|', 
 				'link', 'hr', '|', 
