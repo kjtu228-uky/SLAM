@@ -45,7 +45,23 @@ else $tool_list_header = "";
 	<meta name="description" content="An LTI app that allows Canvas users to self-manage LTI apps in their course." />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="../css/slam.css">
+	<link rel="stylesheet" href="../css/wysi.min.css"/>
+	<script src="../js/wysi.min.js"></script>
 	<script type="text/javascript" src="../js/slam.js"></script>
+	<script>
+		Wysi({
+			el: '#tool_list_header',
+			autoGrow: true;
+			tools: [
+				'bold', 'italic', 'underline', '|', 
+				'link', 'hr', '|', 
+				'removeFormat'
+			],
+			onChange: (content) => {
+				console.log('Content changed:', content);
+			}
+		}); 
+	</script>
 </head>
 <body onload="initializeTimer(<?php echo IDLE_TIME; ?>);">
 <div style='display: flex; flex-direction: column; height: 98vh;'>
