@@ -44,6 +44,9 @@ footer {
 	text-align: center;
 	font-size: 80%;
 }
+strong{
+	font-weight:bold;
+}
 
 /* ==================================================================================== */
 /* Tool page header divs                                                                */
@@ -55,7 +58,7 @@ footer {
 	float: left;
 }
 .course-title {
-	clear:both;
+	clear: both;
 	float: left;
 	width: 100%;
 }
