@@ -215,7 +215,7 @@ input:checked + .slider:before {
 	top: -3px;
 }
 .tool-admin-text {
-	margin: 10px 15px;
+	margin: 10px 10px 0px 10px;
 }
 .tool-admin-form-item {
 	display: flex;
