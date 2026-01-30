@@ -207,7 +207,7 @@ input:checked + .slider:before {
 	display: flex;
 	margin: 4px 10px 2px 2px;
 	padding: 4px 10px 2px 2px;
-	width: 8em;
+	width: 10em;
 	position: relative;
 	top: -3px;
 }
