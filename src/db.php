@@ -424,10 +424,14 @@ function setToolConfig($platform, $toolConfig) {
 		$statement->bindParam("dependency", $toolConfig['dependency'], PDO::PARAM_INT);
 	if (isset($toolConfig['config']) && $toolConfig['config'])
 		$statement->bindParam("config", $toolConfig['config'], PDO::PARAM_STR);
-	if (isset($toolConfig['userNotice']) && $toolConfig['userNotice'])
-		$statement->bindParam("user_notice", $toolConfig['userNotice'], PDO::PARAM_STR);
-	if (isset($toolConfig['supportInfo']) && $toolConfig['supportInfo'])
-		$statement->bindParam("support_info", $toolConfig['supportInfo'], PDO::PARAM_STR);
+	if (isset($toolConfig['userNotice']) && $toolConfig['userNotice']) {
+		$newUserNotice = strip_tags($toolConfig['userNotice'], ['p', 'a', 'br', 'strong', 'i', 'u', 'hr']);
+		$statement->bindParam("user_notice", $newUserNotice, PDO::PARAM_STR);
+	}
+	if (isset($toolConfig['supportInfo']) && $toolConfig['supportInfo']) {
+		$newSupportInfo = strip_tags($toolConfig['supportInfo'], ['p', 'a', 'br', 'strong', 'i', 'u', 'hr']);
+		$statement->bindParam("support_info", $newSupportInfo, PDO::PARAM_STR);
+	}
 	$statement->execute();
 	return $statement->rowCount();
 	if ($statement->rowCount() > 0) {
