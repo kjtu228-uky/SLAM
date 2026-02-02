@@ -40,11 +40,11 @@ define('VENDOR_EMAIL', 'elearning@uky.edu');
 define('INSTRUCTOR_ONLY', true);
 define('DEFAULT_DISABLED', true); // change to false if you want this enabled in course nav by default
 define('CUSTOM_FIELDS', array( // you shouldn't need anything here unless you are customizing SLAM
-#	'COURSE_NUMBER'=>"Canvas.course.id",
-#	'COURSE_NAME'=>"Canvas.course.name",
-#	'COURSE_SIS_ID'=>"Canvas.course.sisSourceId",
-#	'USER_DISPLAY_NAME'=>"Person.name.display",
-#	'USER_USERNAME'=>"Canvas.user.loginId"
+	'COURSE_NUMBER'=>"Canvas.course.id",
+	'COURSE_NAME'=>"Canvas.course.name",
+	'COURSE_SIS_ID'=>"Canvas.course.sisSourceId",
+	'USER_DISPLAY_NAME'=>"Person.name.display",
+	'USER_USERNAME'=>"Canvas.user.loginId"
 ));
 define('IDLE_TIME', 300000); // the amount of time (milliseconds) a user is idle before asking the user to relaunch SLAM from course menu
 
@@ -61,7 +61,7 @@ define('DB_TABLENAME_PREFIX', '');
 ###
 define('SIGNATURE_METHOD', 'RS256');
 define('KID', '');  // A random string to identify the key value; in Linux use `pwgen 16` and choose one of the results
-// For the PRIVATE_KEY, in Linux use `openssl genrsa -out custom.key`
+// For the PRIVATE_KEY, in Linux use `openssl genrsa -out custom.key`. In Windows, `ssh-keygen -t rsa -b 4096` and save to custom.key.
 // Copy the contents of custom.key into the following
 define('PRIVATE_KEY', <<< EOD
 -----BEGIN RSA PRIVATE KEY-----
