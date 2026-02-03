@@ -108,6 +108,20 @@ $body = <<< EOD
 			</div>
 
 			<div class='tool-admin-form-item'>
+				<label for="supportInfo" class="tool-admin-label">Support Info:</label>
+				<textarea id="supportInfo"
+					name="supportInfo" rows="5" class="tool-admin-textarea"
+					placeholder="Information displayed beneath the tool name to provide support information to the instructor.">{$html_tool_support}</textarea>
+			</div>
+
+			<div class='tool-admin-form-item'>
+				<label for="userNotice" class="tool-admin-label">User Notice:</label>
+				<textarea id="userNotice"
+					name="userNotice" rows="5" class="tool-admin-textarea"
+					placeholder="This will be displayed to the instructor as a pop-up when they enable the tool.">{$html_tool_notice}</textarea>
+			</div>
+
+			<div class='tool-admin-form-item'>
 				<label for="dependency" class="tool-admin-label">Depends on:</label>
 				<select id="dependency" name="dependency" class="tool-admin-select">
 					<option value="">-- None --</option>
@@ -123,20 +137,6 @@ EOD;
 	}
 	$body .= <<< EOD
 				</select>
-			</div>
-
-			<div class='tool-admin-form-item'>
-				<label for="userNotice" class="tool-admin-label">User Notice:</label>
-				<textarea id="userNotice"
-					name="userNotice" rows="5" class="tool-admin-textarea"
-					placeholder="This will be displayed to the instructor as a pop-up when they enable the tool.">{$html_tool_notice}</textarea>
-			</div>
-
-			<div class='tool-admin-form-item'>
-				<label for="supportInfo" class="tool-admin-label">Support Info:</label>
-				<textarea id="supportInfo"
-					name="supportInfo" rows="5" class="tool-admin-textarea"
-					placeholder="Information displayed beneath the tool name to provide support information to the instructor.">{$html_tool_support}</textarea>
 			</div>
 			
 			<div class='tool-admin-button-panel'>
