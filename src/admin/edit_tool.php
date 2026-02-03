@@ -107,7 +107,7 @@ $body = <<< EOD
 		<h2>{$tool_name} Configuration</h2>
 	</div>
 	<div class='tool-admin-panel'>
-		<form action="edit_tool.php" method="get">
+		<form action="edit_tool.php" method="get" onsubmit="tool_update_button.disabled = true; return true;">
 			<input type="hidden" name="id" value="{$_GET['id']}">
 			<input type="hidden" name="update_tool" value="true">
 			<div class="tool-admin-form-item">
