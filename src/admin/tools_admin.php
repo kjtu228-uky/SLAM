@@ -49,6 +49,7 @@ else $tool_list_header = "";
 	<script src="../js/wysi.min.js"></script>
 	<script type="text/javascript" src="../js/slam.js"></script>
 	<script>
+		var changeTimer;
 		Wysi({
 			el: '#tool_list_header',
 			autoGrow: false,
@@ -59,15 +60,22 @@ else $tool_list_header = "";
 			],
 			onChange: (content) => {
 				//console.log('Content changed:', content);
-				changeNotify();
+				changeNotify(true);
 			}
 		});
-		function changeNotify() {
-			document.getElementById('changeNotice').innerHTML = "<span class='update-notification'>** Unsaved changes **</span>";
+		function changeNotify(showMessage = false) {
+			if (showMessage) {
+				clearTimeout(changeTimer); // Clear the previous timer
+				document.getElementById('changeNotice').innerHTML = "<span class='update-notification'>** Unsaved changes **</span>";
+			}
+			else document.getElementById('changeNotice').innerHTML = "";
+		}
+		function changesTimer() {
+			changeTimer = setTimeout(changeNotify, 5000); // Set a new one
 		}
 	</script>
 </head>
-<body onload="initializeTimer(<?php echo IDLE_TIME; ?>);">
+<body onload="initializeTimer(<?php echo IDLE_TIME; ?>); changesTimer();">
 <div style='display: flex; flex-direction: column; height: 98vh;'>
 <?php
 $showVal = function($val) {
