@@ -26,7 +26,7 @@ async function getCourseTools() {
 					data[key]['id'] + "' class='toggle-label'>" + data[key]['name'] + "</label></div>";
 				if ('support_info' in data[key] && data[key]['support_info'] !== null && data[key]['support_info'].length > 0) {
 					toolHTML += "<div class='tool-support'>";
-					toolHTML += data[key]['support_info'].replaceAll('\[TOOL_NAME\]', data[key]['name']);
+					toolHTML += data[key]['support_info'];
 					toolHTML += "</div>";
 				}
 				if ('user_notice' in data[key] && data[key]['user_notice'] !== null && data[key]['user_notice'].length > 0) {
@@ -79,7 +79,6 @@ async function updateToolInstall(tool_id, confirmed = false) {
 									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', tool_detail['deployment_id']);
 								else
 									message_box.innerHTML = message_box.innerHTML.replaceAll('\[DEPLOYMENT_ID\]', '(No course-level Deployment ID)');
-								message_box.innerHTML = message_box.innerHTML.replaceAll('\[TOOL_NAME\]', tool_detail['name']);
 								document.getElementById(message_box_id).style.top = (tool_toggle.getBoundingClientRect().top - document.body.getBoundingClientRect().top) + "px";
 								document.getElementById(message_box_id).style.display = "block";
 							}

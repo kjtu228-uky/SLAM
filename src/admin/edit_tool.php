@@ -147,8 +147,8 @@ EOD;
 				{$changes_saved}
 			</div>
 			<div class='tool-admin-text'>
-				<p>The <strong>User Notice</strong> text field supports custom tags &#91;DEPLOYMENT_ID&#93; and &#91;TOOL_NAME&#93;.
-					SLAM will substitute the corresponding values in the message displayed to the instructor.</p>
+				<p>The <strong>User Notice</strong> text field supports the &#91;DEPLOYMENT_ID&#93; custom tag.
+					SLAM will substitute the corresponding value in the message displayed to the instructor.</p>
 			</div>
 		</form>
 	</div>
