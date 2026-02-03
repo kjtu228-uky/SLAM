@@ -279,6 +279,7 @@ input:checked + .slider:before {
 .tool-admin-button-panel {
 	width: 95%;
 	display: flex;
+	gap: 1rem;
 	flex-direction: row;
 	justify-content: center;
 	padding: 5px;
