@@ -67,6 +67,7 @@ else $tool_list_header = "";
 			if (showMessage) {
 				clearTimeout(changeTimer); // Clear the previous timer
 				document.getElementById('changeNotice').innerHTML = "<span class='update-notification'>** Unsaved changes **</span>";
+				document.getElementById('tool_admin_button').disabled = false;
 			}
 			else document.getElementById('changeNotice').innerHTML = "";
 		}
@@ -94,7 +95,7 @@ $body = <<< EOD
 					name="tool_admins" rows="1" class="tool-admin-textarea"
 					placeholder="A comma-separated list of login IDs of tool administrators (people who can access this page)."
 					value="{$tool_admins}"
-					oninput="changeNotify();"
+					oninput="changeNotify(true);"
 				</input>
 			</div>
 
@@ -106,7 +107,7 @@ $body = <<< EOD
 			</div>
 			
 			<div class='tool-admin-button-panel'>
-				<button id='tool_admin_button' type='submit' class='button button-primary'>Update</button>
+				<button id='tool_admin_button' type='submit' class='button button-primary' disabled>Update</button>
 			</div>
 			<div id='changeNotice' class='tool-admin-button-panel'>
 				{$changes_saved}
