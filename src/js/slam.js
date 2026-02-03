@@ -91,6 +91,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 				if (Object.hasOwn(data, 'message')) {
 					// display the message somehow
 				}
+				tool_toggle.disabled = false;
 			} else {
 				console.log(data['errors']);
 				if (data['action'] == 'add') {
@@ -99,12 +100,13 @@ async function updateToolInstall(tool_id, confirmed = false) {
 				} else {
 					tool_toggle.checked = true;
 					tool_container.classList.add("lti-tool-enabled");
-				}				
+				}
+				tool_toggle.disabled = false;
 			}
 		}).catch(error => {
 			console.log(error);
+			tool_toggle.disabled = false;
 		});
-	tool_toggle.disabled = false;
 }
 
 function toolNoticeResponse(tool_id, cancelAdd) {
