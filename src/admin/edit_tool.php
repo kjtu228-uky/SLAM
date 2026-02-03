@@ -56,6 +56,7 @@ if (!isset($lti_tools[$_GET['id']])) {
 			],
 			onChange: (content) => {
 				//console.log('Content changed:', content);
+				document.getElementById('changeNotice').innerHTML = '';
 			}
 		});
 	</script>
@@ -143,7 +144,7 @@ EOD;
 				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='button button-primary'>Cancel</button>
 				<button type="submit" class='button button-primary'>Update</button>
 			</div>
-			<div class='tool-admin-button-panel'>
+			<div id='changeNotice' class='tool-admin-button-panel'>
 				{$changes_saved}
 			</div>
 			<div class='tool-admin-text'>

@@ -59,6 +59,7 @@ else $tool_list_header = "";
 			],
 			onChange: (content) => {
 				//console.log('Content changed:', content);
+				document.getElementById('changeNotice').innerHTML = '';
 			}
 		}); 
 	</script>
