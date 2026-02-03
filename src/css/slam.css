@@ -22,6 +22,7 @@ h2 {
 img {
 	border: 0;
 }
+/*
 button {
 	border: 1px solid transparent;
 	padding: 0.375rem 0.75rem;
@@ -36,6 +37,7 @@ button {
 	display: inline-block;
 	cursor: pointer;
 }
+*/
 footer {
 	width: 100%;
 	margin-top: 1em;
@@ -46,6 +48,52 @@ footer {
 }
 strong{
 	font-weight:bold;
+}
+
+/* ==================================================================================== */
+/* General UI Elements                                                                  */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  border: none;
+  border-radius: .4rem;
+  cursor: pointer;
+  user-select: none;
+  transition:
+      background-color .2s,
+      color .2s,
+      transform .1s,
+      box-shadow .2s;
+}
+/* Focus style (visible for keyboard users) */
+.button:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* ---------- Primary button ---------- */
+.button-primary {
+  background: #1e40af;
+  color: #fff;
+}
+.button-primary:hover {
+  background: #1e3a8a;
+}
+.button-primary:active {
+  background: #1e2d65;
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.15);
+}
+.button-primary:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* ==================================================================================== */
@@ -67,8 +115,6 @@ strong{
 .lti-tools-container {
 	display: flex;
 	flex-direction: column;
-/*	grid-template-columns: 95%;
-	grid-gap: 5px 5px; */
 	border: 1px solid #222;
 	border-radius: 5px;
 	overflow: auto;
