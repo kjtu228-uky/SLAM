@@ -140,8 +140,8 @@ EOD;
 			</div>
 			
 			<div class='tool-admin-button-panel'>
-				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='tool-admin-button'>Cancel</button>
-				<button type="submit" class='tool-admin-button'>Update</button>
+				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='button button-primary'>Cancel</button>
+				<button type="submit" class='button button-primary'>Update</button>
 			</div>
 			<div class='tool-admin-button-panel'>
 				{$changes_saved}
