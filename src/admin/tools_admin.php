@@ -59,9 +59,12 @@ else $tool_list_header = "";
 			],
 			onChange: (content) => {
 				//console.log('Content changed:', content);
-				document.getElementById('changeNotice').innerHTML = '';
+				changeNotify();
 			}
-		}); 
+		});
+		function changeNotify() {
+			document.getElementById('changeNotice').innerHTML = "<span class='update-notification'>** Unsaved changes **</span>";
+		}
 	</script>
 </head>
 <body onload="initializeTimer(<?php echo IDLE_TIME; ?>);">
@@ -83,6 +86,7 @@ $body = <<< EOD
 					name="tool_admins" rows="1" class="tool-admin-textarea"
 					placeholder="A comma-separated list of login IDs of tool administrators (people who can access this page)."
 					value="{$tool_admins}"
+					oninput="changeNotify();"
 				</input>
 			</div>
 
