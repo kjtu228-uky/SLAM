@@ -46,6 +46,7 @@ if (!isset($lti_tools[$_GET['id']])) {
 	<script src="../js/wysi.min.js"></script>
 	<script type="text/javascript" src="../js/slam.js"></script>
 	<script>
+		var changeTimer;
 		Wysi({
 			el: '.tool-admin-textarea',
 			autoGrow: true,
@@ -56,12 +57,23 @@ if (!isset($lti_tools[$_GET['id']])) {
 			],
 			onChange: (content) => {
 				//console.log('Content changed:', content);
-				document.getElementById('changeNotice').innerHTML = '';
+				changeNotify(true);
 			}
 		});
+		function changeNotify(showMessage = false) {
+			if (showMessage) {
+				clearTimeout(changeTimer); // Clear the previous timer
+				document.getElementById('changeNotice').innerHTML = "<span class='update-notification'>** Unsaved changes **</span>";
+				document.getElementById('tool_update_button').disabled = false;
+			}
+			else document.getElementById('changeNotice').innerHTML = "";
+		}
+		function changesTimer() {
+			changeTimer = setTimeout(changeNotify, 5000); // Set a new one
+		}
 	</script>
 </head>
-<body onload="initializeTimer(<?php echo IDLE_TIME; ?>);">
+<body onload="initializeTimer(<?php echo IDLE_TIME; ?>); changesTimer();">
 <div style='display: flex; flex-direction: column; height: 98vh;'>
 <?php
 $showVal = function($val) {
@@ -102,7 +114,7 @@ $body = <<< EOD
 				<div>
 					<label for="visible" class="tool-admin-label">Visible</label>
 				</div>
-				<div class="switch" onclick="visible.click();">
+				<div class="switch" onclick="visible.click();" onchange="changeNotify(true);">
 					<input type="checkbox" id="visible" name="visible" {$is_visible}>
 					<span class="slider round"></span>
 				</div>
@@ -124,7 +136,7 @@ $body = <<< EOD
 
 			<div class='tool-admin-form-item'>
 				<label for="dependency" class="tool-admin-label">Depends on:</label>
-				<select id="dependency" name="dependency" class="tool-admin-select">
+				<select id="dependency" name="dependency" class="tool-admin-select" onchange="changeNotify(true);">
 					<option value="">-- None --</option>
 EOD;
 	foreach ($lti_tools as $lti_tool) {
@@ -142,7 +154,7 @@ EOD;
 			
 			<div class='tool-admin-button-panel'>
 				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='button button-primary'>Cancel</button>
-				<button type="submit" class='button button-primary'>Update</button>
+				<button id="tool_update_button" type="submit" class='button button-primary' disabled>Update</button>
 			</div>
 			<div id='changeNotice' class='tool-admin-button-panel'>
 				{$changes_saved}
