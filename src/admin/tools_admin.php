@@ -74,7 +74,7 @@ $body = <<< EOD
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div class='tool-admin-panel'>
-		<form action="tools_admin.php" method="get">
+		<form action="tools_admin.php" method="get" onsubmit="tool_admin_button.disabled = true; return true;">
 			<input type="hidden" name="update_platform_settings" value="true">
 			<div class='tool-admin-form-item'>
 				<label for="tool_admins" class="tool-admin-label">Tool Admins:</label>
@@ -93,7 +93,7 @@ $body = <<< EOD
 			</div>
 			
 			<div class='tool-admin-button-panel'>
-				<button type='submit' class='button button-primary'>Update</button>
+				<button id='tool_admin_button' type='submit' class='button button-primary'>Update</button>
 			</div>
 			<div id='changeNotice' class='tool-admin-button-panel'>
 				{$changes_saved}
