@@ -85,7 +85,7 @@ EOD;
 		if (isset($courseSISId)) $header_course_title .= " (" . $courseSISId . ")";
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
-		<h2>LTI Tools for {$header_course_title}</h2>
+		<h2>LTI Tools for <i>{$header_course_title}</i></h2>
 	</div>
 EOD;
 	}
