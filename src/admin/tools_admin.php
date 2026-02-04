@@ -71,6 +71,7 @@ else $tool_list_header = "";
 			}
 			else document.getElementById('changeNotice').innerHTML = "";
 		}
+		/* Hide the changes saved message after a delay */
 		function changesTimer() {
 			changeTimer = setTimeout(changeNotify, 5000); // Set a new one
 		}
@@ -89,6 +90,16 @@ $body = <<< EOD
 	<div class='tool-admin-panel'>
 		<form action="tools_admin.php" method="get" onsubmit="tool_admin_button.disabled = true; return true;">
 			<input type="hidden" name="update_platform_settings" value="true">
+			
+			
+			<div class="tag-input" aria-label="Login ID tags">
+				<div class="tags" aria-live="polite"></div>
+				<input class="input" type="text" placeholder="Add login ID…"
+					aria-label="Enter login ID">
+			</div>
+			
+			
+			
 			<div class='tool-admin-form-item'>
 				<label for="tool_admins" class="tool-admin-label">Tool Admins:</label>
 				<input type="text" id="tool_admins"
@@ -135,7 +146,78 @@ foreach ($lti_tools as $key => $lti_tool) {
 		$body .= "		</div>\n";
 	}
 }
-$body .= "	</div>\n";
+
+$body .= <<< EOD
+	</div>
+
+	<script>
+	(() => {
+		const container = document.querySelector('.tag-input');
+		const tagsDiv   = container.querySelector('.tags');
+		const input     = container.querySelector('.input');
+		const tagSet    = new Set();          // optional: to avoid duplicates
+
+		/* ---------- Create a tag element ---------- */
+		function createTag(text) {
+			const tag = document.createElement('span');
+			tag.className = 'tag';
+			tag.dataset.value = text;
+
+			const textSpan = document.createElement('span');
+			textSpan.textContent = text;
+
+			const removeBtn = document.createElement('button');
+			removeBtn.type = 'button';
+			removeBtn.className = 'tag-remove';
+			removeBtn.innerHTML = '&times;';
+			removeBtn.setAttribute('aria-label', `Remove ${text}`);
+
+			removeBtn.addEventListener('click', () => {
+				tagsDiv.removeChild(tag);
+				tagSet.delete(text);
+			});
+
+			tag.append(textSpan, removeBtn);
+			return tag;
+		}
+
+		/* ---------- Add tag on Space / Enter ---------- */
+		input.addEventListener('keydown', e => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				const raw = input.value.trim();
+				if (!raw) return;
+
+				if (tagSet.has(raw)) {
+					input.value = '';
+					return;
+				}
+
+				const tag = createTag(raw);
+				tagsDiv.appendChild(tag);
+				tagSet.add(raw);
+				input.value = '';
+			}
+		});
+
+		/* ---------- Remove last tag with Backspace if input empty ---------- */
+		input.addEventListener('keydown', e => {
+			if (e.key === 'Backspace' && input.value === '') {
+				const lastTag = tagsDiv.lastElementChild;
+				if (lastTag) {
+					const value = lastTag.dataset.value;
+					tagsDiv.removeChild(lastTag);
+					tagSet.delete(value);
+					e.preventDefault();
+				}
+			}
+		});
+
+		/* ---------- Focus input when clicking anywhere inside the widget ---------- */
+		container.addEventListener('click', () => input.focus());
+	})();
+	</script>
+EOD;
 print($body);
 ?>
 </div>
