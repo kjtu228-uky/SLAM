@@ -104,7 +104,7 @@ strong{
   border: 1px solid #d0d4da;
   border-radius: 8px;
   background: #fff;
-  min-height: 50px;           /* keep height when no tags */
+  min-height: 1.6rem;           /* keep height when no tags */
   cursor: text;
   transition: border-color .2s, box-shadow .2s;
 }
