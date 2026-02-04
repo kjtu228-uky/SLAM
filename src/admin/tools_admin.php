@@ -184,17 +184,7 @@ $body .= <<< EOD
 		input.addEventListener('keydown', e => {
 			if (e.key === 'Enter' || e.key === ' ') {
 				e.preventDefault();
-				const raw = input.value.trim();
-				if (!raw) return;
-
-				if (tagSet.has(raw)) {
-					input.value = '';
-					return;
-				}
-
-				const tag = createTag(raw);
-				tagsDiv.appendChild(tag);
-				tagSet.add(raw);
+				addTag(input.value.trim());
 				input.value = '';
 				changeNotify(true);
 			}
