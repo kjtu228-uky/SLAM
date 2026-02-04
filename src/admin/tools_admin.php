@@ -88,16 +88,18 @@ $body = <<< EOD
 		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div class='tool-admin-panel'>
-		<form action="tools_admin.php" method="get" onsubmit="tool_admin_button.disabled = true; return true;">
+		<form action="tools_admin.php" method="get" id="update_platform_form">
 			<input type="hidden" name="update_platform_settings" value="true">
 			
 			
-			<div class="tag-input" aria-label="Login ID tags">
-				<div class="tags" aria-live="polite"></div>
-				<input class="input" type="text" placeholder="Add login ID…"
-					aria-label="Enter login ID">
+			<div class='tool-admin-form-item'>
+				<label for="tool_admin_tags" class="tool-admin-label">Tool Admins:</label>
+				<div class="tag-input" aria-label="Login ID tags">
+					<div class="tags" aria-live="polite"></div>
+					<input id="tool_admin_tags" class="input" type="text" placeholder="Add login ID…"
+						aria-label="Enter login ID">
+				</div>
 			</div>
-			
 			
 			
 			<div class='tool-admin-form-item'>
@@ -212,9 +214,28 @@ $body .= <<< EOD
 				}
 			}
 		});
+		
+		/* ---- Blur → add tag if text remains ---- */
+		input.addEventListener('blur', () => {
+			const raw = input.value.trim();
+			if (!raw) return;
+			if (tagSet.has(raw)) { input.value = ''; return; }
+			tagsDiv.appendChild(createTag(raw));
+			tagSet.add(raw);
+			input.value = '';
+		});
 
 		/* ---------- Focus input when clicking anywhere inside the widget ---------- */
 		container.addEventListener('click', () => input.focus());
+
+		/* ---- On form submit, serialize tags ---- */
+		document.getElementById('update_platform_form').addEventListener('submit', e => {
+			document.getElementById('tool_admin_button').disabled = true;
+			document.getElementById('tool_admins').value = Array.from(tagSet).join(',');
+			return true;
+		});
+	
+		
 	})();
 	</script>
 EOD;
