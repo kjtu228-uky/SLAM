@@ -172,6 +172,14 @@ $body .= <<< EOD
 			return tag;
 		}
 
+		/* ---- Add a tag (used by several events) ---- */
+		function addTag(raw) {
+			if (!raw) return;
+			if (tagSet.has(raw)) return;   // no duplicates
+			tagsDiv.appendChild(createTag(raw));
+			tagSet.add(raw);
+		}
+
 		/* ---------- Add tag on Space / Enter ---------- */
 		input.addEventListener('keydown', e => {
 			if (e.key === 'Enter' || e.key === ' ') {
@@ -208,20 +216,14 @@ $body .= <<< EOD
 		
 		/* ---- Blur → add tag if text remains ---- */
 		input.addEventListener('blur', () => {
-			const raw = input.value.trim();
-			if (!raw) return;
-			if (tagSet.has(raw)) { input.value = ''; return; }
-			tagsDiv.appendChild(createTag(raw));
-			tagSet.add(raw);
+			addTag(input.value.trim());
 			input.value = '';
 			changeNotify(true);
 		});
 
 		/* ---------- Focus input when clicking anywhere inside the widget ---------- */
 		container.addEventListener('click', () => input.focus());
-		existing_admins = document.getElementById('tool_admins').value.split(',');
-		console.log(existing_admins);
-		existing_admins.forEach(item => createTag(item.trim()));
+		document.getElementById('tool_admins').value.split(',').forEach(item => addTag(item.trim()));
 
 		/* ---- On form submit, serialize tags ---- */
 		document.getElementById('update_platform_form').addEventListener('submit', e => {
