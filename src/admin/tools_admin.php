@@ -219,9 +219,9 @@ $body .= <<< EOD
 
 		/* ---------- Focus input when clicking anywhere inside the widget ---------- */
 		container.addEventListener('click', () => input.focus());
-		existing_admins = document.getElementById('tool_admins').value;
+		existing_admins = document.getElementById('tool_admins').value.split(',');
 		console.log(existing_admins);
-		existing_admins.split(',').forEach(item => createTag(item.trim()));
+		existing_admins.forEach(item => createTag(item.trim()));
 
 		/* ---- On form submit, serialize tags ---- */
 		document.getElementById('update_platform_form').addEventListener('submit', e => {
