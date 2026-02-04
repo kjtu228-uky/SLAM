@@ -115,7 +115,6 @@ $body = <<< EOD
 				{$changes_saved}
 			</div>
 			<div class='tool-admin-text'>
-				<p>The <strong>Tool Admins</strong> is a comma-separated list of login IDs.</p>
 				<p>The <strong>Tool List Header</strong> text is displayed above the tools instructors see.</p>
 			</div>
 		</form>
