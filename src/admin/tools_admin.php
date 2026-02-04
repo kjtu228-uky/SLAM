@@ -90,7 +90,7 @@ $body = <<< EOD
 	<div class='tool-admin-panel'>
 		<form action="tools_admin.php" method="get" id="update_platform_form">
 			<input type="hidden" name="update_platform_settings" value="true">
-			
+			<input type="hidden" name="tool_admins" id="tool_admins">
 			
 			<div class='tool-admin-form-item'>
 				<label for="tool_admin_tags" class="tool-admin-label">Tool Admins:</label>
@@ -199,6 +199,7 @@ $body .= <<< EOD
 				tagsDiv.appendChild(tag);
 				tagSet.add(raw);
 				input.value = '';
+				changeNotify(true);
 			}
 		});
 
@@ -211,6 +212,7 @@ $body .= <<< EOD
 					tagsDiv.removeChild(lastTag);
 					tagSet.delete(value);
 					e.preventDefault();
+					changeNotify(true);
 				}
 			}
 		});
@@ -223,6 +225,7 @@ $body .= <<< EOD
 			tagsDiv.appendChild(createTag(raw));
 			tagSet.add(raw);
 			input.value = '';
+			changeNotify(true);
 		});
 
 		/* ---------- Focus input when clicking anywhere inside the widget ---------- */
@@ -234,8 +237,6 @@ $body .= <<< EOD
 			document.getElementById('tool_admins').value = Array.from(tagSet).join(',');
 			return true;
 		});
-	
-		
 	})();
 	</script>
 EOD;
