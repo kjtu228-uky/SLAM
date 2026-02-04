@@ -90,7 +90,7 @@ $body = <<< EOD
 	<div class='tool-admin-panel'>
 		<form action="tools_admin.php" method="get" id="update_platform_form">
 			<input type="hidden" name="update_platform_settings" value="true">
-			<input type="hidden" name="tool_admins" id="tool_admins">
+			<input type="hidden" name="tool_admins" id="tool_admins" value="{$tool_admins}">
 			
 			<div class='tool-admin-form-item'>
 				<label for="tool_admin_tags" class="tool-admin-label">Tool Admins:</label>
@@ -219,6 +219,7 @@ $body .= <<< EOD
 
 		/* ---------- Focus input when clicking anywhere inside the widget ---------- */
 		container.addEventListener('click', () => input.focus());
+		document.getElementById('tool_admins').value.split(',').forEach(item => addTag(item.trim()));
 
 		/* ---- On form submit, serialize tags ---- */
 		document.getElementById('update_platform_form').addEventListener('submit', e => {
