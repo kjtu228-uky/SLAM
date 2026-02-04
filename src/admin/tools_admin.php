@@ -100,17 +100,6 @@ $body = <<< EOD
 						aria-label="Enter login ID">
 				</div>
 			</div>
-			
-			
-			<div class='tool-admin-form-item'>
-				<label for="tool_admins" class="tool-admin-label">Tool Admins:</label>
-				<input type="text" id="tool_admins"
-					name="tool_admins" rows="1" class="tool-admin-textarea"
-					placeholder="A comma-separated list of login IDs of tool administrators (people who can access this page)."
-					value="{$tool_admins}"
-					oninput="changeNotify(true);"
-				</input>
-			</div>
 
 			<div class='tool-admin-form-item'>
 				<label for="tool_list_header" class="tool-admin-label">Tool List Header:</label>
