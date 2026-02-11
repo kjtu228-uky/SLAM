@@ -138,17 +138,17 @@ input:checked + .slider:before {
 
 /* Tag container */
 .tag-input {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .25rem;
-  align-items: center;
-  padding: .5rem 1rem;
-  border: 1px solid #d0d4da;
-  border-radius: 8px;
-  background: #fff;
-  min-height: 1.6rem;           /* keep height when no tags */
-  cursor: text;
-  transition: border-color .2s, box-shadow .2s;
+	display: flex;
+	flex-wrap: wrap;
+	gap: .25rem;
+	align-items: center;
+	padding: .5rem 1rem;
+	border: 1px solid #d0d4da;
+	border-radius: 8px;
+	background: #fff;
+	min-height: 1.6rem; /* keep height when no tags */
+	cursor: text;
+	transition: border-color .2s, box-shadow .2s;
 }
 
 .tag-input:focus-within {
@@ -221,15 +221,12 @@ input:checked + .slider:before {
 }
 /* ==================================================================================== */
 /* containing div for LTI Tool item                                                     */
-.panel {
+.rounded-container {
 	border: 1px solid #222;
 	margin: 10px;
 	border-radius: 5px;
 	overflow: hidden;
-}
-.panel.full {
-	overflow: auto;
-	flex: 1;
+	display: flex;
 }
 .lti-tools-container {
 	display: flex;
