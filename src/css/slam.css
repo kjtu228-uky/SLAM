@@ -231,10 +231,7 @@ input:checked + .slider:before {
 .lti-tools-container {
 	display: flex;
 	flex-direction: column;
-/*	border: 1px solid #222;
-	border-radius: 5px; */
 	overflow: auto;
-	padding: 10px;
 	flex: 1;
 }
 .lti-tools-container.loading {

@@ -91,7 +91,9 @@ EOD;
 	}
 	$page .= <<< EOD
 
+	<div class='rounded-container'>
 	<div id='toolList' class='lti-tools-container'>
+	</div>
 	</div>
 	<div id='messageBoxes'>
 	</div>
