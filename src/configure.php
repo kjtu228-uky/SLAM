@@ -103,9 +103,9 @@ EOD;
             "enabled": true,
             "icon_url": "{$url}images/icon16.png",
             "placement": "course_navigation",
-{$disabled_json}
             "message_type": "LtiResourceLinkRequest",
             "target_link_uri": "{$url}connect.php",
+{$disabled_json}
 {$visibility}
           }
         ]
