@@ -28,7 +28,7 @@ if(count($_GET) > 0) {
 						'grant_type' => 'authorization_code',
 						'client_id' => $platform->getSetting('api_client_id'),
 						'client_secret' => $platform->getSetting('api_client_secret'),
-						'redirect_uri' => TOOL_BASE_URL . 'oauth2response.php',
+						'redirect_uri' => rtrim(TOOL_BASE_URL, '/') . '/oauth2response.php',
 						'code' => $_GET['code'],
 						'replace_tokens' => '1'
 						)));
@@ -49,7 +49,7 @@ if(count($_GET) > 0) {
 			$platform->save();
 		}
 		// redirect
-		header('Location: ' . TOOL_BASE_URL . 'index.php');
+		header('Location: ' . rtrim(TOOL_BASE_URL, '/') . '/index.php');
 		exit(0);
 	} else if(isset($_GET['error'])) {
 		print('<p><strong>Error: </strong>' . $_GET['error']);

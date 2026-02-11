@@ -80,12 +80,13 @@ else $tool_list_header = "";
 <body onload="initializeTimer(<?php echo IDLE_TIME; ?>); changesTimer();">
 <div style='display: flex; flex-direction: column; height: 98vh;'>
 <?php
+$tool_base_url = rtrim(TOOL_BASE_URL, '/');
 $showVal = function($val) {
 	return $val;
 };
 $body = <<< EOD
 	<div class='slam-title'>
-		<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		<h1><img src='{$tool_base_url}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div class='tool-admin-panel'>
 		<form action="tools_admin.php" method="get" id="update_platform_form">
@@ -132,7 +133,7 @@ foreach ($lti_tools as $key => $lti_tool) {
 			((isset($lti_tool['visible']) && $lti_tool['visible'] > 0)?" lti-tool-enabled":"") . "'>\n";
 		$body .= '<div class="lti-tool-text">' . $lti_tool['name'] . '</div>';
 		$body .= '<div class="lti-tool-icon"><a href="./edit_tool.php?id=' . $key . '">';
-		$body .= '<img src="' . TOOL_BASE_URL . '/images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
+		$body .= '<img src="' . $tool_base_url . '/images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
 		$body .= "		</div>\n";
 	}
 }

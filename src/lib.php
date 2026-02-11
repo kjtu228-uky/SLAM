@@ -323,11 +323,11 @@ function requestNewToken($platform) {
 		Util::logError("The logged in user (" . $_SESSION['username'] . ") is not the user configured to request a token for SLAM (" . $platform->getSetting('api_user_id') . "). Platform ID: " . $platform->getRecordId());
 		return false;
 	}
-	$api_url = $platform->getSetting('api_url'); // not sure if we can use $platform->deploymentId
+	$api_url = $platform->getSetting('api_url');
 	if (!$api_url) return false;
 	header(	'Location: ' . $api_url . '/login/oauth2/auth?client_id=' . $platform->getSetting('api_client_id') . 
 			'&response_type=code&state=' . $_SESSION['consumer_pk'] . '&scope=' . implode("%20", API_SCOPES) .
-			'&redirect_uri=' . TOOL_BASE_URL . 'oauth2response.php');
+			'&redirect_uri=' . rtrim(TOOL_BASE_URL, '/') . '/oauth2response.php');
 	exit(0);
 }
 

@@ -43,7 +43,7 @@ class SLAM extends LTI\Tool
 			'type'=>'LtiResourceLinkRequest',
 			'label'=>APP_NAME,
 			'placements'=>['course_navigation'],
-			'icon_uri'=>TOOL_BASE_URL.'images/icon50.png',
+			'icon_uri'=>rtrim(TOOL_BASE_URL, '/').'/images/icon50.png',
 			'https://canvas.instructure.com/lti/course_navigation/default_enabled'=>!DEFAULT_DISABLED
 		);
 		if (INSTRUCTOR_ONLY) {
@@ -104,8 +104,8 @@ class SLAM extends LTI\Tool
         global $db;
 
         $title = APP_NAME;
-        $appUrl = TOOL_BASE_URL;
-        $iconUrl = getAppUrl() . 'images/icon50.png';
+        $appUrl = rtrim(TOOL_BASE_URL, '/') . '/';
+        $iconUrl = $appUrl . 'images/icon50.png';
         if (empty($this->context)) {
             $html = <<< EOD
         <p>

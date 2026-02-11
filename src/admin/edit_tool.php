@@ -9,6 +9,7 @@ require_once('../lib.php');
 
 $ok = true;
 if (isset($_SESSION['error_message'])) $ok = false;
+$tool_base_url = rtrim(TOOL_BASE_URL, '/');
 
 // Initialise session and database
 if ($ok) {
@@ -21,7 +22,7 @@ if ($ok) {
 }
 // make sure user is an admin
 if (!$ok || !isToolAdmin($platform) || !isset($_GET['id'])) {
-	header('Location: ' . TOOL_BASE_URL . 'index.php');
+	header('Location: ' . $tool_base_url . '/index.php');
 	exit(0);
 }
 // is this a request to update the configuration of the tool settings in the database?
@@ -31,7 +32,7 @@ if (isset($_GET['update_tool'])) {
 // retrieve all of the tool configurations
 $lti_tools = getAllTools($platform);
 if (!isset($lti_tools[$_GET['id']])) {
-	header('Location: ' . TOOL_BASE_URL . 'index.php');
+	header('Location: ' . $tool_base_url . '/index.php');
 	exit(0);
 }
 ?>
@@ -97,7 +98,7 @@ if ($lti_tools[$tool_id]['config'] != null)
 $body = <<< EOD
 	<div class='slam-title'>
 		<div style='width: 100%;'>
-			<h1><img src='{$showVal(TOOL_BASE_URL)}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
+			<h1><img src='{$tool_base_url}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 		</div>
 	</div>
 	<div class='slam-description'>
@@ -150,7 +151,7 @@ EOD;
 			</div>
 			
 			<div class='tool-admin-button-panel'>
-				<button type="button" onclick="window.location.href='{$showVal(TOOL_BASE_URL)}/admin/tools_admin.php'" class='button button-primary'>Cancel</button>
+				<button type="button" onclick="window.location.href='{$tool_base_url}/admin/tools_admin.php'" class='button button-primary'>Cancel</button>
 				<button id="tool_update_button" type="submit" class='button button-primary' disabled>Update</button>
 			</div>
 			<div id='changeNotice' class='tool-admin-button-panel'>
