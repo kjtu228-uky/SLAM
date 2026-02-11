@@ -225,6 +225,7 @@ input:checked + .slider:before {
 	border: 1px solid #222;
 	margin: 10px;
 	border-radius: 5px;
+	overflow: hidden;
 }
 .panel.full {
 	overflow: auto;
