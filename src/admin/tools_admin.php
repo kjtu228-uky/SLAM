@@ -123,6 +123,7 @@ $body = <<< EOD
 	<div class='tool-admin-text'>
 		The following LTI apps are available for configuration in your instance.
 	</div>
+	<div class='tool-admin-panel full'>
 	<div id='toolList' class='lti-tools-container'>
 EOD;
 
@@ -139,6 +140,7 @@ foreach ($lti_tools as $key => $lti_tool) {
 }
 
 $body .= <<< EOD
+	</div>
 	</div>
 
 	<script>
