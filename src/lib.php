@@ -426,7 +426,7 @@ function canvasApiAllPages($platform, string $endpoint, array $options = []): ar
 	do {
 		$response = canvasApiRequest($platform, 'GET', $endpoint, $options);
 //		Util::logError(json_encode($response['response'], JSON_PRETTY_PRINT));
-		if (isset($response['response']['data'])
+		if (isset($response['response']['data']))
 			$all = array_merge($all, $response['response']['data']);
 		else
 			$all = array_merge($all, $response['response']);
