@@ -425,8 +425,11 @@ function canvasApiAllPages($platform, string $endpoint, array $options = []): ar
 	$all = [];
 	do {
 		$response = canvasApiRequest($platform, 'GET', $endpoint, $options);
-		Util::logError(json_encode($response['response'], JSON_PRETTY_PRINT));
-		$all = array_merge($all, $response['response']);
+//		Util::logError(json_encode($response['response'], JSON_PRETTY_PRINT));
+		if (isset($response['response']['data'])
+			$all = array_merge($all, $response['response']['data']);
+		else
+			$all = array_merge($all, $response['response']);
 		$nextUrl = null;
 		if (isset($response['headers']['Link'])) {
 			// Link header can have multiple, comma-separated links with each defined as one of:
