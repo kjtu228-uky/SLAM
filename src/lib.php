@@ -358,7 +358,8 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
 		// always request header
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30);		
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		
 		// execute the request and check response
 		$response = curl_exec($ch);
