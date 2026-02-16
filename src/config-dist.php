@@ -39,12 +39,11 @@ define('VENDOR_URL', 'https://online.uky.edu/');
 define('VENDOR_EMAIL', 'elearning@uky.edu');
 define('INSTRUCTOR_ONLY', true);
 define('DEFAULT_DISABLED', true); // change to false if you want this enabled in course nav by default
-define('CUSTOM_FIELDS', array( // you shouldn't need anything here unless you are customizing SLAM
-	'COURSE_NUMBER'=>"Canvas.course.id",
-	'COURSE_NAME'=>"Canvas.course.name",
-	'COURSE_SIS_ID'=>"Canvas.course.sisSourceId",
-	'USER_DISPLAY_NAME'=>"Person.name.display",
-	'USER_USERNAME'=>"Canvas.user.loginId"
+define('CUSTOM_FIELDS', array(
+	'COURSE_NUMBER'=>"Canvas.course.id", // used when making API calls
+	'COURSE_NAME'=>"Canvas.course.name", // displayed on the index page for instructor's reference
+	'COURSE_SIS_ID'=>"Canvas.course.sisSourceId", // displayed along with the course name
+	'USER_USERNAME'=>"Canvas.user.loginId" // used for confirming access to admin pages and restricting API use
 ));
 define('IDLE_TIME', 300000); // the amount of time (milliseconds) a user is idle before asking the user to relaunch SLAM from course menu
 
