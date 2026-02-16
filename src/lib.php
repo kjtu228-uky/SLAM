@@ -302,9 +302,6 @@ function requestNewToken($platform) {
 	exit(0);
 }
 
-
-
-<?php
 /**
  * Canvas API helper – generic, self‑contained, no dependencies.
  *
