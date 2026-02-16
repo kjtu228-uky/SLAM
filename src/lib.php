@@ -335,7 +335,7 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
 		$headers = [
 			'Accept: application/json',
 			'Content-Type: application/json',
-			'Authorization: Bearer ' . $access_token,
+			'Authorization: Bearer ' . $access_token->access_token,
 		];
 		// Merge user‑supplied headers
 		if (!empty($options['headers']) && is_array($options['headers'])) {
