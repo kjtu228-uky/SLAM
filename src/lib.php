@@ -377,9 +377,9 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
 		$responseHeaders = [];
 		$json = json_decode($body, true);
 		foreach (explode("\r\n", $rawHeaders) as $h) {
-			Util::logError($h);
-			[$k, $v] = explode(':', $h, 2) ?? [];
-			if ($k && $v) $responseHeaders[trim($k)] = trim($v);
+			$header = explode(':', $h, 2) ?? [];
+			if (is_array($header) && count($header) == 2 && $header[0] && $header[1])
+				$responseHeaders[trim($header[0])] = trim($header[1]);
 		}
 
 		// Retry on rate‑limit (429)
@@ -425,6 +425,7 @@ function canvasApiAllPages($platform, string $endpoint, array $options = []): ar
 	$all = [];
 	do {
 		$response = canvasApiRequest($platform, 'GET', $endpoint, $options);
+		Util::logError($response['response']);
 		$all = array_merge($all, $response['response']);
 		$nextUrl = null;
 		if (isset($response['headers']['Link'])) {
