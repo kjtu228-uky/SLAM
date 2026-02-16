@@ -433,11 +433,11 @@ function canvasApiAllPages($platform, string $endpoint, array $options = []): ar
 		else
 			$all = array_merge($all, $response['response']);
 		$nextUrl = null;
-		Util::logError(json_encode($response['headers']['Link'], JSON_PRETTY_PRINT));
+		Util::logError(json_encode($response['headers'], JSON_PRETTY_PRINT));
 		if (isset($response['headers']['Link'])) {
 			// Link header can have multiple, comma-separated links with each defined as one of:
 			//    rel="current", rel="next", rel="first", rel="last"
-			foreach (explode(',', $resp['headers']['Link']) as $part) {
+			foreach (explode(',', $response['headers']['Link']) as $part) {
 				Util::logError($part);
 				if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
 					$page = $page + 1;
