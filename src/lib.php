@@ -441,7 +441,6 @@ function canvasApiAllPages($platform, string $endpoint, array $options = []): ar
 				}
 			}
 		}
-		break;
 	} while ($nextUrl);
 	return $all;
 }
