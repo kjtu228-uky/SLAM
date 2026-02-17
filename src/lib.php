@@ -469,9 +469,15 @@ function getLTIRegistrations($platform) {
  * @return array.
  */
 function getLTIRegistration($platform, $registrationId) {
-	$LTIregistration = array();
 	// check if $registrationId is an integer
-	if (!is_numeric($registrationId)) return $LTIregistration;
+	if (!is_numeric($registrationId)) return ['errors' => 'Invalid registration ID provided to getLTIRegistration()'];
+	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId;
+	$LTIregistration = canvasApiRequest($platform, 'GET', $endpoint, $options);
+	if (isset($LTIregistration['errors'])) return $LTIregistration;
+	if (isset($LTIregistration['response'])) return $LTIregistration['response'];
+	return [];
+	
+/*	
 	if (platformHasToken($platform)) {
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
@@ -499,6 +505,7 @@ function getLTIRegistration($platform, $registrationId) {
 		$LTIregistration = json_decode($response_body, true);
 	}
 	return $LTIregistration;
+*/
 }
 
 /**
