@@ -320,11 +320,11 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
 	if (platformHasToken($platform)) {
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
+		if (!$api_url) return ['errors' => 'The API URL is not defined for the platform.'];
 		// check if the platform has an access token; if not, request one from Canvas
 		$access_token = $platform->getSetting('access_token');
 		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
+		if (!$access_token || !$access_token->access_token) return ['errors' => 'The platform does not have an access token.'];
 
 		// build the url
 		$url = rtrim($api_url, '/') . $endpoint;
@@ -501,7 +501,7 @@ function getAllTools($platform) {
  */
 function isAvailable($platform, $registrationId, $courseNumber) {
 	// check if $registrationId is an integer
-	if (!is_numeric($registrationId)) return array('available' => false, 'errors' => 'The API URL is not defined for the platform.');
+	if (!is_numeric($registrationId)) return ['available' => false, 'errors' => 'The API URL is not defined for the platform.'];
 	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls';
 	$options = ['query' => ['per_page' => 100]];
 	$controls = canvasApiAllPages($platform, $endpoint, $options);
@@ -511,59 +511,11 @@ function isAvailable($platform, $registrationId, $courseNumber) {
 			foreach ($control['context_controls'] as $context_control) {
 				if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
 					$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
-						return array('available' => true, 'context_id' => $context_control['id'], 'deployment_id' => $control['deployment_id']);
+						return ['available' => true, 'context_id' => $context_control['id'], 'deployment_id' => $control['deployment_id']];
 			}
 		}
 	}
 	return ['available' => false];
-	
-/*	
- 	if (platformHasToken($platform)) {
-		// the API URL must be defined in the platform settings
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array('available' => false, 'errors' => 'The API URL is not defined for the platform.');
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array('available' => false, 'errors' => 'The platform does not have an access token.');
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls?per_page=100';
-		while ($url) {
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HEADER, 1);
-			$response = curl_exec($ch);		
-			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-			$response_headers = substr($response, 0, $response_header_size);
-			$response_body = substr($response, $response_header_size);
-			curl_close($ch);
-			if ($response_http_code != 200)
-				return array('available' => false, 'errors' => 'API request failed with status $response_http_code');
-			$controls = json_decode($response_body, true);
-			if (is_array($controls) && count($controls) > 0) {
-				foreach ($controls as $control) {
-					if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
-						foreach ($control['context_controls'] as $context_control) {
-							if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
-								$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
-									return array('available' => true, 'context_id' => $context_control['id'], 'deployment_id' => $control['deployment_id']);
-						}
-					}
-				}
-			}
-			// Extract the 'next' page URL from the Link header
-			$url = null;
-			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $response_headers, $matches)) {
-				$url = $matches[1];
-			}
-		}
-	}
-	return array('available' => false, 'errors' => 'No API token for the platform.');
-*/
 }
 
 /**
