@@ -472,7 +472,7 @@ function getLTIRegistration($platform, $registrationId) {
 	// check if $registrationId is an integer
 	if (!is_numeric($registrationId)) return ['errors' => 'Invalid registration ID provided to getLTIRegistration()'];
 	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId;
-	$LTIregistration = canvasApiRequest($platform, 'GET', $endpoint, $options);
+	$LTIregistration = canvasApiRequest($platform, 'GET', $endpoint);
 	if (isset($LTIregistration['errors'])) return $LTIregistration;
 	if (isset($LTIregistration['response'])) return $LTIregistration['response'];
 	return [];
