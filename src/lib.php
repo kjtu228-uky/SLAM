@@ -544,7 +544,9 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 		return ['errors' => 'Provided registration ID must be integer or array of integers.'];
 	}
 	$options = ['query' => ['per_page' => 100]];
-	$controls = canvasApiAllPages($platform, $endpoints, $options);
+	
+	$controls = canvasApiRequest($platform, $endpoints, $options);
+//	$controls = canvasApiAllPages($platform, $endpoints, $options);
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
 		foreach ($registrationControls as $control) {
