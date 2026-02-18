@@ -545,7 +545,7 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	}
 	$options = ['query' => ['per_page' => 100]];
 	
-	$controls = canvasApiRequest($platform, $endpoints, $options);
+	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
 //	$controls = canvasApiAllPages($platform, $endpoints, $options);
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
