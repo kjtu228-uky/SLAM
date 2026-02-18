@@ -546,11 +546,11 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	$options = ['query' => ['per_page' => 100]];
 	
 	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
-	Util::logError(json_encode($controls, JSON_PRETTY_PRINT));
+//	Util::logError(json_encode($controls, JSON_PRETTY_PRINT));
 //	$controls = canvasApiAllPages($platform, $endpoints, $options);
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
-		foreach ($registrationControls as $control) {
+		foreach ($registrationControls['response'] as $control) {
 			
 			$availability[$control['registration_id']] = ['available' => false];
 			if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
