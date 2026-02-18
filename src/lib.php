@@ -305,9 +305,9 @@ function requestNewToken($platform) {
 /**
  * Canvas API helper – generic, self‑contained, no dependencies.
  *
- * @param string $method      HTTP method: GET, POST, PUT, DELETE, PATCH, etc.
- * @param string $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
- * @param array  $options     Optional keys:
+ * @param string       $method      HTTP method: GET, POST, PUT, DELETE, PATCH, etc.
+ * @param string|array $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
+ * @param array        $options     Optional keys:
  *                            - 'body'      => array|json string  (will be JSON‑encoded)
  *                            - 'query'     => array of key=>value for query string
  *                            - 'headers'   => array of additional headers
@@ -315,8 +315,8 @@ function requestNewToken($platform) {
  * @return array  an associative array with the 'headers' and 'response' (associative array representing the json response)
  * @throws RuntimeException on HTTP errors or cURL problems.
  */
-function canvasApiRequest($platform, string $method, string $endpoint, array $options = []): array {
-	$apiResponse = [];
+function canvasApiRequest($platform, string $method, $endpoint, array $options = []): array {
+	$allResults = [];
 	if (platformHasToken($platform)) {
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
@@ -326,13 +326,12 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
 		if ($access_token) $access_token = json_decode($access_token);
 		if (!$access_token || !$access_token->access_token) return ['errors' => 'The platform does not have an access token.'];
 
-		// build the url
-		$url = rtrim($api_url, '/') . $endpoint;
-		if (!empty($options['query']) && is_array($options['query'])) {
-			$url .= '?' . http_build_query($options['query']);
-		}
-		// prepare cURL
-		$ch = curl_init($url);
+		$endpoints = [];
+		if (is_string($endpoint)) $endpoints[] = $endpoint;
+		elseif (is_array($endpoint)) $endpoints = $endpoint;
+		else return ['errors' => 'String or array must be provided to canvasApiRequest().'];
+
+		// Build the headers
 		$headers = [
 			'Accept: application/json',
 			'Content-Type: application/json',
@@ -343,72 +342,99 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
 		if (!empty($options['headers']) && is_array($options['headers'])) {
 			$headers = array_merge($headers, $options['headers']);
 		}
-
-		// HTTP method & body
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+		
+		// Build the payload (if necessary)
+		$payload = null;
 		if (in_array(strtoupper($method), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
 			if (!empty($options['body'])) {
 				// Accept array or string; JSON‑encode if array
 				$payload = is_array($options['body'])
 					? json_encode($options['body'])
 					: (string)$options['body'];
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 			}
-		}
-
-		// always request header
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, true);
-//		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		}		
 		
-		// execute the request and check response
-		$response = curl_exec($ch);
-		if ($response === false) {
-			$error = curl_error($ch);
-			curl_close($ch);
-			Util::logError("cURL error: $error");
-			throw new RuntimeException("cURL error: $error");
+		// Build the URLs and curl handles
+		$multiHandle = curl_multi_init();
+		$handles = [];
+		foreach ($endpoints as $ep) {
+			// build the url
+			$url = rtrim($api_url, '/') . $ep;
+			if (!empty($options['query']) && is_array($options['query'])) {
+				$url .= '?' . http_build_query($options['query']);
+			}
+			// prepare cURL
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+			if ($payload) curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, true);
+//			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			$handles[$ep] = $ch;
+			curl_multi_add_handle($multiHandle, $ch);
 		}
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
 		
-		// separate the headers and body
-		list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
-		$responseHeaders = [];
-		$json = json_decode($body, true);
-		foreach (explode("\r\n", $rawHeaders) as $h) {
-			$header = explode(':', $h, 2) ?? [];
-			if (is_array($header) && count($header) == 2 && $header[0] && $header[1])
-				$responseHeaders[trim($header[0])] = trim($header[1]);
-		}
+		// execute the calls
+		$running = null;
+		do {
+			curl_multi_exec($multiHandle, $running);
+			curl_multi_select($multiHandle);
+		} while ($running > 0);
+		
+		// get the responses
+		foreach ($handles as $ep => $ch) {
+			$response = curl_multi_getcontent($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-		// Retry on rate‑limit (429)
-		if ($httpCode === 429) {
-			$retryAfter = $responseHeaders['Retry-After'] ?? 1;
-			sleep((int)$retryAfter);
-			// Recursive retry (you can also loop)
-			return canvasApiRequest($method, $endpoint, $options);
-		}
-
-		// check for error codes
-		if ($httpCode < 200 || $httpCode >= 300) {
-			$error  = "Canvas API error $httpCode";
-			if (!empty($body)) {
-				if (json_last_error() === JSON_ERROR_NONE && isset($json['message'])) {
-					$error .= ": {$json['message']}";
-				} else {
-					$error .= ": $body";
+			// separate the headers and body
+			list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
+			$responseHeaders = [];
+			$json = json_decode($body, true);
+			foreach (explode("\r\n", $rawHeaders) as $h) {
+				$header = explode(':', $h, 2) ?? [];
+				if (is_array($header) && count($header) == 2 && $header[0] && $header[1])
+					$responseHeaders[trim($header[0])] = trim($header[1]);
+			}
+			
+			// Retry on rate‑limit (429)
+			if ($httpCode === 429) {
+				$retryAfter = $responseHeaders['Retry-After'] ?? 1;
+				sleep((int)$retryAfter);
+				// Recursive retry for the single endpoint
+				$retryResults = canvasApiRequest($platform, $method, $ep, $options);
+				if (isset($retryResults['errors'])) return $retryResults;
+				$allResults[$ep] = $retryResults;
+				curl_multi_remove_handle($multiHandle, $ch);
+				curl_close($ch);
+				continue;
+			}
+			
+			// check for error codes
+			if ($httpCode < 200 || $httpCode >= 300) {
+				$error  = "Canvas API error $httpCode";
+				if (!empty($body)) {
+					if (json_last_error() === JSON_ERROR_NONE && isset($json['message']))
+						$error .= ": {$json['message']}";
+					else
+						$error .= ": $body";
 				}
+				Util::logError("cURL error: $error");
+				return ['errors' => $error];
 			}
-			Util::logError("cURL error: $error");
-			throw new RuntimeException($error);
+			
+			$allResults[$ep] = [
+				'headers' => $responseHeaders,
+				'response' => $json
+			];
+			curl_multi_remove_handle($multiHandle, $ch);
+			curl_close($ch);
 		}
-		
-		// return the decoded response
-		$apiResponse = ['headers' => $responseHeaders, 'response' => $json];
+		curl_multi_close($multiHandle);
+	} else {
+		return ['errors' => 'Platform does not have a valid token.'];
 	}
-	return $apiResponse;
+	return $allResults;
 }
 
 /**
@@ -430,20 +456,22 @@ function canvasApiAllPages($platform, string $endpoint, array $options = []): ar
 		$options['query']['page'] = $page;
 		$response = canvasApiRequest($platform, 'GET', $endpoint, $options);
 		if (isset($response['errors'])) return $response;
-		if (isset($response['response']['data']))
-			$all = array_merge($all, $response['response']['data']);
-		else
-			$all = array_merge($all, $response['response']);
 		$nextUrl = null;
-		if (isset($response['headers']['link'])) {
-			// Link header can have multiple, comma-separated links with each defined as one of:
-			//    rel="current", rel="next", rel="first", rel="last"
-			foreach (explode(',', $response['headers']['link']) as $part) {
-				if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
-					$page = $page + 1;
-					$nextUrl = $matches[1];
-					break;
-				}	
+		foreach ($response as $ep => $resp) {
+			if (isset($resp['response']['data']))
+				$all = array_merge($all, $resp['response']['data']);
+			else
+				$all = array_merge($all, $resp['response']);
+			if (isset($resp['headers']['link'])) {
+				// Link header can have multiple, comma-separated links with each defined as one of:
+				//    rel="current", rel="next", rel="first", rel="last"
+				foreach (explode(',', $resp['headers']['link']) as $part) {
+					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
+						$page = $page + 1;
+						$nextUrl = $matches[1];
+						break;
+					}	
+				}
 			}
 		}
 	} while ($nextUrl);
@@ -472,7 +500,10 @@ function getLTIRegistration($platform, $registrationId) {
 	// check if $registrationId is an integer
 	if (!is_numeric($registrationId)) return ['errors' => 'Invalid registration ID provided to getLTIRegistration()'];
 	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId;
-	$LTIregistration = canvasApiRequest($platform, 'GET', $endpoint);
+	$response = canvasApiRequest($platform, 'GET', $endpoint);
+	if (count($response) > 1) return ['errors' => 'More than one registration returned for registration ID $registrationId'];
+	$response_keys = array_keys($response);
+	$LTIregistration = $response[$response_keys[0]];
 	if (isset($LTIregistration['errors'])) return $LTIregistration;
 	if (isset($LTIregistration['response'])) return $LTIregistration['response'];
 	return [];
