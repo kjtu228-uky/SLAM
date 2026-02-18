@@ -608,11 +608,11 @@ function getCourseTools($platform, $course_number) {
 		$courseTools[] = $tool;
 	}
 	$availability = isAvailable($platform, $registrationIds, $course_number);
-	foreach ($courseTools as $tool) {
+	foreach ($courseTools as $key => $tool) {
 		if (isset($availability[$tool['canvas_id']]) && $availability[$tool['canvas_id']]['available'])
-			$tool['enabled'] = true;
+			$courseTools[$key]['enabled'] = true;
 		else
-			$tool['enabled'] = false;
+			$courseTools[$key]['enabled'] = false;
 			
 /* 		// get the controls defined for the registration
 		$availability = isAvailable($platform, $tool['canvas_id'], $course_number);
