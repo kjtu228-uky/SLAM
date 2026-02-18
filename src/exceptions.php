@@ -66,7 +66,8 @@ if ($_GET['action'] == "add") {
 			foreach ($result as $tool_id) {
 				$tool_config = getToolConfigById($tool_id);
 				$fullToolInfo = getLTIRegistration($platform, $tool_config['canvas_id']);
-				$deploymentDetail = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+				$availability = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+				if (isset($availability[$tool_config['canvas_id']])) $deploymentDetail = $availability[$tool_config['canvas_id']];
 				if ($deploymentDetail && isset($deploymentDetail['deployment_id'])) $deploymentId = $deploymentDetail['deployment_id'];
 				else $deploymentId = "";
 				$addedToolsDetail[$tool_id] = array(

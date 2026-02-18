@@ -530,15 +530,49 @@ function getAllTools($platform) {
  *
  * @return array: array('available' => false or context_control['id'], 'errors' => if_any).
  */
-function isAvailable($platform, $registrationId, $courseNumber) {
-	// check if $registrationId is an integer
-	if (!is_numeric($registrationId)) return ['available' => false, 'errors' => 'The API URL is not defined for the platform.'];
-	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls';
+function isAvailable($platform, $registrationIds, $courseNumber) {
+	$endpoints = [];
+	$availability = [];
+	// make sure $registrationIds is number or array of numbers
+	if (is_numeric($registrationIds)) $endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $registrationIds . '/controls';
+	elseif (is_array($registrationIds)) {
+		foreach($registrationIds as $id) {
+			if (is_numeric($id))
+				$endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $id . '/controls';
+		}
+	} else {
+		return ['errors' => 'Provided registration ID must be integer or array of integers.'];
+	}
 	$options = ['query' => ['per_page' => 100]];
-	$controls = canvasApiAllPages($platform, $endpoint, $options);
-	if (isset($controls['errors'])) return ['available' => false, 'errors' => $controls['errors']];
-	foreach ($controls as $control) {
-		if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
+	$controls = canvasApiAllPages($platform, $endpoints, $options);
+	if (isset($controls['errors'])) return $controls;
+	foreach ($controls as $ep => $registrationControls) {
+		foreach ($registrationControls as $control) {
+			$availability[$control['registration_id']] = ['available' => false];
+			if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
+				foreach ($control['context_controls'] as $context_control) {
+					if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
+						$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available']) {
+							$availability[$control['registration_id']]['available'] = true;
+							$availability[$control['registration_id']]['context_id'] = $context_control['id'];
+							$availability[$control['registration_id']]['deployment_id'] = $control['deployment_id'];
+							break;
+					}
+				}
+				if ($availability[$control['registration_id']]['available']) break;
+			}
+		}
+	}
+	return $availability;
+	
+/* 	if (!is_numeric($registrationId)) return ['available' => false, 'errors' => 'The API URL is not defined for the platform.'];
+	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls'; */
+	// need to combine the controls for all ids
+	
+	
+	
+	
+/* 		if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
 			foreach ($control['context_controls'] as $context_control) {
 				if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
 					$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
@@ -546,7 +580,7 @@ function isAvailable($platform, $registrationId, $courseNumber) {
 			}
 		}
 	}
-	return ['available' => false];
+	return ['available' => false]; */
 }
 
 /**
@@ -555,7 +589,8 @@ function isAvailable($platform, $registrationId, $courseNumber) {
  * @return array.
  */
 function getCourseTools($platform, $course_number) {
-	$courseTools = array();
+	$courseTools = [];
+	$registrationIds = [];
 	// get the tool IDs that are enabled in SLAM for this platform
 	$platformEnabledTools = getToolConfigs($platform, true);
 	foreach ($platformEnabledTools as $tool) {
@@ -564,13 +599,27 @@ function getCourseTools($platform, $course_number) {
 		if (isset($fullToolInfo['errors'])) return $fullToolInfo;
 		$tool['name'] = $fullToolInfo['name'];
 		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
-		// get the controls defined for the registration
-		$availability = isAvailable($platform, $tool['canvas_id'], $course_number);
-		if ($availability['available']) $tool['enabled'] = true;
-		else $tool['enabled'] = false;
+		// gather registration IDs to check availability later
+		$registrationIds[] = $tool['canvas_id'];
 		// append the tool to the courseTools
 		$courseTools[] = $tool;
 	}
+	$availability = isAvailable($platform, $registrationIds, $course_number);
+	foreach ($courseTools as $tool) {
+		if (isset($availability[$tool['canvas_id']]) && $availability[$tool['canvas_id']]['available'])
+			$tool['enabled'] = true;
+		else
+			$tool['enabled'] = false;
+			
+/* 		// get the controls defined for the registration
+		$availability = isAvailable($platform, $tool['canvas_id'], $course_number);
+		if ($availability['available']) $tool['enabled'] = true;
+		else $tool['enabled'] = false; */
+	}
+
+
+
+
 	return sortAssociativeArrayByKey($courseTools, "name");
 }
 
@@ -626,7 +675,7 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 		}
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
-		if ($availability['available']) return $success;
+		if (isset($availability[$tool_config['canvas_id']]) && $availability[$tool_config['canvas_id']]['available']) return $success;
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return false;
@@ -684,6 +733,7 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 		$success = array($tool_id);
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
+		if (isset($availability[$tool_config['canvas_id']])) $availability = $availability[$tool_config['canvas_id']];
 		if ($availability['available']) {
 			if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
 				$dependents[] = $tool_id;
