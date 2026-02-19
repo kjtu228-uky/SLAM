@@ -521,8 +521,8 @@ function getLTIRegistration($platform, $registrationIds) {
 	$registrations = [];
 	foreach ($response as $ep => $resp) {
 		if (!isset($resp['response'])) return ['errors' => 'No registration in Canvas for $ep'];
-		Util::logError(json_encode($resp['response'], JSON_PRETTY_PRINT));
-		if (count($resp['response']) > 1) return ['errors' => 'More than one registration returned for $ep'];
+//		Util::logError(json_encode($resp['response'], JSON_PRETTY_PRINT));
+		if (is_array($resp['response']) && count($resp['response']) > 1) return ['errors' => 'More than one registration returned for $ep'];
 		$id = intval(substr($ep, strrpos($ep, "/") + 1));
 		$registrations[$id] = $resp['response'];
 	}
