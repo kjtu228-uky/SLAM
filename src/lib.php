@@ -521,7 +521,6 @@ function getLTIRegistration($platform, $registrationIds) {
 	$registrations = [];
 	foreach ($response as $ep => $resp) {
 		if (!isset($resp['response'])) return ['errors' => 'No registration in Canvas for $ep'];
-//		Util::logError(json_encode($resp['response'], JSON_PRETTY_PRINT));
 		if (is_array($resp['response']) && array_is_list($resp['response']) && count($resp['response']) > 1) return ['errors' => 'More than one registration returned for $ep'];
 		$id = intval(substr($ep, strrpos($ep, "/") + 1));
 		$registrations[$id] = $resp['response'];
@@ -591,23 +590,6 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 		}
 	}
 	return $availability;
-	
-/* 	if (!is_numeric($registrationId)) return ['available' => false, 'errors' => 'The API URL is not defined for the platform.'];
-	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls'; */
-	// need to combine the controls for all ids
-	
-	
-	
-	
-/* 		if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
-			foreach ($control['context_controls'] as $context_control) {
-				if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
-					$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
-						return ['available' => true, 'context_id' => $context_control['id'], 'deployment_id' => $control['deployment_id']];
-			}
-		}
-	}
-	return ['available' => false]; */
 }
 
 /**
@@ -621,15 +603,37 @@ function getCourseTools($platform, $course_number) {
 	// get the tool IDs that are enabled in SLAM for this platform
 	$platformEnabledTools = getToolConfigs($platform, true);
 	foreach ($platformEnabledTools as $tool) {
+		// gather registration IDs to make concurrent API calls
+		$registrationIds[] = $tool['canvas_id'];
+	}
+	$registrations = getLTIRegistration($platform, $registrationIds);
+	if (isset($registrations['errors'])) return $registrations['errors'];
+	$availability = isAvailable($platform, $registrationIds, $course_number);
+	if (isset($availability['errors'])) return $availability['errors'];
+	// build the array of tools and status specific to this course
+	foreach ($platformEnabledTools as $tool) {
+		if (isset($registrations[$tool['canvas_id']])) {
+			if (isset($registrations[$tool['canvas_id']]['name']))
+				$tool['name'] = $registrations[$tool['canvas_id']]['name'];
+			if (isset($registrations[$tool['canvas_id']]['admin_nickname']))
+				$tool['name'] = $registrations[$tool['canvas_id']]['admin_nickname'];
+			if (isset($availability[$tool['canvas_id']]) && $availability[$tool['canvas_id']]['available'])
+				$tool['enabled'] = true;
+			else
+				$tool['enabled'] = false;
+		}
+		$courseTools[] = $tool;
+	}
 		
-		// get the details for the registration
+		
+		
+		
+/* 		// get the details for the registration
 		$fullToolInfo = getLTIRegistration($platform, $tool['canvas_id']);
 		if (isset($fullToolInfo['errors'])) return $fullToolInfo;
 $fullToolInfo = $fullToolInfo[$tool['canvas_id']];
 		$tool['name'] = $fullToolInfo['name'];
 		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
-		// gather registration IDs to check availability later
-		$registrationIds[] = $tool['canvas_id'];
 		// append the tool to the courseTools
 		$courseTools[] = $tool;
 	}
@@ -638,13 +642,13 @@ $fullToolInfo = $fullToolInfo[$tool['canvas_id']];
 		if (isset($availability[$tool['canvas_id']]) && $availability[$tool['canvas_id']]['available'])
 			$courseTools[$key]['enabled'] = true;
 		else
-			$courseTools[$key]['enabled'] = false;
+			$courseTools[$key]['enabled'] = false; */
 			
 /* 		// get the controls defined for the registration
 		$availability = isAvailable($platform, $tool['canvas_id'], $course_number);
 		if ($availability['available']) $tool['enabled'] = true;
 		else $tool['enabled'] = false; */
-	}
+//	}
 
 
 
