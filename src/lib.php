@@ -503,17 +503,29 @@ function getLTIRegistrations($platform) {
  *
  * @return array.
  */
-function getLTIRegistration($platform, $registrationId) {
-	// check if $registrationId is an integer
-	if (!is_numeric($registrationId)) return ['errors' => 'Invalid registration ID provided to getLTIRegistration()'];
-	$endpoint = '/api/v1/accounts/self/lti_registrations/' . $registrationId;
-	$response = canvasApiRequest($platform, 'GET', $endpoint);
-	if (count($response) > 1) return ['errors' => 'More than one registration returned for registration ID $registrationId'];
-	$response_keys = array_keys($response);
-	$LTIregistration = $response[$response_keys[0]];
-	if (isset($LTIregistration['errors'])) return $LTIregistration;
-	if (isset($LTIregistration['response'])) return $LTIregistration['response'];
-	return [];
+function getLTIRegistration($platform, $registrationIds) {
+	$endpoints = [];
+	// make sure $registrationIds is number or array of numbers
+	if (is_numeric($registrationIds)) $endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $registrationIds;
+	elseif (is_array($registrationIds)) {
+		foreach($registrationIds as $id) {
+			if (is_numeric($id))
+				$endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $id;
+		}
+	} else {
+		return ['errors' => 'Provided registration ID must be integer or array of integers.'];
+	}
+	$response = canvasApiRequest($platform, 'GET', $endpoints);
+	if (isset($response['errors'])) return $response;
+	// build registrations; should only be one result per endpoint
+	$registrations = [];
+	foreach ($response as $ep => $resp) {
+		if (!isset($resp['response'])) return ['errors' => 'No registration in Canvas for $ep'];
+		if (count($resp['response']) > 1) return ['errors' => 'More than one registration returned for $ep'];
+		$id = intval(substr($ep, strrpos($ep, "/") + 1));
+		$registrations[$id] = $resp['response'];
+	}
+	return $registrations;
 }
 
 /**
@@ -577,7 +589,6 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 			}
 		}
 	}
-	Util::logError(json_encode($availability, JSON_PRETTY_PRINT));
 	return $availability;
 	
 /* 	if (!is_numeric($registrationId)) return ['available' => false, 'errors' => 'The API URL is not defined for the platform.'];
@@ -609,6 +620,7 @@ function getCourseTools($platform, $course_number) {
 	// get the tool IDs that are enabled in SLAM for this platform
 	$platformEnabledTools = getToolConfigs($platform, true);
 	foreach ($platformEnabledTools as $tool) {
+		
 		// get the details for the registration
 		$fullToolInfo = getLTIRegistration($platform, $tool['canvas_id']);
 		if (isset($fullToolInfo['errors'])) return $fullToolInfo;
