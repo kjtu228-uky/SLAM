@@ -624,6 +624,7 @@ function getCourseTools($platform, $course_number) {
 		// get the details for the registration
 		$fullToolInfo = getLTIRegistration($platform, $tool['canvas_id']);
 		if (isset($fullToolInfo['errors'])) return $fullToolInfo;
+$fullToolInfo = $fullToolInfo[$tool['canvas_id']];
 		$tool['name'] = $fullToolInfo['name'];
 		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
 		// gather registration IDs to check availability later
