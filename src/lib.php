@@ -440,8 +440,8 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 /**
  * Canvas API helper to get all pages for a GET request.
  *
- * @param string $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
- * @param array  $options     Optional keys:
+ * @param array | string $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
+ * @param array          $options     Optional keys:
  *                            - 'body'      => array|json string  (will be JSON‑encoded)
  *                            - 'query'     => array of key=>value for query string
  *                            - 'headers'   => array of additional headers
@@ -449,32 +449,38 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
  * @return array  index 0 contains the headers array and index 1 is the decoded json as associative array from the body
  * @throws RuntimeException on HTTP errors or cURL problems.
  */
-function canvasApiAllPages($platform, string $endpoint, array $options = []): array {
+function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 	$all = [];
 	$page = 1;
+	$endpoints = $endpoint;
 	do {
 		$options['query']['page'] = $page;
-		$response = canvasApiRequest($platform, 'GET', $endpoint, $options);
+		$response = canvasApiRequest($platform, 'GET', $endpoints, $options);
 		if (isset($response['errors'])) return $response;
-		$nextUrl = null;
+
+		$endpoints = [];
 		foreach ($response as $ep => $resp) {
-			if (isset($resp['response']['data']))
-				$all = array_merge($all, $resp['response']['data']);
-			else
-				$all = array_merge($all, $resp['response']);
+			if (isset($resp['response']['data'])) {
+				if (!isset($all[$ep])) $all[$ep] = $resp['response']['data'];
+				else $all[$ep] = array_merge($all[$ep], $resp['response']['data']);
+			} else {
+				if (!isset($all[$ep])) $all[$ep] = $resp['response'];
+				else $all[$ep] = array_merge($all[$ep], $resp['response']);
+			}
 			if (isset($resp['headers']['link'])) {
 				// Link header can have multiple, comma-separated links with each defined as one of:
 				//    rel="current", rel="next", rel="first", rel="last"
 				foreach (explode(',', $resp['headers']['link']) as $part) {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
 						$page = $page + 1;
-						$nextUrl = $matches[1];
+						$endpoints[] = $ep;
 						break;
 					}	
 				}
 			}
 		}
-	} while ($nextUrl);
+	} while (count($endpoints) > 0);
+	// $all will be an array with a key for each endpoint
 	return $all;
 }
 
@@ -488,7 +494,8 @@ function getLTIRegistrations($platform) {
  	if (isToolAdmin($platform))
 		$LTIregistrations = canvasApiAllPages($platform, '/api/v1/accounts/self/lti_registrations', ['query' => ['per_page' => 100]]);
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
-	return sortAssociativeArrayByKey($LTIregistrations, 'name');
+	if (!isset($LTIregistrations['/api/v1/accounts/self/lti_registrations'])) return ['errors' => 'No results returned from canvasApiAllPages()'];
+	return sortAssociativeArrayByKey($LTIregistrations['/api/v1/accounts/self/lti_registrations'], 'name');
 }
 
 /**
@@ -547,6 +554,11 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	
 	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
 //	$controls = canvasApiAllPages($platform, $endpoints, $options);
+
+
+
+
+
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
 		foreach ($registrationControls['response'] as $control) {
@@ -624,38 +636,6 @@ function getCourseTools($platform, $course_number) {
 
 
 	return sortAssociativeArrayByKey($courseTools, "name");
-}
-
-/**
- * Retrieve the list of external tools that are enabled in the course.
- *
- * @return array.
- */
-function getEnabledTools($platform, $course_number) {
-	$enabled_tools = array();
-	if ($course_number && platformHasToken($platform)) {
-		// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/courses/' . $course_number . '/external_tools?per_page=100';	
-		$ch = curl_init();
-		curl_setopt ($ch, CURLOPT_URL, $url);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
-		$response = json_decode(curl_exec($ch), true);
-		if (isset($response['errors'])) return $response;
-		foreach ($response as $tool_detail) {
-			$enabled_tools[$tool_detail['name']] = array('id'=>$tool_detail['lti_registration_id'], 'deployment_id'=>$tool_detail['deployment_id']);
-		}
-		curl_close($ch);
-	}
-	return $enabled_tools;
 }
 
 /**
