@@ -656,6 +656,7 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 			return false;
 		}
 		if (!isset($responses['response'])) {
+			Util::logError($response);
 			logToolChange($platform, $tool_id, 1, $course_number, 0);
 			return false;
 		}
