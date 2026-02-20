@@ -564,12 +564,8 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	}
 	$options = ['query' => ['per_page' => 100]];
 	
-	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
-//	$controls = canvasApiAllPages($platform, $endpoints, $options);
-
-
-
-
+//	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
+	$controls = canvasApiAllPages($platform, $endpoints, $options);
 
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
@@ -624,35 +620,6 @@ function getCourseTools($platform, $course_number) {
 		}
 		$courseTools[] = $tool;
 	}
-		
-		
-		
-		
-/* 		// get the details for the registration
-		$fullToolInfo = getLTIRegistration($platform, $tool['canvas_id']);
-		if (isset($fullToolInfo['errors'])) return $fullToolInfo;
-$fullToolInfo = $fullToolInfo[$tool['canvas_id']];
-		$tool['name'] = $fullToolInfo['name'];
-		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
-		// append the tool to the courseTools
-		$courseTools[] = $tool;
-	}
-	$availability = isAvailable($platform, $registrationIds, $course_number);
-	foreach ($courseTools as $key => $tool) {
-		if (isset($availability[$tool['canvas_id']]) && $availability[$tool['canvas_id']]['available'])
-			$courseTools[$key]['enabled'] = true;
-		else
-			$courseTools[$key]['enabled'] = false; */
-			
-/* 		// get the controls defined for the registration
-		$availability = isAvailable($platform, $tool['canvas_id'], $course_number);
-		if ($availability['available']) $tool['enabled'] = true;
-		else $tool['enabled'] = false; */
-//	}
-
-
-
-
 	return sortAssociativeArrayByKey($courseTools, "name");
 }
 
