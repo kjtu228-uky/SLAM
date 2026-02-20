@@ -650,6 +650,7 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 			'available' => true
 		]];
 		$response = canvasApiRequest($platform, 'POST', $endpoint, $options);
+		// check the response for issues
 		if (isset($response['errors'])) {
 			Util::logError($response['errors']);
 			logToolChange($platform, $tool_id, 1, $course_number, 0);
@@ -660,38 +661,8 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 			logToolChange($platform, $tool_id, 1, $course_number, 0);
 			return false;
 		}
+		// check if the exception was successfully applied to the course
 		$controls = $response[$endpoint]['response'];
-		
-/* 		// the API URL must be defined in the platform settings
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return false;
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return false;
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls';
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
-						'course_id' => $course_number,
-						'available' => true)));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, 1);
-		$response = curl_exec($ch);
-		$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-		$response_headers = substr($response, 0, $response_header_size);
-		$response_body = substr($response, $response_header_size);
-		curl_close($ch);
-		if ($response_http_code != 201) {
-			Util::logError("HTTP Code: " . $response_http_code . ": Unable to add tool ID " . $tool_id . " to " . $course_number . "\n" . $response_body);
-			logToolChange($platform, $tool_id, 1, $course_number, 0);
-			return false;
-		}
-		$controls = json_decode($response_body, true); */
 		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available']) {
 			logToolChange($platform, $tool_id, 1, $course_number, 1);
 			return $success;
