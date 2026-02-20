@@ -655,12 +655,12 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 			logToolChange($platform, $tool_id, 1, $course_number, 0);
 			return false;
 		}
-		if (!isset($response['response'])) {
+		if (!isset($response[$endpoint]['response'])) {
 			Util::logError(json_encode($response, JSON_PRETTY_PRINT));
 			logToolChange($platform, $tool_id, 1, $course_number, 0);
 			return false;
 		}
-		$controls = $response['response'];
+		$controls = $response[$endpoint]['response'];
 		
 /* 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
