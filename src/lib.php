@@ -642,7 +642,26 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
 		if (isset($availability[$tool_config['canvas_id']]) && $availability[$tool_config['canvas_id']]['available']) return $success;
-		// the API URL must be defined in the platform settings
+		
+		// try to add the tool to the course
+		$endpoint = '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls';
+		$options = ['body' => [
+			'course_id' => $course_number,
+			'available' => true
+		]];
+		$response = canvasApiRequest($platform, 'POST', $endpoint, $options);
+		if (isset($response['errors'])) {
+			Util::logError($response['errors']);
+			logToolChange($platform, $tool_id, 1, $course_number, 0);
+			return false;
+		}
+		if (!isset($responses['response'])) {
+			logToolChange($platform, $tool_id, 1, $course_number, 0);
+			return false;
+		}
+		$controls = $response['response'];
+		
+/* 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return false;
 		// check if the platform has an access token; if not, request one from Canvas
@@ -671,7 +690,7 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 			logToolChange($platform, $tool_id, 1, $course_number, 0);
 			return false;
 		}
-		$controls = json_decode($response_body, true);
+		$controls = json_decode($response_body, true); */
 		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available']) {
 			logToolChange($platform, $tool_id, 1, $course_number, 1);
 			return $success;
