@@ -691,7 +691,7 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
 		if (isset($availability[$tool_config['canvas_id']])) $availability = $availability[$tool_config['canvas_id']];
-		if ($availability['available']) {
+		if (isset($availability['available']) && $availability['available']) {
 			if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
 				$dependents[] = $tool_id;
 				$dependency_result = removeToolFromCourse($platform, $tool_config['dependency'], $course_number, $dependents);
@@ -701,7 +701,29 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 					return false;
 				}
 			}
-			// the API URL must be defined in the platform settings
+			// try to add the tool to the course
+			$endpoint = '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls/' . $availability['context_id'];
+			$response = canvasApiRequest($platform, 'DELETE', $endpoint);
+			// check the response for issues
+			if (isset($response['errors'])) {
+				Util::logError($response['errors']);
+				logToolChange($platform, $tool_id, 0, $course_number, 0);
+				return false;
+			}
+			if (!isset($response[$endpoint]['response'])) {
+				Util::logError(json_encode($response, JSON_PRETTY_PRINT));
+				logToolChange($platform, $tool_id, 0, $course_number, 0);
+				return false;
+			}
+			// check if the exception was successfully removed from the course
+			$controls = $response[$endpoint]['response'];
+			if (isset($controls['course_id']) && isset($controls['available']) && $controls['available']) {
+				logToolChange($platform, $tool_id, 0, $course_number, 1);
+				return $success;
+			}
+
+			
+/*			// the API URL must be defined in the platform settings
 			$api_url = $platform->getSetting('api_url');
 			if (!$api_url) return false;
 			// check if the platform has an access token; if not, request one from Canvas
@@ -732,7 +754,7 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 			if (isset($context_control['course_id']) && isset($context_control['available']) && $context_control['available']) {
 				logToolChange($platform, $tool_id, 0, $course_number, 1);
 				return $success;
-			}
+			} */
 		} else {
 			return $success;
 		}
