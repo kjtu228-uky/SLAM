@@ -356,6 +356,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		
 		// Build the URLs and curl handles
 		$multiHandle = curl_multi_init();
+		curl_multi_setopt($multiHandle, CURLMOPT_PIPELINING, 2);
 		curl_multi_setopt($multiHandle, CURLMOPT_MAX_HOST_CONNECTIONS, CONCURRENT_API_MAX_HOST_CONNECTIONS);
 		curl_multi_setopt($multiHandle, CURLMOPT_MAX_TOTAL_CONNECTIONS, CONCURRENT_API_MAX_TOTAL_CONNECTIONS);
 		$handles = [];
