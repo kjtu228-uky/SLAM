@@ -46,6 +46,9 @@ define('CUSTOM_FIELDS', array(
 	'USER_USERNAME'=>"Canvas.user.loginId" // used for confirming access to admin pages and restricting API use
 ));
 define('IDLE_TIME', 300000); // the amount of time (milliseconds) a user is idle before asking the user to relaunch SLAM from course menu
+define('CONCURRENT_API_MAX_HOST_CONNECTIONS', 10);
+define('CONCURRENT_API_MAX_TOTAL_CONNECTIONS', 20);
+
 
 ###
 ###  Database connection settings

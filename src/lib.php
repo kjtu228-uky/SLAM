@@ -305,9 +305,9 @@ function requestNewToken($platform) {
 /**
  * Canvas API helper – generic, self‑contained, no dependencies.
  *
- * @param string $method      HTTP method: GET, POST, PUT, DELETE, PATCH, etc.
- * @param string $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
- * @param array  $options     Optional keys:
+ * @param string       $method      HTTP method: GET, POST, PUT, DELETE, PATCH, etc.
+ * @param string|array $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
+ * @param array        $options     Optional keys:
  *                            - 'body'      => array|json string  (will be JSON‑encoded)
  *                            - 'query'     => array of key=>value for query string
  *                            - 'headers'   => array of additional headers
@@ -315,24 +315,23 @@ function requestNewToken($platform) {
  * @return array  an associative array with the 'headers' and 'response' (associative array representing the json response)
  * @throws RuntimeException on HTTP errors or cURL problems.
  */
-function canvasApiRequest($platform, string $method, string $endpoint, array $options = []): array {
-	$apiResponse = [];
+function canvasApiRequest($platform, string $method, $endpoint, array $options = []): array {
+	$allResults = [];
 	if (platformHasToken($platform)) {
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
+		if (!$api_url) return ['errors' => 'The API URL is not defined for the platform.'];
 		// check if the platform has an access token; if not, request one from Canvas
 		$access_token = $platform->getSetting('access_token');
 		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
+		if (!$access_token || !$access_token->access_token) return ['errors' => 'The platform does not have an access token.'];
 
-		// build the url
-		$url = rtrim($api_url, '/') . $endpoint;
-		if (!empty($options['query']) && is_array($options['query'])) {
-			$url .= '?' . http_build_query($options['query']);
-		}
-		// prepare cURL
-		$ch = curl_init($url);
+		$endpoints = [];
+		if (is_string($endpoint)) $endpoints[] = $endpoint;
+		elseif (is_array($endpoint)) $endpoints = $endpoint;
+		else return ['errors' => 'String or array must be provided to canvasApiRequest().'];
+
+		// Build the headers
 		$headers = [
 			'Accept: application/json',
 			'Content-Type: application/json',
@@ -343,79 +342,108 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
 		if (!empty($options['headers']) && is_array($options['headers'])) {
 			$headers = array_merge($headers, $options['headers']);
 		}
-
-		// HTTP method & body
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+		
+		// Build the payload (if necessary)
+		$payload = null;
 		if (in_array(strtoupper($method), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
 			if (!empty($options['body'])) {
 				// Accept array or string; JSON‑encode if array
 				$payload = is_array($options['body'])
 					? json_encode($options['body'])
 					: (string)$options['body'];
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 			}
-		}
-
-		// always request header
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, true);
-//		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		}		
 		
-		// execute the request and check response
-		$response = curl_exec($ch);
-		if ($response === false) {
-			$error = curl_error($ch);
-			curl_close($ch);
-			Util::logError("cURL error: $error");
-			throw new RuntimeException("cURL error: $error");
+		// Build the URLs and curl handles
+		$multiHandle = curl_multi_init();
+		curl_multi_setopt($multiHandle, CURLMOPT_MAX_HOST_CONNECTIONS, CONCURRENT_API_MAX_HOST_CONNECTIONS);
+		curl_multi_setopt($multiHandle, CURLMOPT_MAX_TOTAL_CONNECTIONS, CONCURRENT_API_MAX_TOTAL_CONNECTIONS);
+		$handles = [];
+		foreach ($endpoints as $ep) {
+			// build the url
+			$url = rtrim($api_url, '/') . $ep;
+			if (!empty($options['query']) && is_array($options['query'])) {
+				$url .= '?' . http_build_query($options['query']);
+			}
+			// prepare cURL
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+			if ($payload) curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, true);
+//			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			$handles[$ep] = $ch;
+			curl_multi_add_handle($multiHandle, $ch);
 		}
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
 		
-		// separate the headers and body
-		list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
-		$responseHeaders = [];
-		$json = json_decode($body, true);
-		foreach (explode("\r\n", $rawHeaders) as $h) {
-			$header = explode(':', $h, 2) ?? [];
-			if (is_array($header) && count($header) == 2 && $header[0] && $header[1])
-				$responseHeaders[trim($header[0])] = trim($header[1]);
-		}
+		// execute the calls
+		$running = null;
+		do {
+			curl_multi_exec($multiHandle, $running);
+			curl_multi_select($multiHandle);
+		} while ($running > 0);
+		
+		// get the responses
+		foreach ($handles as $ep => $ch) {
+			$response = curl_multi_getcontent($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-		// Retry on rate‑limit (429)
-		if ($httpCode === 429) {
-			$retryAfter = $responseHeaders['Retry-After'] ?? 1;
-			sleep((int)$retryAfter);
-			// Recursive retry (you can also loop)
-			return canvasApiRequest($method, $endpoint, $options);
-		}
-
-		// check for error codes
-		if ($httpCode < 200 || $httpCode >= 300) {
-			$error  = "Canvas API error $httpCode";
-			if (!empty($body)) {
-				if (json_last_error() === JSON_ERROR_NONE && isset($json['message'])) {
-					$error .= ": {$json['message']}";
-				} else {
-					$error .= ": $body";
+			// separate the headers and body
+			list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
+			$responseHeaders = [];
+			$json = json_decode($body, true);
+			foreach (explode("\r\n", $rawHeaders) as $h) {
+				$header = explode(':', $h, 2) ?? [];
+				if (is_array($header) && count($header) == 2 && $header[0] && $header[1])
+					$responseHeaders[trim($header[0])] = trim($header[1]);
+			}
+			
+			// Retry on rate‑limit (429)
+			if ($httpCode === 429) {
+				$retryAfter = $responseHeaders['Retry-After'] ?? 1;
+				sleep((int)$retryAfter);
+				// Recursive retry for the single endpoint
+				$retryResults = canvasApiRequest($platform, $method, $ep, $options);
+				if (isset($retryResults['errors'])) return $retryResults;
+				$allResults[$ep] = $retryResults;
+				curl_multi_remove_handle($multiHandle, $ch);
+				curl_close($ch);
+				continue;
+			}
+			
+			// check for error codes
+			if ($httpCode < 200 || $httpCode >= 300) {
+				$error  = "Canvas API error $httpCode";
+				if (!empty($body)) {
+					if (json_last_error() === JSON_ERROR_NONE && isset($json['message']))
+						$error .= ": {$json['message']}";
+					else
+						$error .= ": $body";
 				}
+				Util::logError("cURL error: $error");
+				return ['errors' => $error];
 			}
-			Util::logError("cURL error: $error");
-			throw new RuntimeException($error);
+			
+			$allResults[$ep] = [
+				'headers' => $responseHeaders,
+				'response' => $json
+			];
+			curl_multi_remove_handle($multiHandle, $ch);
+			curl_close($ch);
 		}
-		
-		// return the decoded response
-		$apiResponse = ['headers' => $responseHeaders, 'response' => $json];
+		curl_multi_close($multiHandle);
+	} else {
+		return ['errors' => 'Platform does not have a valid token.'];
 	}
-	return $apiResponse;
+	return $allResults;
 }
 
 /**
  * Canvas API helper to get all pages for a GET request.
  *
- * @param string $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
- * @param array  $options     Optional keys:
+ * @param array | string $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
+ * @param array          $options     Optional keys:
  *                            - 'body'      => array|json string  (will be JSON‑encoded)
  *                            - 'query'     => array of key=>value for query string
  *                            - 'headers'   => array of additional headers
@@ -423,30 +451,38 @@ function canvasApiRequest($platform, string $method, string $endpoint, array $op
  * @return array  index 0 contains the headers array and index 1 is the decoded json as associative array from the body
  * @throws RuntimeException on HTTP errors or cURL problems.
  */
-function canvasApiAllPages($platform, string $endpoint, array $options = []): array {
+function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 	$all = [];
 	$page = 1;
+	$endpoints = $endpoint;
 	do {
 		$options['query']['page'] = $page;
-		$response = canvasApiRequest($platform, 'GET', $endpoint, $options);
+		$response = canvasApiRequest($platform, 'GET', $endpoints, $options);
 		if (isset($response['errors'])) return $response;
-		if (isset($response['response']['data']))
-			$all = array_merge($all, $response['response']['data']);
-		else
-			$all = array_merge($all, $response['response']);
-		$nextUrl = null;
-		if (isset($response['headers']['link'])) {
-			// Link header can have multiple, comma-separated links with each defined as one of:
-			//    rel="current", rel="next", rel="first", rel="last"
-			foreach (explode(',', $response['headers']['link']) as $part) {
-				if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
-					$page = $page + 1;
-					$nextUrl = $matches[1];
-					break;
-				}	
+
+		$endpoints = [];
+		foreach ($response as $ep => $resp) {
+			if (isset($resp['response']['data'])) {
+				if (!isset($all[$ep])) $all[$ep] = $resp['response']['data'];
+				else $all[$ep] = array_merge($all[$ep], $resp['response']['data']);
+			} else {
+				if (!isset($all[$ep])) $all[$ep] = $resp['response'];
+				else $all[$ep] = array_merge($all[$ep], $resp['response']);
+			}
+			if (isset($resp['headers']['link'])) {
+				// Link header can have multiple, comma-separated links with each defined as one of:
+				//    rel="current", rel="next", rel="first", rel="last"
+				foreach (explode(',', $resp['headers']['link']) as $part) {
+					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
+						$page = $page + 1;
+						$endpoints[] = $ep;
+						break;
+					}	
+				}
 			}
 		}
-	} while ($nextUrl);
+	} while (count($endpoints) > 0);
+	// $all will be an array with a key for each endpoint
 	return $all;
 }
 
@@ -458,9 +494,10 @@ function canvasApiAllPages($platform, string $endpoint, array $options = []): ar
 function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
  	if (isToolAdmin($platform))
-		$LTIregistrations = canvasApiAllPages($platform, '/api/v1/accounts/self/lti_registrations', ['query' => ['per_page' => 50]]);
+		$LTIregistrations = canvasApiAllPages($platform, '/api/v1/accounts/self/lti_registrations', ['query' => ['per_page' => 100]]);
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
-	return sortAssociativeArrayByKey($LTIregistrations, 'name');
+	if (!isset($LTIregistrations['/api/v1/accounts/self/lti_registrations'])) return ['errors' => 'No results returned from canvasApiAllPages()'];
+	return sortAssociativeArrayByKey($LTIregistrations['/api/v1/accounts/self/lti_registrations'], 'name');
 }
 
 /**
@@ -468,37 +505,29 @@ function getLTIRegistrations($platform) {
  *
  * @return array.
  */
-function getLTIRegistration($platform, $registrationId) {
-	$LTIregistration = array();
-	// check if $registrationId is an integer
-	if (!is_numeric($registrationId)) return $LTIregistration;
-	if (platformHasToken($platform)) {
-		// the API URL must be defined in the platform settings
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId;
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, 1);
-		$response = curl_exec($ch);		
-		$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-		$response_headers = substr($response, 0, $response_header_size);
-		$response_body = substr($response, $response_header_size);
-		curl_close($ch);
-		if ($response_http_code != 200)
-			return array("errors" => "Error: API request failed with status $response_http_code");
-		$LTIregistration = json_decode($response_body, true);
+function getLTIRegistration($platform, $registrationIds) {
+	$endpoints = [];
+	// make sure $registrationIds is number or array of numbers
+	if (is_numeric($registrationIds)) $endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $registrationIds;
+	elseif (is_array($registrationIds)) {
+		foreach($registrationIds as $id) {
+			if (is_numeric($id))
+				$endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $id;
+		}
+	} else {
+		return ['errors' => 'Provided registration ID must be integer or array of integers.'];
 	}
-	return $LTIregistration;
+	$response = canvasApiRequest($platform, 'GET', $endpoints);
+	if (isset($response['errors'])) return $response;
+	// build registrations; should only be one result per endpoint
+	$registrations = [];
+	foreach ($response as $ep => $resp) {
+		if (!isset($resp['response'])) return ['errors' => 'No registration in Canvas for $ep'];
+		if (is_array($resp['response']) && array_is_list($resp['response']) && count($resp['response']) > 1) return ['errors' => 'More than one registration returned for $ep'];
+		$id = intval(substr($ep, strrpos($ep, "/") + 1));
+		$registrations[$id] = $resp['response'];
+	}
+	return $registrations;
 }
 
 /**
@@ -522,54 +551,41 @@ function getAllTools($platform) {
  *
  * @return array: array('available' => false or context_control['id'], 'errors' => if_any).
  */
-function isAvailable($platform, $registrationId, $courseNumber) {
-	// check if $registrationId is an integer
-	if (!is_numeric($registrationId)) return array('available' => false, 'errors' => 'The API URL is not defined for the platform.');
- 	if (platformHasToken($platform)) {
-		// the API URL must be defined in the platform settings
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array('available' => false, 'errors' => 'The API URL is not defined for the platform.');
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array('available' => false, 'errors' => 'The platform does not have an access token.');
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $registrationId . '/controls?per_page=100';
-		while ($url) {
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HEADER, 1);
-			$response = curl_exec($ch);		
-			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-			$response_headers = substr($response, 0, $response_header_size);
-			$response_body = substr($response, $response_header_size);
-			curl_close($ch);
-			if ($response_http_code != 200)
-				return array('available' => false, 'errors' => 'API request failed with status $response_http_code');
-			$controls = json_decode($response_body, true);
-			if (is_array($controls) && count($controls) > 0) {
-				foreach ($controls as $control) {
-					if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
-						foreach ($control['context_controls'] as $context_control) {
-							if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
-								$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available'])
-									return array('available' => true, 'context_id' => $context_control['id'], 'deployment_id' => $control['deployment_id']);
-						}
+function isAvailable($platform, $registrationIds, $courseNumber) {
+	$endpoints = [];
+	$availability = [];
+	// make sure $registrationIds is number or array of numbers
+	if (is_numeric($registrationIds)) $endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $registrationIds . '/controls';
+	elseif (is_array($registrationIds)) {
+		foreach($registrationIds as $id) {
+			if (is_numeric($id))
+				$endpoints[] = '/api/v1/accounts/self/lti_registrations/' . $id . '/controls';
+		}
+	} else {
+		return ['errors' => 'Provided registration ID must be integer or array of integers.'];
+	}
+	$options = ['query' => ['per_page' => 100]];
+	
+	$controls = canvasApiAllPages($platform, $endpoints, $options);
+	if (isset($controls['errors'])) return $controls;
+	foreach ($controls as $ep => $registrationControls) {
+		foreach ($registrationControls as $control) {
+			$availability[$control['registration_id']] = ['available' => false];
+			if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
+				foreach ($control['context_controls'] as $context_control) {
+					if (isset($context_control['course_id']) && !is_null($context_control['course_id']) &&
+						$context_control['course_id'] == $courseNumber && isset($context_control['available']) && $context_control['available']) {
+							$availability[$control['registration_id']]['available'] = true;
+							$availability[$control['registration_id']]['context_id'] = $context_control['id'];
+							$availability[$control['registration_id']]['deployment_id'] = $control['deployment_id'];
+							break;
 					}
 				}
-			}
-			// Extract the 'next' page URL from the Link header
-			$url = null;
-			if (preg_match('/<([^>]+)>;\s*rel="next"/i', $response_headers, $matches)) {
-				$url = $matches[1];
+				if ($availability[$control['registration_id']]['available']) break;
 			}
 		}
 	}
-	return array('available' => false, 'errors' => 'No API token for the platform.');
+	return $availability;
 }
 
 /**
@@ -578,55 +594,33 @@ function isAvailable($platform, $registrationId, $courseNumber) {
  * @return array.
  */
 function getCourseTools($platform, $course_number) {
-	$courseTools = array();
+	$courseTools = [];
+	$registrationIds = [];
 	// get the tool IDs that are enabled in SLAM for this platform
 	$platformEnabledTools = getToolConfigs($platform, true);
 	foreach ($platformEnabledTools as $tool) {
-		// get the details for the registration
-		$fullToolInfo = getLTIRegistration($platform, $tool['canvas_id']);
-		if (isset($fullToolInfo['errors'])) return $fullToolInfo;
-		$tool['name'] = $fullToolInfo['name'];
-		if (isset($fullToolInfo['admin_nickname'])) $tool['name'] = $fullToolInfo['admin_nickname'];
-		// get the controls defined for the registration
-		$availability = isAvailable($platform, $tool['canvas_id'], $course_number);
-		if ($availability['available']) $tool['enabled'] = true;
-		else $tool['enabled'] = false;
-		// append the tool to the courseTools
+		// gather registration IDs to make concurrent API calls
+		$registrationIds[] = $tool['canvas_id'];
+	}
+	$registrations = getLTIRegistration($platform, $registrationIds);
+	if (isset($registrations['errors'])) return $registrations['errors'];
+	$availability = isAvailable($platform, $registrationIds, $course_number);
+	if (isset($availability['errors'])) return $availability['errors'];
+	// build the array of tools and status specific to this course
+	foreach ($platformEnabledTools as $tool) {
+		if (isset($registrations[$tool['canvas_id']])) {
+			if (isset($registrations[$tool['canvas_id']]['name']))
+				$tool['name'] = $registrations[$tool['canvas_id']]['name'];
+			if (isset($registrations[$tool['canvas_id']]['admin_nickname']))
+				$tool['name'] = $registrations[$tool['canvas_id']]['admin_nickname'];
+			if (isset($availability[$tool['canvas_id']]) && $availability[$tool['canvas_id']]['available'])
+				$tool['enabled'] = true;
+			else
+				$tool['enabled'] = false;
+		}
 		$courseTools[] = $tool;
 	}
 	return sortAssociativeArrayByKey($courseTools, "name");
-}
-
-/**
- * Retrieve the list of external tools that are enabled in the course.
- *
- * @return array.
- */
-function getEnabledTools($platform, $course_number) {
-	$enabled_tools = array();
-	if ($course_number && platformHasToken($platform)) {
-		// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return array("errors" => "The API URL is not defined for the platform.");
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return array("errors" => "The platform does not have an access token.");
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/courses/' . $course_number . '/external_tools?per_page=100';	
-		$ch = curl_init();
-		curl_setopt ($ch, CURLOPT_URL, $url);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
-		$response = json_decode(curl_exec($ch), true);
-		if (isset($response['errors'])) return $response;
-		foreach ($response as $tool_detail) {
-			$enabled_tools[$tool_detail['name']] = array('id'=>$tool_detail['lti_registration_id'], 'deployment_id'=>$tool_detail['deployment_id']);
-		}
-		curl_close($ch);
-	}
-	return $enabled_tools;
 }
 
 /**
@@ -649,37 +643,28 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 		}
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
-		if ($availability['available']) return $success;
-		// the API URL must be defined in the platform settings
-		$api_url = $platform->getSetting('api_url');
-		if (!$api_url) return false;
-		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return false;
-		$headers = array("Authorization: Bearer " . $access_token->access_token,
-			"User-Agent: LTIPHP/1.0");
-		$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls';
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
-						'course_id' => $course_number,
-						'available' => true)));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, 1);
-		$response = curl_exec($ch);
-		$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-		$response_headers = substr($response, 0, $response_header_size);
-		$response_body = substr($response, $response_header_size);
-		curl_close($ch);
-		if ($response_http_code != 201) {
-			Util::logError("HTTP Code: " . $response_http_code . ": Unable to add tool ID " . $tool_id . " to " . $course_number . "\n" . $response_body);
+		if (isset($availability[$tool_config['canvas_id']]) && $availability[$tool_config['canvas_id']]['available']) return $success;
+		
+		// try to add the tool to the course
+		$endpoint = '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls';
+		$options = ['body' => [
+			'course_id' => $course_number,
+			'available' => true
+		]];
+		$response = canvasApiRequest($platform, 'POST', $endpoint, $options);
+		// check the response for issues
+		if (isset($response['errors'])) {
+			Util::logError($response['errors']);
 			logToolChange($platform, $tool_id, 1, $course_number, 0);
 			return false;
 		}
-		$controls = json_decode($response_body, true);
+		if (!isset($response[$endpoint]['response'])) {
+			Util::logError(json_encode($response, JSON_PRETTY_PRINT));
+			logToolChange($platform, $tool_id, 1, $course_number, 0);
+			return false;
+		}
+		// check if the exception was successfully applied to the course
+		$controls = $response[$endpoint]['response'];
 		if (isset($controls['course_id']) && isset($controls['available']) && $controls['available']) {
 			logToolChange($platform, $tool_id, 1, $course_number, 1);
 			return $success;
@@ -707,7 +692,8 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 		$success = array($tool_id);
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
-		if ($availability['available']) {
+		if (isset($availability[$tool_config['canvas_id']])) $availability = $availability[$tool_config['canvas_id']];
+		if (isset($availability['available']) && $availability['available']) {
 			if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
 				$dependents[] = $tool_id;
 				$dependency_result = removeToolFromCourse($platform, $tool_config['dependency'], $course_number, $dependents);
@@ -717,35 +703,23 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 					return false;
 				}
 			}
-			// the API URL must be defined in the platform settings
-			$api_url = $platform->getSetting('api_url');
-			if (!$api_url) return false;
-			// check if the platform has an access token; if not, request one from Canvas
-			$access_token = $platform->getSetting('access_token');
-			if ($access_token) $access_token = json_decode($access_token);
-			if (!$access_token || !$access_token->access_token) return false;
-			$headers = array("Authorization: Bearer " . $access_token->access_token,
-				"User-Agent: LTIPHP/1.0");
-			$url = $api_url . '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls/' . $availability['context_id'];
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HEADER, 1);
-			$response = curl_exec($ch);
-			$response_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$response_header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-			$response_headers = substr($response, 0, $response_header_size);
-			$response_body = substr($response, $response_header_size);
-			curl_close($ch);
-			if ($response_http_code != 200) {
-				Util::logError("HTTP Code: " . $response_http_code . ": Unable to remove tool ID " . $tool_id . " from " . $course_number . "\n" . $response_body);
+			// try to add the tool to the course
+			$endpoint = '/api/v1/accounts/self/lti_registrations/' . $tool_config['canvas_id'] . '/controls/' . $availability['context_id'];
+			$response = canvasApiRequest($platform, 'DELETE', $endpoint);
+			// check the response for issues
+			if (isset($response['errors'])) {
+				Util::logError($response['errors']);
 				logToolChange($platform, $tool_id, 0, $course_number, 0);
 				return false;
 			}
-			$context_control = json_decode($response_body, true);
-			if (isset($context_control['course_id']) && isset($context_control['available']) && $context_control['available']) {
+			if (!isset($response[$endpoint]['response'])) {
+				Util::logError(json_encode($response, JSON_PRETTY_PRINT));
+				logToolChange($platform, $tool_id, 0, $course_number, 0);
+				return false;
+			}
+			// check if the exception was successfully removed from the course
+			$controls = $response[$endpoint]['response'];
+			if (isset($controls['course_id']) && isset($controls['available']) && $controls['available']) {
 				logToolChange($platform, $tool_id, 0, $course_number, 1);
 				return $success;
 			}

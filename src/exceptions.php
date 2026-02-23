@@ -66,11 +66,20 @@ if ($_GET['action'] == "add") {
 			foreach ($result as $tool_id) {
 				$tool_config = getToolConfigById($tool_id);
 				$fullToolInfo = getLTIRegistration($platform, $tool_config['canvas_id']);
-				$deploymentDetail = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+				if (isset($fullToolInfo['errors'])) {
+					print(json_encode($fullToolInfo));
+					exit;
+				}
+				if (!isset($fullToolInfo[$tool_config['canvas_id']])) {
+					print(json_encode(array('success' => false, 'action' => 'add', 'errors' => 'Canvas registration ' . $tool_config['canvas_id'] . ' not found.')));
+					exit;
+				}
+				$availability = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+				if (isset($availability[$tool_config['canvas_id']])) $deploymentDetail = $availability[$tool_config['canvas_id']];
 				if ($deploymentDetail && isset($deploymentDetail['deployment_id'])) $deploymentId = $deploymentDetail['deployment_id'];
 				else $deploymentId = "";
 				$addedToolsDetail[$tool_id] = array(
-					'name' => $fullToolInfo['name'],
+					'name' => $fullToolInfo[$tool_config['canvas_id']]['name'],
 					'deployment_id' => $deploymentId
 				);
 			}
