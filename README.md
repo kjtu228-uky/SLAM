@@ -8,6 +8,8 @@ This is an update to an existing internal version of SLAM that will utilize the 
 
 **IMPORTANT**
 
-This is very much a work in progress and does not yet work.
+This is still a work in progress. It should "work" but testing has been limited. Only recommended for beta environments, especially since some endpoints are not available to select when enforcing scopes (as of February 23, 2026).
 
-The [wiki](https://github.com/kjtu228-uky/SLAM/wiki) has been updated, but not fully. It still requires more detail around the Canvas configuration.
+The [wiki](https://github.com/kjtu228-uky/SLAM/wiki) has been updated, but not fully. It should provide at least enough information to get things up and running.
+
+Contributions and constructive criticism welcome.
