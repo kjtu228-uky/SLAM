@@ -41,6 +41,7 @@ if (!isset($lti_tools[$_GET['id']])) {
 <head>
 	<title>Self LTI App Management - Tool Configuration</title>
 	<meta name="description" content="An LTI app that allows Canvas users to self-manage LTI apps in their course." />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="../css/slam.css">
 	<link rel="stylesheet" href="../css/wysi.min.css"/>
