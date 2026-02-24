@@ -48,10 +48,10 @@ $page = <<< EOD
 <head>
   <meta http-equiv="content-language" content="EN" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=0.9">
   <title>{$showVal(APP_NAME)}</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="css/slam.css">
+  <link rel="stylesheet" href="css/slam.css?v=202602241548">
   <script type="text/javascript" src="js/slam.js"></script>
 </head>
 <body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools(); initializeTimer({$showVal(IDLE_TIME)});">
