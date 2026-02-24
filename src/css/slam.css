@@ -232,6 +232,8 @@ input:checked + .slider:before {
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 	flex: 1;
 }
 .lti-tools-container.loading {
