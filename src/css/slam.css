@@ -233,7 +233,7 @@ input:checked + .slider:before {
 	flex-direction: column;
 	overflow: auto;
 	overflow-y: scroll;
-	-webkit-overflow-scrolling: touch;
+	min-height: 300px;
 	flex: 1;
 }
 .lti-tools-container.loading {
