@@ -12,6 +12,7 @@ if (isset($_SESSION['error_message'])) $ok = false;
 $tool_base_url = rtrim(TOOL_BASE_URL, '/');
 
 // Initialise session and database
+if (!isset($_SESSION['consumer_pk'])) $ok = false;
 if ($ok) {
 	$db = null;
 	$ok = init($db, true);
