@@ -164,7 +164,7 @@ $body .= <<< EOD
 			removeBtn.type = 'button';
 			removeBtn.className = 'tag-remove';
 			removeBtn.innerHTML = '&times;';
-			removeBtn.setAttribute('aria-label', `Remove ${text}`);
+			removeBtn.setAttribute('aria-label', `Remove \${text}`);
 
 			removeBtn.addEventListener('click', () => {
 				tagsDiv.removeChild(tag);
