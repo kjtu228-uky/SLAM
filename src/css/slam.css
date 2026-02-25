@@ -232,7 +232,6 @@ input:checked + .slider:before {
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
-	overflow-y: scroll;
 	min-height: 300px;
 	flex: 1;
 }
