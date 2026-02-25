@@ -13,14 +13,16 @@ $tool_base_url = rtrim(TOOL_BASE_URL, '/');
 if (isset($_SESSION['error_message'])) $ok = false;
 
 // Initialise session and database
-if (!isset($_SESSION['consumer_pk'])) $ok = false;
 if ($ok) {
 	$db = null;
 	$ok = init($db, true);
-	// Initialise parameters
-	$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-	$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
-	if (!platformHasToken($platform)) $ok = false;
+	if (!isset($_SESSION['consumer_pk'])) $ok = false;
+	else {
+		// Initialise parameters
+		$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
+		$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
+		if (!platformHasToken($platform)) $ok = false;
+	}
 }
 // make sure user is an admin
 if (!$ok || !isToolAdmin($platform)) {
