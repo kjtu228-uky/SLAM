@@ -60,6 +60,10 @@ if (!isset($_GET['tool_id'])) {
 
 if ($_GET['action'] == "add") {
 	$result = addToolToCourse($platform, $_GET['tool_id'], $courseNumber);
+	if (isset($result['errors'])) {
+		print(json_encode($result));
+		exit;
+	}
 	if ($result) {
 		if (is_array($result)) {
 			$addedToolsDetail = array();
@@ -75,6 +79,10 @@ if ($_GET['action'] == "add") {
 					exit;
 				}
 				$availability = isAvailable($platform, $tool_config['canvas_id'], $courseNumber);
+				if (isset($availability['errors'])) {
+					print(json_encode($availability));
+					exit;
+				}
 				if (isset($availability[$tool_config['canvas_id']])) $deploymentDetail = $availability[$tool_config['canvas_id']];
 				if ($deploymentDetail && isset($deploymentDetail['deployment_id'])) $deploymentId = $deploymentDetail['deployment_id'];
 				else $deploymentId = "";
@@ -93,6 +101,10 @@ if ($_GET['action'] == "add") {
 } else if ($_GET['action'] == 'remove') {
 	$result = removeToolFromCourse($platform, $_GET['tool_id'], $courseNumber);
 	if (is_array($result)) {
+		if (isset($result['errors'])) {
+			print(json_encode(array('success' => false, 'action' => 'remove', 'errors' => $result['errors'])));
+			exit;
+		}
 		if ($result) print(json_encode(array('success' => true, 'action' => 'remove', 'changed' => $result)));
 		else print(json_encode(array('success' => true, 'message' => 'Other app(s) depends on this app', 'action' => 'add', 'changed' => array($_GET['tool_id']))));
 		exit;

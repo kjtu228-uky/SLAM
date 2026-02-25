@@ -13,31 +13,35 @@ async function getCourseTools() {
 			mode: "no-cors"
 		})
 		.then(response => response.json()).then(data => {
-			toolHTML = '';
-			notificationsHTML = '';
-			for (var key in data) {
-				toolHTML += "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
-				if (data[key]['enabled']) toolHTML += " lti-tool-enabled";
-				toolHTML += "'><div class='switch' id='switch_" + data[key]['id'] + "' onclick='tool_select_" +
-					data[key]['id'] + ".click();'><input type='checkbox' id='tool_select_" + data[key]['id'] +
-					"' onchange='updateToolInstall(" + data[key]['id'] + ");'";
-				if (data[key]['enabled']) toolHTML += " checked";
-				toolHTML += "><span class='slider round'></span></div><div><label for='tool_select_" +
-					data[key]['id'] + "' class='toggle-label'>" + data[key]['name'] + "</label></div>";
-				if ('support_info' in data[key] && data[key]['support_info'] !== null && data[key]['support_info'].length > 0) {
-					toolHTML += "<div class='tool-support'>";
-					toolHTML += data[key]['support_info'];
+			if (Object.hasOwn(data, 'errors')) {
+				console.log(data['errors']);
+			} else {
+				toolHTML = '';
+				notificationsHTML = '';
+				for (var key in data) {
+					toolHTML += "<div id='lti_tool_" + data[key]['id'] + "' class='lti-tool";
+					if (data[key]['enabled']) toolHTML += " lti-tool-enabled";
+					toolHTML += "'><div class='switch' id='switch_" + data[key]['id'] + "' onclick='tool_select_" +
+						data[key]['id'] + ".click();'><input type='checkbox' id='tool_select_" + data[key]['id'] +
+						"' onchange='updateToolInstall(" + data[key]['id'] + ");'";
+					if (data[key]['enabled']) toolHTML += " checked";
+					toolHTML += "><span class='slider round'></span></div><div><label for='tool_select_" +
+						data[key]['id'] + "' class='toggle-label'>" + data[key]['name'] + "</label></div>";
+					if ('support_info' in data[key] && data[key]['support_info'] !== null && data[key]['support_info'].length > 0) {
+						toolHTML += "<div class='tool-support'>";
+						toolHTML += data[key]['support_info'];
+						toolHTML += "</div>";
+					}
+					if ('user_notice' in data[key] && data[key]['user_notice'] !== null && data[key]['user_notice'].length > 0) {
+						notificationsHTML += "<div class='tool-message' id='tool_message_" + data[key]['id'] + "'>\n";
+						notificationsHTML += "  <div id='tool_message_text_" + data[key]['id'] + "'>" + data[key]['user_notice'] + "</div>\n";
+						notificationsHTML += "  <div style='clear:both; text-align:center;'>\n";
+						notificationsHTML += "    <input type='button' class='tool-message-button' value='Cancel' onclick='toolNoticeResponse(" + data[key]['id'] + ", true);'>\n";
+						notificationsHTML += "    <input type='button' class='tool-message-button' value='OK' onclick='toolNoticeResponse(" + data[key]['id'] + ", false);'>\n";
+						notificationsHTML += "  </div>\n</div>";
+					}
 					toolHTML += "</div>";
 				}
-				if ('user_notice' in data[key] && data[key]['user_notice'] !== null && data[key]['user_notice'].length > 0) {
-					notificationsHTML += "<div class='tool-message' id='tool_message_" + data[key]['id'] + "'>\n";
-					notificationsHTML += "  <div id='tool_message_text_" + data[key]['id'] + "'>" + data[key]['user_notice'] + "</div>\n";
-					notificationsHTML += "  <div style='clear:both; text-align:center;'>\n";
-					notificationsHTML += "    <input type='button' class='tool-message-button' value='Cancel' onclick='toolNoticeResponse(" + data[key]['id'] + ", true);'>\n";
-					notificationsHTML += "    <input type='button' class='tool-message-button' value='OK' onclick='toolNoticeResponse(" + data[key]['id'] + ", false);'>\n";
-					notificationsHTML += "  </div>\n</div>";
-				}
-				toolHTML += "</div>";
 			}
 			toolList.classList.remove('loading');
 			toolList.innerHTML = toolHTML;
@@ -93,7 +97,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 				}
 				tool_toggle.disabled = false;
 			} else {
-				console.log(data['errors']);
+				if (Object.hasOwn(data, 'errors')) console.log(data['errors']);
 				if (data['action'] == 'add') {
 					tool_toggle.checked = false;
 					tool_container.classList.remove("lti-tool-enabled");

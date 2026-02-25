@@ -537,6 +537,7 @@ function getLTIRegistration($platform, $registrationIds) {
  */
 function getAllTools($platform) {
 	$registrations = getLTIRegistrations($platform);
+	if (isset($registrations['errors'])) return $registrations;
 	$configuredTools = getToolConfigs($platform);
 	$all_tools = array();
 	foreach ($registrations as $registration) {
@@ -635,6 +636,7 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 		$success = array($tool_id);
 		if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
 			$dependency_result = addToolToCourse($platform, $tool_config['dependency'], $course_number);
+			if (isset($dependency_result['errors'])) return $dependency_result;
 			if ($dependency_result) $success = array_merge($success, $dependency_result);
 			else {
 				logToolChange($platform, $tool_id, 1, $course_number, 0);
@@ -643,6 +645,7 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 		}
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
+		if (isset($availability['errors'])) return $availability;
 		if (isset($availability[$tool_config['canvas_id']]) && $availability[$tool_config['canvas_id']]['available']) return $success;
 		
 		// try to add the tool to the course
@@ -685,6 +688,7 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 	if ($tool_config) {
 		// check if other enabled tools are dependent on this one
 		$otherEnabledTools = getCourseTools($platform, $course_number);
+		if (isset($otherEnabledTools['errors'])) return $otherEnabledTools;
 		foreach ($otherEnabledTools as $tool) {
 			if ($tool['dependency'] == $tool_id && !in_array($tool['id'], $dependents))
 				return array();
@@ -692,11 +696,13 @@ function removeToolFromCourse($platform, $tool_id, $course_number, $dependents =
 		$success = array($tool_id);
 		// check if it's already enabled/available
 		$availability = isAvailable($platform, $tool_config['canvas_id'], $course_number);
+		if (isset($availability['errors'])) return $availability;
 		if (isset($availability[$tool_config['canvas_id']])) $availability = $availability[$tool_config['canvas_id']];
 		if (isset($availability['available']) && $availability['available']) {
 			if (isset($tool_config['dependency']) && !is_null($tool_config['dependency'])) {
 				$dependents[] = $tool_id;
 				$dependency_result = removeToolFromCourse($platform, $tool_config['dependency'], $course_number, $dependents);
+				if (isset($dependency_result['errors'])) return $dependency_result;
 				if ($dependency_result) $success = array_merge($success, $dependency_result);
 				else {
 					logToolChange($platform, $tool_id, 0, $course_number, 0);

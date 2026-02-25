@@ -32,7 +32,9 @@ if (isset($_GET['update_tool'])) {
 }
 // retrieve all of the tool configurations
 $lti_tools = getAllTools($platform);
-if (!isset($lti_tools[$_GET['id']])) {
+if (!isset($lti_tools[$_GET['id']])) $_SESSION['error_message'] = "Unable to edit tool. Tool with ID $_GET['id'] does not exist.";
+if (isset($lti_tools['errors'])) $_SESSION['error_message'] = $lti_tools['errors'];
+if (isset($_SESSION['error_message'])) {
 	header('Location: ' . $tool_base_url . '/index.php');
 	exit(0);
 }

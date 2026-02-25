@@ -132,14 +132,23 @@ $body = <<< EOD
 EOD;
 
 $lti_tools = getAllTools($platform);
-foreach ($lti_tools as $key => $lti_tool) {
-	if (isset($lti_tool['name'])) {
-		$body .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
-			((isset($lti_tool['visible']) && $lti_tool['visible'] > 0)?" lti-tool-enabled":"") . "'>\n";
-		$body .= '<div class="lti-tool-text">' . $lti_tool['name'] . '</div>';
-		$body .= '<div class="lti-tool-icon"><a href="./edit_tool.php?id=' . $key . '">';
-		$body .= '<img src="' . $tool_base_url . '/images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
-		$body .= "		</div>\n";
+if (isset($lti_tools['errors'])) {
+	$body .= <<< EOD
+	<div class="error">
+		<p>There was an error retrieving the tools for the platform.</p>
+		<p>{$lti_tools['errors']}</p>
+	</div>	
+EOD;
+} else {
+	foreach ($lti_tools as $key => $lti_tool) {
+		if (isset($lti_tool['name'])) {
+			$body .= "\n		<div id='lti_tool_" . $key . "' class='lti-tool" .
+				((isset($lti_tool['visible']) && $lti_tool['visible'] > 0)?" lti-tool-enabled":"") . "'>\n";
+			$body .= '<div class="lti-tool-text">' . $lti_tool['name'] . '</div>';
+			$body .= '<div class="lti-tool-icon"><a href="./edit_tool.php?id=' . $key . '">';
+			$body .= '<img src="' . $tool_base_url . '/images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
+			$body .= "		</div>\n";
+		}
 	}
 }
 
