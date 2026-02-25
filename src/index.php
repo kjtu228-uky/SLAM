@@ -22,25 +22,23 @@ $ok = true;
 if (isset($_SESSION['error_message'])) $ok = false;
 
 // Initialise session and database
-if (!isset($_SESSION['consumer_pk'])) {
-	$ok = false;
-	$_SESSION['error_message'] = "You need to launch SLAM from Canvas.";
-}
 if ($ok) {
 	$db = null;
 	$ok = init($db, true);
 	// Initialise parameters
-	$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
-	$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
-	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-	$courseName = $resourceLink->getSetting('custom_course_name');
-	$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
-	$courseNumber = $resourceLink->getSetting('custom_course_number');
-/* 	$allSettings = $resourceLink->getSettings(); // will return all settings
-	foreach ($allSettings as $key => $setting) {
-		Util::logError("key: " . $key . ", setting: " . $setting);
-	} */
-	if (!platformHasToken($platform)) $ok = false;
+	if (isset($_SESSION['consumer_pk'])) {
+		$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
+		$platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
+		$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
+		$courseName = $resourceLink->getSetting('custom_course_name');
+		$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
+		$courseNumber = $resourceLink->getSetting('custom_course_number');
+	/* 	$allSettings = $resourceLink->getSettings(); // will return all settings
+		foreach ($allSettings as $key => $setting) {
+			Util::logError("key: " . $key . ", setting: " . $setting);
+		} */
+		if (!platformHasToken($platform)) $ok = false;
+	} else $ok = false;
 }
 
 $showVal = function($val) {
