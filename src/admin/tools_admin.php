@@ -8,6 +8,8 @@ use ceLTIc\LTI\Enum\LogLevel;
 require_once('../lib.php');
 
 $ok = true;
+$tool_base_url = rtrim(TOOL_BASE_URL, '/');
+
 if (isset($_SESSION['error_message'])) $ok = false;
 
 // Initialise session and database
@@ -22,7 +24,7 @@ if ($ok) {
 }
 // make sure user is an admin
 if (!$ok || !isToolAdmin($platform)) {
-	header(	'Location: ' . $platform->getSetting('api_url'));
+	header('Location: ' . $tool_base_url . '/index.php');
 	exit(0);
 }
 // is this a request to update the configuration of the tool settings in the database?
