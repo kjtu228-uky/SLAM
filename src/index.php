@@ -22,6 +22,10 @@ $ok = true;
 if (isset($_SESSION['error_message'])) $ok = false;
 
 // Initialise session and database
+if (!isset($_SESSION['consumer_pk'])) {
+	$ok = false;
+	$_SESSION['error_message'] = "You need to launch SLAM from Canvas.";
+}
 if ($ok) {
 	$db = null;
 	$ok = init($db, true);
