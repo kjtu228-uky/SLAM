@@ -351,6 +351,7 @@ function getToolConfigById($tool_id) {
 function getToolConfig($platform, $registration, $configuredTools = null) {
 	if (!isset($registration['id'])) return false;
 	$db = false;
+	$config = false;
 	if (isset($configuredTools) && is_array($configuredTools) && count($configuredTools)>0) {
 		foreach ($configuredTools as $configuredTool) {
 			if ($registration['id'] == $configuredTool['canvas_id']) {
