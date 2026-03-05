@@ -352,6 +352,7 @@ function getToolConfig($platform, $registration, $configuredTools = null) {
 	if (!isset($registration['id'])) return false;
 	$db = false;
 	$config = false;
+	$platformId = $platform->getRecordId();
 	if (isset($configuredTools) && is_array($configuredTools) && count($configuredTools)>0) {
 		foreach ($configuredTools as $configuredTool) {
 			if ($registration['id'] == $configuredTool['canvas_id']) {
@@ -361,7 +362,6 @@ function getToolConfig($platform, $registration, $configuredTools = null) {
 		}
 	} else {
 		$db = open_db();
-		$platformId = $platform->getRecordId();
 		$sql = "SELECT * FROM " . DB_TABLENAME_PREFIX . "tools WHERE consumer_pk = :platform_id AND canvas_id = :canvas_id";
 		$statement = $db->prepare($sql);
 		$statement->bindParam("platform_id", $platformId, PDO::PARAM_INT); // PDO::PARAM_STR if replacing string
