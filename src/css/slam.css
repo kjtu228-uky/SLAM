@@ -35,6 +35,9 @@ footer {
 strong{
 	font-weight:bold;
 }
+p {
+	margin-top: 2px;
+}
 
 /* ==================================================================================== */
 /* General UI Elements                                                                  */
