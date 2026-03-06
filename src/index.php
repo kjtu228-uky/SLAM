@@ -56,8 +56,7 @@ $page = <<< EOD
   <link rel="stylesheet" href="css/slam.css?v=202602241548">
   <script type="text/javascript" src="js/slam.js"></script>
 </head>
-<body onload="window.addEventListener('resize', setToolContainerSize); setToolContainerSize(); getCourseTools(); initializeTimer({$showVal(IDLE_TIME)});">
-<div style='display: flex; flex-direction: column; height: 98vh;'>
+<body onload="getCourseTools(); initializeTimer({$showVal(IDLE_TIME)});">
 EOD;
 
 		
@@ -122,7 +121,6 @@ EOD;
 	}
 }
 $page .= <<< EOD
-</div>
 </body>
 </html>
 EOD;
