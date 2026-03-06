@@ -92,6 +92,7 @@ $showVal = function($val) {
 $body = <<< EOD
 	<div class='slam-title'>
 		<h1><img src='{$tool_base_url}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		<a href='{$tool_base_url}/index.php'>SLAM</a>
 	</div>
 	<div class='tool-admin-panel'>
 		<form action="tools_admin.php" method="get" id="update_platform_form">
