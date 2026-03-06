@@ -84,7 +84,6 @@ else $tool_list_header = "";
 	</script>
 </head>
 <body onload="initializeTimer(<?php echo IDLE_TIME; ?>); changesTimer();">
-<div style='display: flex; flex-direction: column; height: 98vh;'>
 <?php
 $tool_base_url = rtrim(TOOL_BASE_URL, '/');
 $showVal = function($val) {
@@ -129,7 +128,6 @@ $body = <<< EOD
 	<div class='tool-admin-text'>
 		The following LTI apps are available for configuration in your instance.
 	</div>
-	<div class='rounded-container'>
 	<div id='toolList' class='lti-tools-container'>
 EOD;
 
@@ -155,7 +153,6 @@ EOD;
 }
 
 $body .= <<< EOD
-	</div>
 	</div>
 
 	<script>
@@ -243,6 +240,5 @@ $body .= <<< EOD
 EOD;
 print($body);
 ?>
-</div>
 </body>
 </html>
