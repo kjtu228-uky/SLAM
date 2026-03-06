@@ -58,8 +58,6 @@ $page = <<< EOD
 </head>
 <body onload="getCourseTools(); initializeTimer({$showVal(IDLE_TIME)});">
 EOD;
-
-		
 if ($ok) {
 	$page .= <<< EOD
 	<div id='slamTitle' class='slam-title'>

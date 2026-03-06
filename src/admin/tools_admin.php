@@ -96,7 +96,6 @@ $body = <<< EOD
 	<div style='width: 100%;'>
 		<a href='{$tool_base_url}/index.php'>SLAM</a> &gt; Tools Admin
 	</div>
-
 	<div class='tool-admin-panel'>
 		<form action="tools_admin.php" method="get" id="update_platform_form">
 			<input type="hidden" name="update_platform_settings" value="true">
