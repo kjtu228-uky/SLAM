@@ -81,7 +81,6 @@ if (isset($_SESSION['error_message'])) {
 	</script>
 </head>
 <body onload="initializeTimer(<?php echo IDLE_TIME; ?>); changesTimer();">
-<div style='display: flex; flex-direction: column; height: 98vh;'>
 <?php
 $showVal = function($val) {
 	return $val;
@@ -172,6 +171,5 @@ EOD;
 EOD;
 print($body);
 ?>
-</div>
 </body>
 </html>
