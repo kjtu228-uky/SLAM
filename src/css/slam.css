@@ -332,7 +332,7 @@ input:checked + .slider:before {
 .tool-admin-form-item {
 	display: flex;
 	align-items: flex-start;
-	flex-direction: row;
+	flex-direction: column;
 	padding: 5px;
 	margin: 5px;
 }
