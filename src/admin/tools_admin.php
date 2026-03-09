@@ -42,7 +42,12 @@ $tool_list_header = $platform->getSetting('tool_list_header');
 if ($tool_list_header)
 	$tool_list_header = htmlspecialchars(json_decode($tool_list_header), ENT_QUOTES | ENT_HTML401, 'UTF-8');
 else $tool_list_header = "";
-?>
+// simple function to output defined values
+$showVal = function($val) {
+	return $val;
+};
+
+$body = <<< EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -83,13 +88,7 @@ else $tool_list_header = "";
 		}
 	</script>
 </head>
-<body onload="initializeTimer(<?php echo IDLE_TIME; ?>); changesTimer();">
-<?php
-$tool_base_url = rtrim(TOOL_BASE_URL, '/');
-$showVal = function($val) {
-	return $val;
-};
-$body = <<< EOD
+<body onload="initializeTimer({$showVal(IDLE_TIME)}); changesTimer();">
 	<div class='slam-title'>
 		<h1><img src='{$tool_base_url}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
