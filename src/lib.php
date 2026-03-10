@@ -213,7 +213,7 @@ function updatePlatformSettings($platform, $settings) {
 		// make sure admins do not remove themselves
 		if ($_SESSION['username'] != $platform->getSetting('api_user_id') && !in_array($_SESSION['username'], $tool_admins))
 			$tool_admins[] = $_SESSION['username'];
-		$platform->setSetting('tool_admins', implode(", ", $tool_admins));
+		$platform->setSetting('tool_admins', implode(",", $tool_admins));
 	}
 	if (isset($settings['tool_list_header'])) {
 		// strip unsupported HTML tags
