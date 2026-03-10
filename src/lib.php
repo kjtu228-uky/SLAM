@@ -203,12 +203,16 @@ function isToolAdmin($platform, $user = null) {
 }
 
 function updatePlatformSettings($platform, $settings) {
+	if (!isToolAdmin()) return false;
 	// only update recognized settings: tool_admins, tool_list_header
 	if (!is_array($settings)) return false;
 	if (isset($settings['tool_admins'])) {
 		// make sure it is a comma-separated string
 		$tool_admins = explode(',', $settings['tool_admins']);
 		if (!is_array($tool_admins)) return false;
+		// make sure admins do not remove themselves
+		if ($_SESSION['username'] != $platform->getSetting('api_user_id') && !in_array($_SESSION['username'], $tool_admins))
+			$tool_admins[] = $_SESSION['username'];
 		$platform->setSetting('tool_admins', $settings['tool_admins']);
 	}
 	if (isset($settings['tool_list_header'])) {
