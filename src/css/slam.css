@@ -6,7 +6,7 @@ body {
 }
 h1 {
 	font-size: 2.0rem;
-	color: #00f; /* Style from basic-lti */
+	color: #0033A0;
 	word-wrap: break-word;
 	margin: 5px;
 	display: flex;
@@ -14,9 +14,8 @@ h1 {
 }
 h2 {
 	font-size: 1.4rem; /* Style from basic-lti */
-	color: #00f; /* Style from basic-lti */
+	color: #0033A0;
 	word-wrap: break-word;
-	/* margin: 15px; */
 	margin: 0; /* Style from basic-lti */
 	margin-left: 10px; /* Style from basic-lti */
 	padding-top: 10px; /* Style from basic-lti */
@@ -203,11 +202,10 @@ input:checked + .slider:before {
   min-width: 120px;
   border: none;
   outline: none;
-  font-size: .875rem;     /* 14px */
+  font-size: .875rem;
   padding: .2rem 0;
   color: #333;
 }
-
 .input::placeholder {
   color: #bbb;
 }
@@ -226,14 +224,6 @@ input:checked + .slider:before {
 	width: 100%;
 }
 /* ==================================================================================== */
-/* containing div for LTI Tool item                                                     */
-.rounded-container {
-	border: 1px solid #222;
-	margin: 10px;
-	border-radius: 5px;
-	overflow: hidden;
-	display: flex;
-}
 .lti-tools-container {
 	display: flex;
 	flex-direction: column;
@@ -300,11 +290,11 @@ input:checked + .slider:before {
 	cursor: pointer;
 	margin: 5px 5px 0px 0px;
 }
-.admin-button {
+/* .admin-button {
 	margin: 0px 15px;
 	padding: 5px 20px;
 	font-size: 1.3em;
-}
+} */
 /* ==================================================================================== */
 
 /* ==================================================================================== */
@@ -351,10 +341,10 @@ input:checked + .slider:before {
 	padding: 5px;
 	margin: 5px;
 }
-.tool-admin-button {
+/* .tool-admin-button {
 	padding: 5px;
 	margin: 5px;
-}
+} */
 .update-notification {
 	color: red;
 	font-weight: bold;
