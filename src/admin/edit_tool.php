@@ -40,7 +40,26 @@ if (isset($_SESSION['error_message'])) {
 	header('Location: ' . $tool_base_url . '/index.php');
 	exit(0);
 }
-?>
+$tool_id = $_GET['id'];
+$tool_name = $lti_tools[$tool_id]['name'];
+if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
+$changes_saved = (isset($_GET['update_tool']) && $updateResult)?"<span class='update-notification'>Changes saved</span>":"";
+$is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
+// prepare text for textareas
+$html_tool_support = "";
+$html_tool_adv_config = "";
+$html_tool_notice = "";
+if ($lti_tools[$tool_id]['support_info'] != null)
+	$html_tool_support = htmlspecialchars($lti_tools[$tool_id]['support_info'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
+if ($lti_tools[$tool_id]['user_notice'] != null)
+	$html_tool_notice = htmlspecialchars($lti_tools[$tool_id]['user_notice'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
+if ($lti_tools[$tool_id]['config'] != null)
+	$html_tool_adv_config = htmlspecialchars($lti_tools[$tool_id]['config'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
+// simple function to output defined values in heredoc
+$showVal = function($val) {
+	return $val;
+};
+$body = <<< EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -80,27 +99,7 @@ if (isset($_SESSION['error_message'])) {
 		}
 	</script>
 </head>
-<body onload="initializeTimer(<?php echo IDLE_TIME; ?>); changesTimer();">
-<?php
-$showVal = function($val) {
-	return $val;
-};
-$tool_id = $_GET['id'];
-$tool_name = $lti_tools[$tool_id]['name'];
-if (isset($lti_tools[$tool_id]['admin_nickname'])) $tool_name = $lti_tools[$tool_id]['admin_nickname'];
-$changes_saved = (isset($_GET['update_tool']) && $updateResult)?"<span class='update-notification'>Changes saved</span>":"";
-$is_visible = $lti_tools[$tool_id]['visible']?" checked":"";
-// prepare text for textareas
-$html_tool_support = "";
-$html_tool_adv_config = "";
-$html_tool_notice = "";
-if ($lti_tools[$tool_id]['support_info'] != null)
-	$html_tool_support = htmlspecialchars($lti_tools[$tool_id]['support_info'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
-if ($lti_tools[$tool_id]['user_notice'] != null)
-	$html_tool_notice = htmlspecialchars($lti_tools[$tool_id]['user_notice'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
-if ($lti_tools[$tool_id]['config'] != null)
-	$html_tool_adv_config = htmlspecialchars($lti_tools[$tool_id]['config'], ENT_QUOTES | ENT_HTML401, 'UTF-8');
-$body = <<< EOD
+<body onload="initializeTimer({$showVal(IDLE_TIME)}); changesTimer();">
 	<div class='slam-title'>
 		<h1><img src='{$tool_base_url}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
@@ -169,8 +168,8 @@ EOD;
 			</div>
 		</form>
 	</div>
+</body>
+</html>
 EOD;
 print($body);
 ?>
-</body>
-</html>
