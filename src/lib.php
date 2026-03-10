@@ -192,7 +192,7 @@ function isToolAdmin($platform, $user = null) {
 	}
 	$tool_admins = $platform->getSetting('tool_admins');
 	if (!empty($tool_admins)) {
-		$tool_admin_array = explode(",", $tool_admins);
+		$tool_admin_array = array_map("trim", explode(",", $tool_admins));
 		// the api_user_id can be considered a tool admin that can define other tool admins
 		$tool_admin_array[] = $platform->getSetting('api_user_id');
 		return in_array($user, $tool_admin_array);
