@@ -203,7 +203,7 @@ function isToolAdmin($platform, $user = null) {
 }
 
 function updatePlatformSettings($platform, $settings) {
-	if (!isToolAdmin()) return false;
+	if (!isToolAdmin($platform)) return false;
 	// only update recognized settings: tool_admins, tool_list_header
 	if (!is_array($settings)) return false;
 	if (isset($settings['tool_admins'])) {
