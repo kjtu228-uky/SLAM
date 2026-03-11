@@ -40,7 +40,8 @@ if ($ok) {
 		if (!platformHasToken($platform)) $ok = false;
 	} else $ok = false;
 }
-$tool_base_url = getAppUrl();
+$app_url = getAppUrl();
+$app_path = getAppPath();
 $showVal = function($val) {
 	return $val;
 };
@@ -86,7 +87,7 @@ EOD;
 		$page .= <<< EOD
 	<div id='courseTitle' class='course-title'>
 		<h2>LTI Tools for <i>{$header_course_title}</i></h2>
-		<h2>{$showVal(TOOL_BASE_URL)} - {$tool_base_url}</h2>
+		<h2>{$showVal(TOOL_BASE_URL)} - {$app_url} - {$app_path}</h2>
 	</div>
 EOD;
 	}
