@@ -8,7 +8,7 @@ use ceLTIc\LTI\Enum\LogLevel;
 require_once('../lib.php');
 
 $ok = true;
-$tool_base_url = rtrim(TOOL_BASE_URL, '/');
+$tool_base_url = getAppUrl();
 
 if (isset($_SESSION['error_message'])) $ok = false;
 
@@ -26,7 +26,7 @@ if ($ok) {
 }
 // make sure user is an admin
 if (!$ok || !isToolAdmin($platform)) {
-	header('Location: ' . $tool_base_url . '/index.php');
+	header('Location: ' . $tool_base_url . 'index.php');
 	exit(0);
 }
 // is this a request to update the configuration of the tool settings in the database?
@@ -90,10 +90,10 @@ $body = <<< EOD
 </head>
 <body onload="initializeTimer({$showVal(IDLE_TIME)}); changesTimer();">
 	<div class='slam-title'>
-		<h1><img src='{$tool_base_url}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		<h1><img src='{$tool_base_url}images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div style='width: 100%;'>
-		<a href='{$tool_base_url}/index.php'>SLAM</a> &gt; Tools Admin
+		<a href='{$tool_base_url}index.php'>SLAM</a> &gt; Tools Admin
 	</div>
 	<div class='tool-admin-panel'>
 		<form action="tools_admin.php" method="get" id="update_platform_form">
@@ -148,7 +148,7 @@ EOD;
 				((isset($lti_tool['visible']) && $lti_tool['visible'] > 0)?" lti-tool-enabled":"") . "'>\n";
 			$body .= '<div class="lti-tool-text">' . $lti_tool['name'] . '</div>';
 			$body .= '<div class="lti-tool-icon"><a href="./edit_tool.php?id=' . $key . '">';
-			$body .= '<img src="' . $tool_base_url . '/images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
+			$body .= '<img src="' . $tool_base_url . 'images/edit.png" alt="Edit settings for ' . $lti_tool['name'] . '"></a></div>';
 			$body .= "		</div>\n";
 		}
 	}
