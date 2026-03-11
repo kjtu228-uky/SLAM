@@ -8,7 +8,7 @@ use ceLTIc\LTI\Enum\LogLevel;
 require_once('../lib.php');
 
 $ok = true;
-$tool_base_url = getAppUrl();
+$tool_base_url = getAppUrl(1);
 
 if (isset($_SESSION['error_message'])) $ok = false;
 
