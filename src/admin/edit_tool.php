@@ -9,7 +9,7 @@ require_once('../lib.php');
 
 $ok = true;
 if (isset($_SESSION['error_message'])) $ok = false;
-$tool_base_url = rtrim(TOOL_BASE_URL, '/');
+$tool_base_url = getAppUrl(1);
 
 // Initialise session and database
 if ($ok) {
@@ -25,7 +25,7 @@ if ($ok) {
 }
 // make sure user is an admin
 if (!$ok || !isToolAdmin($platform) || !isset($_GET['id'])) {
-	header('Location: ' . $tool_base_url . '/index.php');
+	header('Location: ' . $tool_base_url . 'index.php');
 	exit(0);
 }
 // is this a request to update the configuration of the tool settings in the database?
@@ -37,7 +37,7 @@ $lti_tools = getAllTools($platform);
 if (!isset($lti_tools[$_GET['id']])) $_SESSION['error_message'] = "Unable to edit tool. Tool ID does not exist.";
 if (isset($lti_tools['errors'])) $_SESSION['error_message'] = $lti_tools['errors'];
 if (isset($_SESSION['error_message'])) {
-	header('Location: ' . $tool_base_url . '/index.php');
+	header('Location: ' . $tool_base_url . 'index.php');
 	exit(0);
 }
 $tool_id = $_GET['id'];
@@ -101,10 +101,10 @@ $body = <<< EOD
 </head>
 <body onload="initializeTimer({$showVal(IDLE_TIME)}); changesTimer();">
 	<div class='slam-title'>
-		<h1><img src='{$tool_base_url}/images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
+		<h1><img src='{$tool_base_url}images/icon50.png' alt='SLAM logo'>Self-Service LTI App Management</h1>
 	</div>
 	<div style='width: 100%;'>
-		<a href='{$tool_base_url}/index.php'>SLAM</a> &gt; <a href='{$tool_base_url}/admin/tools_admin.php'>Tools Admin</a> &gt; Edit Tool
+		<a href='{$tool_base_url}index.php'>SLAM</a> &gt; <a href='{$tool_base_url}admin/tools_admin.php'>Tools Admin</a> &gt; Edit Tool
 	</div>
 	<div class='slam-description'>
 		<h2>{$tool_name} Configuration</h2>
@@ -156,7 +156,7 @@ EOD;
 			</div>
 			
 			<div class='tool-admin-button-panel'>
-				<button type="button" onclick="window.location.href='{$tool_base_url}/admin/tools_admin.php'" class='button button-primary'>Cancel</button>
+				<button type="button" onclick="window.location.href='{$tool_base_url}admin/tools_admin.php'" class='button button-primary'>Cancel</button>
 				<button id="tool_update_button" type="submit" class='button button-primary' disabled>Update</button>
 			</div>
 			<div id='changeNotice' class='tool-admin-button-panel'>
