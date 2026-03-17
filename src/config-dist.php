@@ -26,7 +26,6 @@ define('REQUEST_URI_PREFIX', '');
 ###
 define('TOOL_ID', 'slam13');
 define('SESSION_NAME', 'slam13');
-define('TOOL_BASE_URL', ''); // e.g. https://your_domain.com/SLAM/
 define('TOOL_UUID', '<your_UUID>'); // Linux command: uuidgen
 define('APP_NAME', 'SLAM');
 define('APP_DESCRIPTION', 'Self-service LTI App Manager for Canvas.');
@@ -76,11 +75,13 @@ EOD
 ###  Canvas API Settings
 ###
 ### NOTE: The "controls" endpoints are not yet available for enforced scopes
-define('API_SCOPES', array('url:GET|/api/v1/accounts/:account_id/lti_registrations',
-							'url:GET|/api/v1/accounts/:account_id/lti_registrations/:id',
-							'url:GET|/api/v1/accounts/:account_id/lti_registrations/:id/controls',
-							'url:POST|/api/v1/accounts/:account_id/lti_registrations/:id/controls',
-							'url:DELETE|/api/v1/accounts/:account_id/lti_registrations/:id/controls/:id'));
+define('API_SCOPES', array(
+	'url:GET|/api/v1/accounts/:account_id/lti_registrations',
+	'url:GET|/api/v1/accounts/:account_id/lti_registrations/:id',
+	'url:GET|/api/v1/accounts/:account_id/lti_registrations/:registration_id/controls',
+	'url:POST|/api/v1/accounts/:current_account_id/lti_registrations/:registration_id/controls',
+	'url:DELETE|/api/v1/accounts/:account_id/lti_registrations/:registration_id/controls/:id'
+));
 
 ###
 ###  Dynamic registration settings
