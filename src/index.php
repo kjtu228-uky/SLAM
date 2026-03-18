@@ -32,11 +32,8 @@ if ($ok) {
 		$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
 		$courseName = $resourceLink->getSetting('custom_course_name');
 		$courseSISId = $resourceLink->getSetting('custom_course_sis_id');
+		if (str_starts_with($courseSISId, '$Canvas.')) unset($courseSISId);
 		$courseNumber = $resourceLink->getSetting('custom_course_number');
-	/* 	$allSettings = $resourceLink->getSettings(); // will return all settings
-		foreach ($allSettings as $key => $setting) {
-			Util::logError("key: " . $key . ", setting: " . $setting);
-		} */
 		if (!platformHasToken($platform)) $ok = false;
 	} else $ok = false;
 }
