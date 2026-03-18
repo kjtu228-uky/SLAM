@@ -55,7 +55,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
 	toggle_point = tool_toggle.children;
 	for (const child of toggle_point) {
-		console.log(child);
+		console.log(child.classList);
 /*   if (child.classList.contains('target-child')) {
     // This is the "closest" direct child
     console.log(child);
