@@ -53,7 +53,7 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
-	toggle_points = tool_toggle.querySelectorAll("slider");
+	toggle_points = tool_toggle.querySelectorAll("slider round");
 	toggle_points.forEach(child => {
 		child.classList.add("changing-toggle");
 	});
