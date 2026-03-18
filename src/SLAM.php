@@ -215,7 +215,7 @@ EOD;
     <button type="button" onclick="return doRegister();">Continue</button>
   </p>
   <p id="id_loading" class="aligncentre hide">
-    <img src="images/loading.gif">
+    <img width='50px' src='images/loading.gif' alt='Animation displayed during registration process.'>
   </p>
 
   <p id="id_registered" class="success hide">

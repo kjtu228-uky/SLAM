@@ -5,7 +5,7 @@ async function getCourseTools() {
 	// remove any tools currently displayed and show a loading wheel
 	toolList = document.getElementById('toolList');
 	toolList.classList.add('loading');
-	toolList.innerHTML = "<div><img width='50px' src='images/loading.gif' alt='Please wait while the list of available tools loads.'></div>";
+	toolList.innerHTML = "<div><img width='50px' src='images/loading.gif' alt='Animation displayed while the list of available tools loads.'></div>";
 	
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?action=list';
 	fetch(url, {
