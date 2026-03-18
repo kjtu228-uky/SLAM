@@ -56,6 +56,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 	toggle_points = tool_toggle.querySelectorAll("slider round");
 	toggle_points.forEach(child => {
 		child.classList.add("changing-toggle");
+		console.log(child);
 	});
 	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
