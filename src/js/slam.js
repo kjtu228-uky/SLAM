@@ -53,10 +53,10 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
-	toggle_points = tool_toggle.childNodes;
-	toggle_points.forEach(child => {
-		console.log("child: " + child.classList);
-	});
+	toggle_points = tool_toggle.querySelectorAll("span");
+	for (const toggle_point of toggle_points) {
+		console.log("here: " + span.textContent); // Access the text content of each span
+	}
 //	toggle_point = tool_toggle.querySelector('.slider.round');
 //	toggle_point.classList.add("changing-toggle");
 //	console.log(toggle_point);
