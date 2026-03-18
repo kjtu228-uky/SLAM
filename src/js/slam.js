@@ -53,7 +53,7 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
-	toggle_point = tool_toggle.closest(".slider.round");
+	toggle_point = tool_toggle.children;
 	console.log(toggle_point);
 	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
