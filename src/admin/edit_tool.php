@@ -113,6 +113,9 @@ $body = <<< EOD
 		<form action="edit_tool.php" method="get" onsubmit="tool_update_button.disabled = true; return true;">
 			<input type="hidden" name="id" value="{$_GET['id']}">
 			<input type="hidden" name="update_tool" value="true">
+			<div id='changeNotice' class='tool-admin-button-panel'>
+				{$changes_saved}
+			</div>
 			<div class="tool-admin-form-item">
 				<div>
 					<label for="visible" class="tool-admin-label">Visible</label>
@@ -158,9 +161,6 @@ EOD;
 			<div class='tool-admin-button-panel'>
 				<button type="button" onclick="window.location.href='{$tool_base_url}admin/tools_admin.php'" class='button button-primary'>Cancel</button>
 				<button id="tool_update_button" type="submit" class='button button-primary' disabled>Update</button>
-			</div>
-			<div id='changeNotice' class='tool-admin-button-panel'>
-				{$changes_saved}
 			</div>
 			<div class='tool-admin-text'>
 				<p>The <strong>User Notice</strong> text field supports the &#91;DEPLOYMENT_ID&#93; custom tag.
