@@ -125,13 +125,15 @@ input:checked + .slider:before {
 	/* transition: all .3s ease-in; */
 }
 /* Pure-CSS loading spinner */
+.switch.loading input:checked + .slider {
+  background-color: #1e88e5;
+}
 .switch.loading .slider::before {
   background: transparent;
   border: 2px solid rgba(255, 255, 255, 0.5);
   border-top-color: #fff;
   animation: spin 0.7s linear infinite;
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
