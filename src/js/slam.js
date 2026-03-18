@@ -113,6 +113,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 			console.log(error);
 			tool_toggle.disabled = false;
 		});
+	toggle_point.classList.remove("loading");
 }
 
 function toolNoticeResponse(tool_id, cancelAdd) {
