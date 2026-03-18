@@ -122,42 +122,8 @@ input:checked + .slider {
 }
 input:checked + .slider:before {
 	left: 20px;
-	transition: all .3s ease-in;
+	/* transition: all .3s ease-in; */
 }
-/* Keep the knob visible while working */
-.switch.working .slider::before {
-    background-color: white;
-}
-
-/* Spinner overlay */
-.switch.working .slider::after {
-    content: "";
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    left: 4px;
-    bottom: 4px;
-
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    border-top-color: #fff;
-    border-radius: 50%;
-    box-sizing: border-box;
-
-    animation: spin 0.7s linear infinite;
-}
-
-/* Move spinner with knob when checked */
-.switch.working input:checked + .slider::after {
-    left: 20px;
-}
-
-/* Spinner animation */
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
 
 /* Rounded sliders */
 .slider.round {
