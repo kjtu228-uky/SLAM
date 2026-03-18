@@ -132,7 +132,7 @@ input:checked + .slider:before {
 	border-radius: 50%;
 }
 .changing-toggle {
-	background-image: url('../images/loading.gif') !important;
+	background: url('../images/loading.gif') !important;
 }
 /* Label for toggles */
 .toggle-label {
