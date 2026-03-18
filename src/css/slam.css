@@ -115,14 +115,13 @@ p {
 	left: 4px;
 	bottom: 4px;
 	background-color: white;
-	transition: all .3s ease-in;
+	/* transition: all .3s ease-in; */
 }
 input:checked + .slider {
 	background-color: #2196F3;
 }
 input:checked + .slider:before {
 	left: 20px;
-	/* transition: all .3s ease-in; */
 }
 
 /* Rounded sliders */
