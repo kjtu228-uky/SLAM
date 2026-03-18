@@ -124,11 +124,11 @@ input:checked + .slider:before {
 	left: 20px;
 	/* transition: all .3s ease-in; */
 }
-/* Pure-CSS loading spinner */
-.switch.loading input:checked + .slider {
+/* Pure-CSS working spinner */
+.switch.working input:checked + .slider {
   background-color: #1e88e5;
 }
-.switch.loading .slider::before {
+.switch.working .slider::before {
   background: transparent;
   border: 2px solid rgba(255, 255, 255, 0.5);
   border-top-color: #fff;
