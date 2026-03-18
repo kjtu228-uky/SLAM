@@ -9,9 +9,9 @@ use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
 /**
- * This page displays information passed to the LTI tool from the platform.
+ * This page lists the LTI apps that are available to instructors to enable in their course.
  *
- * @author  Kyle Tuck <kylejtuck@gmail.com>
+ * @author  Kyle Tuck <Kyle.Tuck@uky.edu>
  * @copyright  Kyle Tuck
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
