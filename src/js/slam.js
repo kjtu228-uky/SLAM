@@ -55,7 +55,7 @@ async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
 	toggle_points = tool_toggle.childNodes;
 	toggle_points.forEach(child => {
-		console.log(child.classList);
+		console.log("child: " + child.classList);
 	});
 //	toggle_point = tool_toggle.querySelector('.slider.round');
 //	toggle_point.classList.add("changing-toggle");
