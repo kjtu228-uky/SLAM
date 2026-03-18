@@ -99,6 +99,10 @@ $body = <<< EOD
 		<form action="tools_admin.php" method="get" id="update_platform_form">
 			<input type="hidden" name="update_platform_settings" value="true">
 			<input type="hidden" name="tool_admins" id="tool_admins" value="{$tool_admins}">
+
+			<div id='changeNotice' class='tool-admin-button-panel'>
+				{$changes_saved}
+			</div>
 			
 			<div class='tool-admin-form-item'>
 				<label for="tool_admin_tags" class="tool-admin-label">Tool Admins:</label>
@@ -108,19 +112,14 @@ $body = <<< EOD
 						aria-label="Enter login ID">
 				</div>
 			</div>
-
 			<div class='tool-admin-form-item'>
 				<label for="tool_list_header" class="tool-admin-label">Tool List Header:</label>
 				<textarea id="tool_list_header"
 					name="tool_list_header" rows="5" class="tool-admin-textarea"
 					placeholder="This text appears above the list of tools that instructors see.">{$tool_list_header}</textarea>
 			</div>
-			
 			<div class='tool-admin-button-panel'>
 				<button id='tool_admin_button' type='submit' class='button button-primary' disabled>Update</button>
-			</div>
-			<div id='changeNotice' class='tool-admin-button-panel'>
-				{$changes_saved}
 			</div>
 			<div class='tool-admin-text'>
 				<p>The <strong>Tool List Header</strong> text is displayed above the tools instructors see.</p>
