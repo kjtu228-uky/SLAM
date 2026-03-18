@@ -131,28 +131,9 @@ input:checked + .slider:before {
 .slider.round:before {
 	border-radius: 50%;
 }
-
-/* Spinner */
-.spinner {
-  display: none;
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: url("../images/loading.gif") no-repeat center / contain;
+.changing-toggle {
+	background-image: url('../images/loading.gif') !important;
 }
-
-/* Loading state */
-.switch.loading .spinner {
-  display: block;
-}
-
-.switch.loading .slider::before {
-  opacity: 0;
-}
-
 /* Label for toggles */
 .toggle-label {
 	float:left;
