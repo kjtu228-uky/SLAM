@@ -105,7 +105,6 @@ p {
 	right: 0;
 	bottom: 0;
 	background-color: #ccc;
-	/* transition: all .3s ease-in; */
 }
 .slider:before {
 	position: absolute;
