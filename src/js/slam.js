@@ -54,6 +54,15 @@ async function getCourseTools() {
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
 	toggle_point = tool_toggle.children;
+	for (const child of children) {
+		console.log(child);
+/*   if (child.classList.contains('target-child')) {
+    // This is the "closest" direct child
+    console.log(child);
+    break; // Stop after finding the first one
+  }
+ */
+	}
 	console.log(toggle_point);
 	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
