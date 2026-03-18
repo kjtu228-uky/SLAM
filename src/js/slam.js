@@ -25,7 +25,7 @@ async function getCourseTools() {
 						data[key]['id'] + ".click();'><input type='checkbox' id='tool_select_" + data[key]['id'] +
 						"' onchange='updateToolInstall(" + data[key]['id'] + ");'";
 					if (data[key]['enabled']) toolHTML += " checked";
-					toolHTML += "><span class='slider round'></span></div><div><label for='tool_select_" +
+					toolHTML += "><span class='slider round' id='slider_" + data[key]['id'] + "'></span></div><div><label for='tool_select_" +
 						data[key]['id'] + "' class='toggle-label'>" + data[key]['name'] + "</label></div>";
 					if ('support_info' in data[key] && data[key]['support_info'] !== null && data[key]['support_info'].length > 0) {
 						toolHTML += "<div class='tool-support'>";
@@ -53,7 +53,8 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
-	console.log(tool_toggle.children[0]);
+	toggle_point = document.getElementById("slider_" + tool_id);
+	console.log(toggle_point);
 	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
 	url += tool_id + '&action=';
