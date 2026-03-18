@@ -131,6 +131,9 @@ input:checked + .slider:before {
 .slider.round:before {
 	border-radius: 50%;
 }
+.changing-toggle {
+	background-image: url('../images/loading.gif') !important;
+}
 /* Label for toggles */
 .toggle-label {
 	float:left;

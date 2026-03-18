@@ -53,6 +53,7 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
+	tool_toggle.classList.add("changing-toggle");
 	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
 	url += tool_id + '&action=';
