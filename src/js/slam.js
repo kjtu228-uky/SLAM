@@ -98,22 +98,27 @@ async function updateToolInstall(tool_id, confirmed = false) {
 					// display the message somehow
 				}
 				tool_toggle.disabled = false;
+				toggle_point.classList.remove("loading");
 			} else {
 				if (Object.hasOwn(data, 'errors')) console.log(data['errors']);
 				if (data['action'] == 'add') {
 					tool_toggle.checked = false;
 					tool_container.classList.remove("lti-tool-enabled");
+					toggle_point.classList.remove("loading");
 				} else {
 					tool_toggle.checked = true;
 					tool_container.classList.add("lti-tool-enabled");
+					toggle_point.classList.remove("loading");
 				}
 				tool_toggle.disabled = false;
+				toggle_point.classList.remove("loading");
 			}
 		}).catch(error => {
 			console.log(error);
 			tool_toggle.disabled = false;
+			toggle_point.classList.remove("loading");
 		});
-	toggle_point.classList.remove("loading");
+	
 }
 
 function toolNoticeResponse(tool_id, cancelAdd) {
