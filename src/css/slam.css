@@ -92,6 +92,9 @@ p {
 	float: left;
 	margin-right: 0.5em;
 }
+.switch.updating {
+	cursor: wait;
+}
 .switch input { 
 	opacity: 0;
 	width: 0;
