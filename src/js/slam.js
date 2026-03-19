@@ -56,13 +56,13 @@ function setUpdating(container, addWaiting = true, level=0) {
 	const allNodes = container.childNodes;
 	if (container && container.classList) {
 		if (!container.classList.contains("updating") && addWaiting) container.classList.add("updating");
-		if (container.classList.contains("updating") && !addWaiting) container.classList.remove("updating");
+		else container.classList.remove("updating");
 	}
 	// You typically need to check the nodeType to filter out non-element nodes
 	allNodes.forEach(node => {
-		if (node.nodeType === Node.ELEMENT_NODE) { // Check if it is an actual element (type 1)
+/* 		if (node.nodeType === Node.ELEMENT_NODE) { // Check if it is an actual element (type 1)
 			console.log("Level " + level + ": " + node.tagName);
-		}
+		} */
 		setUpdating(node, level+1);
 	});
 }
