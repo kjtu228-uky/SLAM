@@ -51,20 +51,23 @@ async function getCourseTools() {
 		});
 }
 
+function applyWaiting(container, level=0) {
+	// Get a NodeList of all child nodes (including text and comments)
+	const allNodes = container.childNodes;
+
+	// You typically need to check the nodeType to filter out non-element nodes
+	allNodes.forEach(node => {
+		if (node.nodeType === Node.ELEMENT_NODE) { // Check if it is an actual element (type 1)
+			console.log("Level " + level + ": " + node.tagName);
+		}
+		applyWaiting(node, level+1);
+	});
+}
+
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
 	tool_container = document.getElementById('lti_tool_' + tool_id);
-	console.log("Nodes");
-// Get a NodeList of all child nodes (including text and comments)
-const allNodes = tool_container.childNodes;
-
-// You typically need to check the nodeType to filter out non-element nodes
-allNodes.forEach(node => {
-    if (node.nodeType === Node.ELEMENT_NODE) { // Check if it is an actual element (type 1)
-        console.log(node.tagName);
-    }
-});
-
+	applyWaiting(tool_container);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
 	url += tool_id + '&action=';
 	url += tool_toggle.checked ? 'add' : 'remove';
