@@ -54,7 +54,7 @@ async function getCourseTools() {
 function setUpdating(container, addWaiting = true, level=0) {
 	// Get a NodeList of all child nodes (including text and comments)
 	const allNodes = container.childNodes;
-	if (container) {
+	if (container && container.classList) {
 		if (!container.classList.contains("updating") && addWaiting) container.classList.add("updating");
 		if (container.classList.contains("updating") && !addWaiting) container.classList.remove("updating");
 	}
