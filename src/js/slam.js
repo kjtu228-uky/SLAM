@@ -66,10 +66,10 @@ function setUpdating(container, addUpdating = true, level=0) {
 }
 
 async function updateToolInstall(tool_id, confirmed = false) {
-	var tool_toggle = document.getElementById("tool_select_" + tool_id);
-	var tool_container = document.getElementById('lti_tool_' + tool_id);
+	let tool_toggle = document.getElementById("tool_select_" + tool_id);
+	let tool_container = document.getElementById('lti_tool_' + tool_id);
 	setUpdating(tool_container);
-	var url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
+	let url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
 	url += tool_id + '&action=';
 	url += tool_toggle.checked ? 'add' : 'remove';
 	tool_toggle.disabled = true;
