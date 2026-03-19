@@ -113,20 +113,25 @@ async function updateToolInstall(tool_id, confirmed = false) {
 					// display the message somehow
 				}
 				tool_toggle.disabled = false;
+				setUpdating(tool_container, false);
 			} else {
 				if (Object.hasOwn(data, 'errors')) console.log(data['errors']);
 				if (data['action'] == 'add') {
 					tool_toggle.checked = false;
+					setUpdating(tool_container, false);
 					tool_container.classList.remove("lti-tool-enabled");
 				} else {
 					tool_toggle.checked = true;
+					setUpdating(tool_container, false);
 					tool_container.classList.add("lti-tool-enabled");
 				}
 				tool_toggle.disabled = false;
+				setUpdating(tool_container, false);
 			}
 		}).catch(error => {
 			console.log(error);
 			tool_toggle.disabled = false;
+			setUpdating(tool_container, false);
 		});
 }
 
