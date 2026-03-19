@@ -54,8 +54,10 @@ async function getCourseTools() {
 function setUpdating(container, addWaiting = true, level=0) {
 	// Get a NodeList of all child nodes (including text and comments)
 	const allNodes = container.childNodes;
-	if (addWaiting) container.classList.add("updating");
-	else container.classList.remove("updating");
+	if (container) {
+		if (!container.classList.contains("updating") && addWaiting) container.classList.add("updating");
+		if (container.classList.contains("updating") && !addWaiting) container.classList.remove("updating");
+	}
 	// You typically need to check the nodeType to filter out non-element nodes
 	allNodes.forEach(node => {
 		if (node.nodeType === Node.ELEMENT_NODE) { // Check if it is an actual element (type 1)
