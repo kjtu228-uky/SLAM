@@ -55,7 +55,7 @@ async function getCourseTools() {
    of the tool controls. */
 function setUpdating(container, addUpdating = true, level=0) {
 	// Get a NodeList of all child nodes (including text and comments)
-	const allNodes = container.childNodes;
+	allNodes = container.childNodes;
 	if (container && container.classList) {
 		if (!container.classList.contains("updating") && addUpdating) container.classList.add("updating");
 		else container.classList.remove("updating");
