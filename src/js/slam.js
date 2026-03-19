@@ -53,9 +53,10 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
+	tool_container = document.getElementById('lti_tool_' + tool_id);
 	console.log("Nodes");
 // Get a NodeList of all child nodes (including text and comments)
-const allNodes = tool_toggle.childNodes;
+const allNodes = tool_container.childNodes;
 
 // You typically need to check the nodeType to filter out non-element nodes
 allNodes.forEach(node => {
@@ -63,7 +64,7 @@ allNodes.forEach(node => {
         console.log(node.tagName);
     }
 });
-	tool_container = document.getElementById('lti_tool_' + tool_id);
+
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
 	url += tool_id + '&action=';
 	url += tool_toggle.checked ? 'add' : 'remove';
