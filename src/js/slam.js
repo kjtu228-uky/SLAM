@@ -53,13 +53,16 @@ async function getCourseTools() {
 
 async function updateToolInstall(tool_id, confirmed = false) {
 	tool_toggle = document.getElementById("tool_select_" + tool_id);
-// Get a collection of all direct child elements
-const directChildren = tool_toggle.children;
+	console.log("Nodes");
+// Get a NodeList of all child nodes (including text and comments)
+const allNodes = tool_toggle.childNodes;
 
-// You can iterate over them using a for...of loop or Array.from().forEach()
-for (const child of directChildren) {
-    console.log(child.tagName); // e.g., 'P', 'SPAN', 'BUTTON'
-}
+// You typically need to check the nodeType to filter out non-element nodes
+allNodes.forEach(node => {
+    if (node.nodeType === Node.ELEMENT_NODE) { // Check if it is an actual element (type 1)
+        console.log(node.tagName);
+    }
+});
 	tool_container = document.getElementById('lti_tool_' + tool_id);
 	url = window.location.href.substring(0, document.location.href.lastIndexOf("/")) + '/exceptions.php?tool_id=';
 	url += tool_id + '&action=';
