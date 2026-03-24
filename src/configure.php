@@ -50,6 +50,9 @@ if (!isset($_GET['json'])) {
     <lticm:property name="privacy_level">public</lticm:property>
     <lticm:property name="domain">{$domain}</lticm:property>
     <lticm:property name="oauth_compliant">true</lticm:property>
+    <lticm:options name="link_selection">
+      <lticm:property name="enabled">false</lticm:property>
+    </lticm:options>
     <lticm:options name="course_navigation">
       <lticm:property name="enabled">true</lticm:property>
       <lticm:property name="url">{$url}connect.php</lticm:property>
