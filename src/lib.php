@@ -394,7 +394,8 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 			// separate the headers and body
-			Util::logError($response);
+$array_check = explode("\r\n\r\n", $response, 2);
+if (count($array_check) < 2) Util::logError($response);
 			list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
 			$responseHeaders = [];
 			$json = json_decode($body, true);
