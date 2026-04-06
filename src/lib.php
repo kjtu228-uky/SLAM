@@ -364,6 +364,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		curl_multi_setopt($multiHandle, CURLMOPT_MAX_TOTAL_CONNECTIONS, CONCURRENT_API_MAX_TOTAL_CONNECTIONS);
 		$handles = [];
 		foreach ($endpoints as $ep) {
+			Util::logError("Endpoint: " . $ep);
 			// build the url
 			$url = rtrim($api_url, '/') . $ep;
 			if (!empty($options['query']) && is_array($options['query'])) {
