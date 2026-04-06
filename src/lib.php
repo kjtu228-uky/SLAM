@@ -335,6 +335,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		elseif (is_array($endpoint)) $endpoints = $endpoint;
 		else return ['errors' => 'String or array must be provided to canvasApiRequest().'];
 
+Util::logError("Endpoints: " . json_encode($endpoints));
 		// Build the headers
 		$headers = [
 			'Accept: application/json',
@@ -396,7 +397,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 
 			// separate the headers and body
 $array_check = explode("\r\n\r\n", $response, 2);
-if (count($array_check) < 2) Util::logError("Response: " . $response);
+if (count($array_check) < 2) Util::logError("Endpoint: " . $ep . "   Response: " . json_encode($response));
 			list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
 			$responseHeaders = [];
 			$json = json_decode($body, true);
@@ -460,10 +461,8 @@ if (count($array_check) < 2) Util::logError("Response: " . $response);
  */
 function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 	$all = [];
-//	$page = 1;
 	$endpoints = $endpoint;
 	do {
-//		$options['query']['page'] = $page;
 		$options = [];
 		$response = canvasApiRequest($platform, 'GET', $endpoints, $options);
 		if (isset($response['errors'])) return $response;
@@ -482,10 +481,7 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 				//    rel="current", rel="next", rel="first", rel="last"
 				foreach (explode(',', $resp['headers']['link']) as $part) {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
-//						Util::logError("Next page: $matches[1]");
-//						$page = $page + 1;
 						$endpoints[] = $matches[1];
-//						$endpoints[] = $ep;
 						break;
 					}	
 				}
