@@ -478,6 +478,7 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 				//    rel="current", rel="next", rel="first", rel="last"
 				foreach (explode(',', $resp['headers']['link']) as $part) {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
+						Util::logError("Next page: $matches[0]");
 //						$page = $page + 1;
 						$endpoints[] = $matches[0];
 //						$endpoints[] = $ep;
