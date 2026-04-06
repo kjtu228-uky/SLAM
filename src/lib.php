@@ -457,10 +457,10 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
  */
 function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 	$all = [];
-	$page = 1;
+//	$page = 1;
 	$endpoints = $endpoint;
 	do {
-		$options['query']['page'] = $page;
+//		$options['query']['page'] = $page;
 		$response = canvasApiRequest($platform, 'GET', $endpoints, $options);
 		if (isset($response['errors'])) return $response;
 
@@ -478,8 +478,9 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 				//    rel="current", rel="next", rel="first", rel="last"
 				foreach (explode(',', $resp['headers']['link']) as $part) {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
-						$page = $page + 1;
-						$endpoints[] = $ep;
+//						$page = $page + 1;
+						$endpoints[] = $matches;
+//						$endpoints[] = $ep;
 						break;
 					}	
 				}
