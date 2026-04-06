@@ -386,9 +386,9 @@ Util::logError("Endpoints: " . json_encode($endpoints));
 		// execute the calls
 		$running = null;
 		do {
-			curl_multi_exec($multiHandle, $running);
-			curl_multi_select($multiHandle);
-		} while ($running > 0);
+			$mh_status = curl_multi_exec($multiHandle, $running);
+			if ($running > 0) curl_multi_select($multiHandle);
+		} while ($running > 0 && $mh_status == CURLM_OK);
 		
 		// get the responses
 		foreach ($handles as $ep => $ch) {
