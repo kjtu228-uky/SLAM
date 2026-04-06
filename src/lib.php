@@ -463,6 +463,7 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 	$endpoints = $endpoint;
 	do {
 //		$options['query']['page'] = $page;
+		$options = [];
 		$response = canvasApiRequest($platform, 'GET', $endpoints, $options);
 		if (isset($response['errors'])) return $response;
 
