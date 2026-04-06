@@ -394,6 +394,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 			// separate the headers and body
+			Util::logError($response);
 			list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
 			$responseHeaders = [];
 			$json = json_decode($body, true);
@@ -478,7 +479,7 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 				//    rel="current", rel="next", rel="first", rel="last"
 				foreach (explode(',', $resp['headers']['link']) as $part) {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
-						Util::logError("Next page: $matches[1]");
+//						Util::logError("Next page: $matches[1]");
 //						$page = $page + 1;
 						$endpoints[] = $matches[0];
 //						$endpoints[] = $ep;
