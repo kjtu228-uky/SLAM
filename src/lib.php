@@ -457,10 +457,10 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
  */
 function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 	$all = [];
-//	$page = 1;
+	$page = 1;
 	$endpoints = $endpoint;
 	do {
-//		$options['query']['page'] = $page;
+		$options['query']['page'] = $page;
 		$response = canvasApiRequest($platform, 'GET', $endpoints, $options);
 		if (isset($response['errors'])) return $response;
 
@@ -478,9 +478,8 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 				//    rel="current", rel="next", rel="first", rel="last"
 				foreach (explode(',', $resp['headers']['link']) as $part) {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
-//						$page = $page + 1;
-						$endpoints[] = $matches[1];
-//						$endpoints[] = $ep;
+						$page = $page + 1;
+						$endpoints[] = $ep;
 						break;
 					}	
 				}
@@ -499,9 +498,9 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
  	if (isToolAdmin($platform))
-		$LTIregistrations = canvasApiRequest($platform, 'GET', '/api/v1/accounts/self/lti_registrations', ['query' => ['per_page' => 100]]);
+		$LTIregistrations = canvasApiAllPages($platform, '/api/v1/accounts/self/lti_registrations', ['query' => ['per_page' => 100]]);
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
-	if (!isset($LTIregistrations['/api/v1/accounts/self/lti_registrations'])) return ['errors' => 'No results returned from canvasApiRequest()'];
+	if (!isset($LTIregistrations['/api/v1/accounts/self/lti_registrations'])) return ['errors' => 'No results returned from canvasApiAllPages()'];
 	return sortAssociativeArrayByKey($LTIregistrations['/api/v1/accounts/self/lti_registrations'], 'name');
 }
 
@@ -572,11 +571,10 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	}
 	$options = ['query' => ['per_page' => 100]];
 	
-	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
+	$controls = canvasApiAllPages($platform, $endpoints, $options);
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
 		foreach ($registrationControls as $control) {
-Util::logError("control: " . json_encode($control));
 			$availability[$control['registration_id']] = ['available' => false];
 			if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
 				foreach ($control['context_controls'] as $context_control) {
@@ -611,7 +609,6 @@ function getCourseTools($platform, $course_number) {
 	}
 	$registrations = getLTIRegistration($platform, $registrationIds);
 	if (isset($registrations['errors'])) return $registrations['errors'];
-Util::logError("registrationIds: " . json_encode($registrationIds));
 	$availability = isAvailable($platform, $registrationIds, $course_number);
 	if (isset($availability['errors'])) return $availability['errors'];
 	// build the array of tools and status specific to this course
