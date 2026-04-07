@@ -480,7 +480,6 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
 						$page = $page + 1;
 						$endpoints[] = $matches[1];
-Util::logError("next page: " . $matches[1]);
 						break;
 					}	
 				}
