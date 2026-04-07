@@ -366,14 +366,12 @@ Util::logError("Endpoints: " . json_encode($endpoints));
 		curl_multi_setopt($multiHandle, CURLMOPT_MAX_TOTAL_CONNECTIONS, CONCURRENT_API_MAX_TOTAL_CONNECTIONS);
 		$handles = [];
 		foreach ($endpoints as $ep) {
-			// build the url
+			// check if the the endpoint is already a full url
 			if (str_starts_with($ep, $api_url)) $url = $ep;
-			else {
-				$url = rtrim($api_url, '/') . $ep;
-				if (!empty($options['query']) && is_array($options['query'])) {
-					$url .= '?' . http_build_query($options['query']);
-				}
-			}
+			else $url = rtrim($api_url, '/') . $ep;
+			// check if the options are already specified in the URL
+			if (!in_array("?", $ep) && !empty($options['query']) && is_array($options['query']))
+				$url .= '?' . http_build_query($options['query']);
 			// prepare cURL
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
