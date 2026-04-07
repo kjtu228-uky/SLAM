@@ -367,9 +367,12 @@ Util::logError("Endpoints: " . json_encode($endpoints));
 		$handles = [];
 		foreach ($endpoints as $ep) {
 			// build the url
-			$url = rtrim($api_url, '/') . $ep;
-			if (!empty($options['query']) && is_array($options['query'])) {
-				$url .= '?' . http_build_query($options['query']);
+			if (str_starts_with($ep, $api_url)) $url = $ep;
+			else {
+				$url = rtrim($api_url, '/') . $ep;
+				if (!empty($options['query']) && is_array($options['query'])) {
+					$url .= '?' . http_build_query($options['query']);
+				}
 			}
 			// prepare cURL
 			$ch = curl_init($url);
