@@ -576,6 +576,7 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
 		foreach ($registrationControls as $control) {
+Util::logError("control: " . json_encode($control));
 			$availability[$control['registration_id']] = ['available' => false];
 			if (isset($control['context_controls']) && is_array($control['context_controls']) && count($control['context_controls']) > 0) {
 				foreach ($control['context_controls'] as $context_control) {
