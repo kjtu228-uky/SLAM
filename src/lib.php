@@ -335,6 +335,8 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		elseif (is_array($endpoint)) $endpoints = $endpoint;
 		else return ['errors' => 'String or array must be provided to canvasApiRequest().'];
 
+Util::logError("Endpoints: " . json_encode($endpoints));
+
 		// Build the headers
 		$headers = [
 			'Accept: application/json',
