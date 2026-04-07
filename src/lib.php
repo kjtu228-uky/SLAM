@@ -473,17 +473,18 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 				if (!isset($all[$ep])) $all[$ep] = $resp['response'];
 				else $all[$ep] = array_merge($all[$ep], $resp['response']);
 			}
-/* 			if (isset($resp['headers']['link'])) {
+			if (isset($resp['headers']['link'])) {
 				// Link header can have multiple, comma-separated links with each defined as one of:
 				//    rel="current", rel="next", rel="first", rel="last"
 				foreach (explode(',', $resp['headers']['link']) as $part) {
 					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
 						$page = $page + 1;
-						$endpoints[] = $matches[1];
+//						$endpoints[] = $matches[1];
+Util::logError("next link: " . $matches[1]);
 						break;
 					}	
 				}
-			} */
+			}
 		}
 	} while (count($endpoints) > 0);
 	// $all will be an array with a key for each endpoint
