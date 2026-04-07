@@ -392,7 +392,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		foreach ($handles as $ep => $ch) {
 			$response = curl_multi_getcontent($ch);
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-Util::logError("httpCode: $httpCode");
+
 			// separate the headers and body
 			list($rawHeaders, $body) = explode("\r\n\r\n", $response, 2);
 			$responseHeaders = [];
@@ -499,9 +499,9 @@ function canvasApiAllPages($platform, $endpoint, array $options = []): array {
 function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
  	if (isToolAdmin($platform))
-		$LTIregistrations = canvasApiAllPages($platform, '/api/v1/accounts/self/lti_registrations', ['query' => ['per_page' => 100]]);
+		$LTIregistrations = canvasApiRequest($platform, 'GET', '/api/v1/accounts/self/lti_registrations', ['query' => ['per_page' => 100]]);
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
-	if (!isset($LTIregistrations['/api/v1/accounts/self/lti_registrations'])) return ['errors' => 'No results returned from canvasApiAllPages()'];
+	if (!isset($LTIregistrations['/api/v1/accounts/self/lti_registrations'])) return ['errors' => 'No results returned from canvasApiRequest()'];
 	return sortAssociativeArrayByKey($LTIregistrations['/api/v1/accounts/self/lti_registrations'], 'name');
 }
 
@@ -572,7 +572,7 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	}
 	$options = ['query' => ['per_page' => 100]];
 	
-	$controls = canvasApiAllPages($platform, $endpoints, $options);
+	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
 		foreach ($registrationControls as $control) {
@@ -610,6 +610,7 @@ function getCourseTools($platform, $course_number) {
 	}
 	$registrations = getLTIRegistration($platform, $registrationIds);
 	if (isset($registrations['errors'])) return $registrations['errors'];
+Util::logError("registrationIds: " . json_encode($registrationIds));
 	$availability = isAvailable($platform, $registrationIds, $course_number);
 	if (isset($availability['errors'])) return $availability['errors'];
 	// build the array of tools and status specific to this course
