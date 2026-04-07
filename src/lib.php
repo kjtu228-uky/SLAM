@@ -370,7 +370,7 @@ Util::logError("Endpoints: " . json_encode($endpoints));
 			if (str_starts_with($ep, $api_url)) $url = $ep;
 			else $url = rtrim($api_url, '/') . $ep;
 			// check if the options are already specified in the URL
-			if (!in_array("?", $ep) && !empty($options['query']) && is_array($options['query']))
+			if (!strpos($ep, "?") && !empty($options['query']) && is_array($options['query']))
 				$url .= '?' . http_build_query($options['query']);
 			// prepare cURL
 			$ch = curl_init($url);
