@@ -433,8 +433,16 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 						// check if key already exists and append
 						if (isset($allResults[$endpoint_key])) {
 							$allResults[$endpoint_key]['headers'] = $responseHeaders;
-							if (!is_array($body_data)) $body_data = [$body_data];
-							$allResults[$endpoint_key]['response'] = array_merge($allResults[$endpoint_key]['response'], $body_data);
+							// determine how to merge the response data
+							if (isset($body_data['data'])) {
+								if (isset($allResults[$endpoint_key]['response']['data']))
+									$allResults[$endpoint_key]['response']['data'] = array_merge($allResults[$endpoint_key]['response']['data'], $body_data['data']);
+								else
+									$allResults[$endpoint_key]['response']['data'] = $body_data['data'];
+							} else {
+								if (!is_array($body_data)) $body_data = [$body_data];
+								$allResults[$endpoint_key]['response'] = array_merge($allResults[$endpoint_key]['response'], $body_data);
+							}							
 						} else {
 							$allResults[$endpoint_key] = [
 								'headers' => $responseHeaders,
@@ -521,7 +529,7 @@ function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
 	$url = rtrim($platform->getSetting('api_url'), '/') . '/api/v1/accounts/self/lti_registrations';
  	if (isToolAdmin($platform))
-		$LTIregistrations = canvasApiRequest($platform, 'GET', $url, ['query' => ['per_page' => 10]]);
+		$LTIregistrations = canvasApiRequest($platform, 'GET', $url, ['query' => ['per_page' => 10, 'sort' => 'nickname']]);
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
 	if (!isset($LTIregistrations[$url])) return ['errors' => 'No results returned from canvasApiAllPages()'];
 	return sortAssociativeArrayByKey($LTIregistrations[$url]['response']['data'], 'name');
