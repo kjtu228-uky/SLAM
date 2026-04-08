@@ -545,6 +545,7 @@ function getLTIRegistration($platform, $registrationIds) {
 		return ['errors' => 'Provided registration ID must be integer or array of integers.'];
 	}
 	$response = canvasApiRequest($platform, 'GET', $endpoints);
+Util::logError(json_encode($response));
 	if (isset($response['errors'])) return $response;
 	// build registrations; should only be one result per endpoint
 	$registrations = [];
