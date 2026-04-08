@@ -532,6 +532,7 @@ function getLTIRegistrations($platform) {
 		$LTIregistrations = canvasApiRequest($platform, 'GET', $url, ['query' => ['per_page' => 10, 'sort' => 'nickname']]);
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
 	if (!isset($LTIregistrations[$url])) return ['errors' => 'No results returned from canvasApiAllPages()'];
+	return $LTIregistrations[$url]['response']['data'];
 	return sortAssociativeArrayByKey($LTIregistrations[$url]['response']['data'], 'name');
 }
 
