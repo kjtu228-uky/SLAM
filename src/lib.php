@@ -391,6 +391,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 			$endpoints = [];
 			// define a variable that can be set if rate limits apply
 			$retryAfter = 0;
+			$error = false;
 			// get the responses
 			foreach ($handles as $ep => $ch) {
 				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -594,6 +595,7 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	$options = ['query' => ['per_page' => 100]];
 	
 	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
+Util::logError(json_encode($controls));
 	if (isset($controls['errors'])) return $controls;
 	foreach ($controls as $ep => $registrationControls) {
 		foreach ($registrationControls as $control) {
