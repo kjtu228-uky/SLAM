@@ -525,7 +525,7 @@ function getLTIRegistrations($platform) {
 Util::logError(json_encode($LTIregistrations));
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
 	if (!isset($LTIregistrations[$url])) return ['errors' => 'No results returned from canvasApiAllPages()'];
-	return sortAssociativeArrayByKey($LTIregistrations[$url]['response'], 'name');
+	return sortAssociativeArrayByKey($LTIregistrations[$url]['response']['data'], 'name');
 }
 
 /**
