@@ -351,9 +351,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		if (in_array(strtoupper($method), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
 			if (!empty($options['body'])) {
 				// Accept array or string; JSON‑encode if array
-				$payload = is_array($options['body'])
-					? json_encode($options['body'])
-					: (string)$options['body'];
+				$payload = is_array($options['body']) ? json_encode($options['body']):(string)$options['body'];
 			}
 		}
 		
@@ -374,7 +372,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 				if ($payload) curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($ch, CURLOPT_HEADER, true);
-	//			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 				$handles[$ep] = $ch;
 				curl_multi_add_handle($multiHandle, $ch);
@@ -432,6 +430,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 						$endpoint_key = $ep_parts['scheme'] . '://' . $ep_parts['host'] . $ep_parts['path'];
 						// check if key already exists and append
 						if (isset($allResults[$endpoint_key])) {
+							// replace previous header
 							$allResults[$endpoint_key]['headers'] = $responseHeaders;
 							// determine how to merge the response data
 							if (isset($body_data['data'])) {
