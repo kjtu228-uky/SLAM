@@ -481,7 +481,7 @@ function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
 	$url = rtrim($platform->getSetting('api_url'), '/') . '/api/v1/accounts/self/lti_registrations';
  	if (isToolAdmin($platform))
-		$LTIregistrations = canvasApiRequest($platform, 'GET', $url, ['query' => ['per_page' => 10]]);
+		$LTIregistrations = canvasApiRequest($platform, 'GET', $url, ['query' => ['per_page' => 100]]);
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
 	if (!isset($LTIregistrations[$url])) return ['errors' => 'No results returned from canvasApiAllPages()'];
 	return sortAssociativeArrayByKey($LTIregistrations[$url]['response']['data'], 'name');
@@ -552,7 +552,7 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 	} else {
 		return ['errors' => 'Provided registration ID must be integer or array of integers.'];
 	}
-	$options = ['query' => ['per_page' => 10]];
+	$options = ['query' => ['per_page' => 100]];
 	
 	$controls = canvasApiRequest($platform, 'GET', $endpoints, $options);
 	if (isset($controls['errors'])) return $controls;
