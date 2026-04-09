@@ -474,53 +474,6 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 }
 
 /**
- * Canvas API helper to get all pages for a GET request.
- *
- * @param array | string $endpoint    Canvas endpoint (e.g. "/api/v1/courses/12345/assignments").
- * @param array          $options     Optional keys:
- *                            - 'body'      => array|json string  (will be JSON‑encoded)
- *                            - 'query'     => array of key=>value for query string
- *                            - 'headers'   => array of additional headers
- *                            - 'raw'       => bool – return raw cURL output (headers+body)
- * @return array  index 0 contains the headers array and index 1 is the decoded json as associative array from the body
- * @throws RuntimeException on HTTP errors or cURL problems.
- */
-/* function canvasApiAllPages($platform, $endpoint, array $options = []): array {
-	$all = [];
-	$page = 1;
-	$endpoints = $endpoint;
-	do {
-		$options['query']['page'] = $page;
-		$response = canvasApiRequest($platform, 'GET', $endpoints, $options);
-		if (isset($response['errors'])) return $response;
-
-		$endpoints = [];
-		foreach ($response as $ep => $resp) {
-			if (isset($resp['response']['data'])) {
-				if (!isset($all[$ep])) $all[$ep] = $resp['response']['data'];
-				else $all[$ep] = array_merge($all[$ep], $resp['response']['data']);
-			} else {
-				if (!isset($all[$ep])) $all[$ep] = $resp['response'];
-				else $all[$ep] = array_merge($all[$ep], $resp['response']);
-			}
-			if (isset($resp['headers']['link'])) {
-				// Link header can have multiple, comma-separated links with each defined as one of:
-				//    rel="current", rel="next", rel="first", rel="last"
-				foreach (explode(',', $resp['headers']['link']) as $part) {
-					if (preg_match('/<([^>]+)>;\s*rel="next"/i', trim($part), $matches)) {
-						$page = $page + 1;
-						$endpoints[] = $matches[1];
-						break;
-					}	
-				}
-			}
-		}
-	} while (count($endpoints) > 0);
-	// $all will be an array with a key for each endpoint
-	return $all;
-} */
-
-/**
  * Retrieve the list of LTI registrations for the platform.
  *
  * @return array.
