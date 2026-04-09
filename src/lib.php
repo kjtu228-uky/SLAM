@@ -481,11 +481,12 @@ function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
 	$url = rtrim($platform->getSetting('api_url'), '/') . '/api/v1/accounts/self/lti_registrations';
  	if (isToolAdmin($platform))
-		$LTIregistrations = canvasApiRequest($platform, 'GET', $url, ['query' => ['per_page' => 20, 'sort' => 'name', 'dir' => 'asc']]);
+		$LTIregistrations = canvasApiRequest($platform, 'GET', $url, ['query' => ['per_page' => 100, 'sort' => 'name', 'dir' => 'asc']]);
+	else
+		return ['errors' => 'You cannot complete that action.'];
 	if (isset($LTIregistrations['errors'])) return $LTIregistrations;
 	if (!isset($LTIregistrations[$url])) return ['errors' => 'No results returned from canvasApiAllPages()'];
 	return $LTIregistrations[$url]['response']['data'];
-	return sortAssociativeArrayByKey($LTIregistrations[$url]['response']['data'], 'name');
 }
 
 /**
