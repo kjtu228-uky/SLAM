@@ -45,9 +45,7 @@ async function getCourseTools() {
 			}
 			toolList.classList.remove('loading');
 			toolList.innerHTML = toolHTML;
-			console.log(toolList.ariaBusy);
 			toolList.setAttribute('aria-busy', 'false');
-			console.log(toolList.ariaBusy);
 			document.getElementById('messageBoxes').innerHTML = notificationsHTML;
 		}).catch(error => {
 			console.log(error);
