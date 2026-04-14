@@ -141,14 +141,6 @@ function toolNoticeResponse(tool_id, cancelAdd) {
 		document.getElementById("tool_select_"+tool_id).click();
 }
 
-/* function setToolContainerSize() {
-	toolContainerHeight = parseInt(window.innerHeight) -
-		parseInt(document.getElementById('slamTitle').clientHeight) -
-		parseInt(document.getElementById('slamDescription').clientHeight) -
-		parseInt(document.getElementById('courseTitle').clientHeight) - 100;
-	document.getElementById('toolList').style.height = toolContainerHeight + "px";
-} */
-
 function initializeTimer(duration = 120000) { // set the default value of the timer to 2 minutes
 	timeoutDuration = duration;
 	// Event listeners to detect user activity
