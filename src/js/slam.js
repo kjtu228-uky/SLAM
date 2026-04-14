@@ -44,7 +44,7 @@ async function getCourseTools() {
 				}
 			}
 			toolList.classList.remove('loading');
-			toolList.removeAttribute('aria-busy');
+			toolList.setAttribute('aria-busy', 'false');
 			toolList.innerHTML = toolHTML;
 			document.getElementById('messageBoxes').innerHTML = notificationsHTML;
 		}).catch(error => {
