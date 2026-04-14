@@ -88,9 +88,9 @@ EOD;
 	}
 	$page .= <<< EOD
 
-	<div id='toolList' class='lti-tools-container'>
+	<div id='toolList' aria-live='polite' aria-busy='true' class='lti-tools-container'>
 	</div>
-	<div id='messageBoxes'>
+	<div id='messageBoxes' aria-live='polite'>
 	</div>
 
 EOD;

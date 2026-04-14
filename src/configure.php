@@ -84,7 +84,7 @@ EOD;
     $json = <<< EOD
 {
   "title": "{$here(APP_NAME)}",
-  "description": "Access to {$here(APP_NAME)} using LTI",
+  "description": "SLAM is the Self-service LTI App Manager. It uses Availability and Exceptions to make configured LTI apps available within a course.",
   "privacy_level": "public",
   "oidc_initiation_url": "{$url}connect.php",
   "target_link_uri": "{$url}connect.php",
