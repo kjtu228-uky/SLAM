@@ -251,7 +251,7 @@ function platformHasToken($platform, $refresh = false) {
 		curl_setopt ($ch, CURLOPT_URL, $url);
 		curl_setopt ($ch, CURLOPT_HEADER, true);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded",
-			"User-Agent: LTIPHP/1.0"));
+			"User-Agent: SLAM/1.3 (UK Online; elearning@uky.edu)"));
 		curl_setopt ($ch, CURLOPT_POST, true);
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
 						'grant_type' => 'refresh_token',
@@ -339,7 +339,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 			'Accept: application/json',
 			'Content-Type: application/json',
 			'Authorization: Bearer ' . $access_token->access_token,
-			'User-Agent: LTIPHP/1.0'
+			'User-Agent: SLAM/1.3 (UK Online; elearning@uky.edu)'
 		];
 		// Merge user‑supplied headers
 		if (!empty($options['headers']) && is_array($options['headers'])) {
