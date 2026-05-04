@@ -10,6 +10,13 @@ use ceLTIc\LTI\Enum\LtiVersion;
  * This page manages the definition of LTI platform records.  A platform record is required to
  * enable each VLE to securely connect to this application.
  *
+ * SLAM was designed for the dynamic registration capability of Canvas, so the ability to manually
+ * add platforms was removed. If you want this ability restored, remove the following if around
+ * the post form at the bottom of the page:
+ * 	if ($mode == 'Update') {
+ *      ...
+ *  }
+ *
  * *** IMPORTANT ***
  * Access to this page should be restricted to prevent unauthorised access to the configuration of
  * platforms (for example, using an entry in an Apache .htaccess file); access to all other pages is
