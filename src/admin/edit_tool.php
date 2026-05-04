@@ -5,6 +5,13 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
+/**
+ * This page displays the SLAM-specific details about an LTI tool and processing changes to those details.
+ *
+ * @author  Kyle Tuck <kjtu228@uky.edu>
+ * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
+ */
+ 
 require_once('../lib.php');
 
 $ok = true;
@@ -145,6 +152,7 @@ $body = <<< EOD
 				<select id="dependency" name="dependency" class="tool-admin-select" onchange="changeNotify(true);">
 					<option value="">-- None --</option>
 EOD;
+	// create an option for all other tools that can be selected as a dependency for this tool
 	foreach ($lti_tools as $lti_tool) {
 		// don't allow a tool to depend on itself
 		if ($lti_tool['id'] != $_GET['id']) {
