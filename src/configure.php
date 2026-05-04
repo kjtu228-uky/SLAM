@@ -5,8 +5,7 @@ use ceLTIc\LTI;
 /**
  * This page generates configuration information for Canvas platforms.
  *
- * @author  Stephen P Vickers <stephen@spvsoftwareproducts.com>
- * @copyright  SPV Software Products
+ * @author  Kyle Tuck <kjtu228@uky.edu>
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('vendor/autoload.php');
@@ -72,9 +71,7 @@ if (!isset($_GET['json'])) {
   </blti:vendor>
 </cartridge_basiclti_link>
 EOD;
-
     header("Content-Type: application/xml; ");
-
     echo $xml;
 } else {
     foreach (CUSTOM_FIELDS as $field => $val)
@@ -121,9 +118,7 @@ EOD;
   }
 }
 EOD;
-
     header("Content-Type: application/json; ");
-
     echo $json;
 }
 ?>
