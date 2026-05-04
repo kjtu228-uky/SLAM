@@ -11,7 +11,7 @@ use ceLTIc\LTI\Enum\LtiVersion;
  * enable each VLE to securely connect to this application.
  *
  * SLAM was designed for the dynamic registration capability of Canvas, so the ability to manually
- * add platforms was removed. If you want this ability restored, remove the following if around
+ * add platforms was removed. If you want this ability restored, remove the following "if" around
  * the post form at the bottom of the page:
  * 	if ($mode == 'Update') {
  *      ...
