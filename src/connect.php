@@ -6,8 +6,7 @@ use ceLTIc\LTI\Platform;
 /**
  * This page processes a launch request from an LTI platform.
  *
- * @author  Stephen P Vickers <stephen@spvsoftwareproducts.com>
- * @copyright  SPV Software Products
+ * @author  Kyle Tuck <kjtu228@uky.edu>
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('config.php');
