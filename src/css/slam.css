@@ -292,11 +292,6 @@ input:checked + .slider:before {
 	cursor: pointer;
 	margin: 5px 5px 0px 0px;
 }
-/* .admin-button {
-	margin: 0px 15px;
-	padding: 5px 20px;
-	font-size: 1.3em;
-} */
 /* ==================================================================================== */
 
 /* ==================================================================================== */
@@ -343,10 +338,6 @@ input:checked + .slider:before {
 	padding: 5px;
 	margin: 5px;
 }
-/* .tool-admin-button {
-	padding: 5px;
-	margin: 5px;
-} */
 .update-notification {
 	color: red;
 	font-weight: bold;
