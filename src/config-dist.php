@@ -10,12 +10,18 @@ use ceLTIc\LTI\Enum\LogLevel;
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('vendor/autoload.php');
+
 ###
 ###  Application settings
 ###
 // Uncomment the next line to log all PHP messages
 //  error_reporting(E_ALL);
-// Set the application logging level
+// Set the application logging level. The following options are given along with the corresponding function calls:
+//   None: No logging
+//   Error: Errors only - Util::logError(string $message, bool $showSource = true)
+//   Info: Log error and information messages - Util::logInfo(string $message, bool $showSource = true)
+//   Debug: Log all messages - Util::logDebug(string $message, bool $showSource = true)
+// Each level (other than None) has a corresponding function call
 Util::$logLevel = LogLevel::Error;
 
 // Specify a prefix (starting with '/') when the REQUEST_URI server variable is missing the first part of the real path
@@ -74,7 +80,6 @@ EOD
 ###
 ###  Canvas API Settings
 ###
-### NOTE: The "controls" endpoints are not yet available for enforced scopes
 define('API_SCOPES', array(
 	'url:GET|/api/v1/accounts/:account_id/lti_registrations',
 	'url:GET|/api/v1/accounts/:account_id/lti_registrations/:id',
