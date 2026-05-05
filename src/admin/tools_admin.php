@@ -5,6 +5,16 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
+/**
+ * This page displays the external tools available for configuration in SLAM for the Canvas instance.
+ * Only LTI 1.3 tools (registrations) will be in this list (as of May 2026). An admin can select a
+ * tool from the list to make available to instructors using SLAM. Admins can also configure the
+ * header message for SLAM, and define the SLAM admins.
+ *
+ * @author  Kyle Tuck <kjtu228@uky.edu>
+ * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
+ */
+
 require_once('../lib.php');
 
 $ok = true;
