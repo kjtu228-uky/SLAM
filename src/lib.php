@@ -241,11 +241,11 @@ function platformHasToken($platform, $refresh = false) {
 		return false;
 	}
 	// check if the platform has an access token; if not, request one from Canvas
-	$access_token = $platform->getSetting('access_token');
-	if ($access_token) $access_token = json_decode($access_token);
-	if ((!$access_token || !$access_token->access_token) && !requestNewToken($platform)) return false;
+	$platform_tokens = $platform->getSetting('tokens');
+	if ($platform_tokens) $platform_tokens = json_decode($platform_tokens);
+	if ((!$platform_tokens || !$platform_tokens->access_token) && !requestNewToken($platform)) return false;
 	// check if we need to refresh the token
-	if ($refresh || (isset($access_token->refresh_at) && $access_token->refresh_at < time())) {
+	if ($refresh || (isset($platform_tokens->refresh_at) && $platform_tokens->refresh_at < time())) {
 		$url = $api_url . '/login/oauth2/token';
 		$ch = curl_init();
 		curl_setopt ($ch, CURLOPT_URL, $url);
@@ -257,7 +257,7 @@ function platformHasToken($platform, $refresh = false) {
 						'grant_type' => 'refresh_token',
 						'client_id' => $api_client_id,
 						'client_secret' => $api_client_secret,
-						'refresh_token' => $access_token->refresh_token)));
+						'refresh_token' => $platform_tokens->refresh_token)));
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($ch);
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
@@ -271,18 +271,18 @@ function platformHasToken($platform, $refresh = false) {
 		if (isset($response_data['error'])) {
 			$_SESSION['error_message'] = $response_data['error'];
 			// delete the token and request a new one
-			$platform->setSetting('access_token');
+			$platform->setSetting('tokens');
 			$platform->save();
 			if (!requestNewToken($platform)) return false;
 		}
-		$access_token->access_token = null;
-		$access_token->refresh_at = null;
+		$platform_tokens->access_token = null;
+		$platform_tokens->refresh_at = null;
 		if (isset($response_data['access_token']) && preg_match('/^[0-9a-zA-Z~]+$/', $response_data['access_token']))
-			$access_token->access_token = $response_data['access_token'];
+			$platform_tokens->access_token = $response_data['access_token'];
 		if (isset($response_data['expires_in']) && is_numeric($response_data['expires_in']))
-			$access_token->refresh_at = time() + intval($response_data['expires_in']);
-		if (isset($access_token->access_token) && isset($access_token->refresh_at)) {
-			$platform->setSetting('access_token', json_encode($access_token));
+			$platform_tokens->refresh_at = time() + intval($response_data['expires_in']);
+		if (isset($platform_tokens->access_token) && isset($platform_tokens->refresh_at)) {
+			$platform->setSetting('tokens', json_encode($platform_tokens));
 			$platform->save();
 		}
 	}
@@ -325,9 +325,9 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return ['errors' => 'The API URL is not defined for the platform.'];
 		// check if the platform has an access token; if not, request one from Canvas
-		$access_token = $platform->getSetting('access_token');
-		if ($access_token) $access_token = json_decode($access_token);
-		if (!$access_token || !$access_token->access_token) return ['errors' => 'The platform does not have an access token.'];
+		$platform_tokens = $platform->getSetting('tokens');
+		if ($platform_tokens) $platform_tokens = json_decode($platform_tokens);
+		if (!$platform_tokens || !$platform_tokens->access_token) return ['errors' => 'The platform does not have an access token.'];
 
 		$endpoints = [];
 		if (is_string($endpoint)) $endpoints[] = $endpoint;
@@ -338,7 +338,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		$headers = [
 			'Accept: application/json',
 			'Content-Type: application/json',
-			'Authorization: Bearer ' . $access_token->access_token,
+			'Authorization: Bearer ' . $platform_tokens->access_token,
 			'User-Agent: SLAM/1.3 (UK Online; elearning@uky.edu)'
 		];
 		// Merge user‑supplied headers

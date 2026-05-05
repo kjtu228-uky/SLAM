@@ -45,7 +45,7 @@ if(count($_GET) > 0) {
 		} else {
 			if (isset($response_data['expires_in'])) $response_data['refresh_at'] = time() + intval($response_data['expires_in']);
 			// update the token values
-			$platform->setSetting('access_token', json_encode($response_data));
+			$platform->setSetting('tokens', json_encode($response_data));
 			$platform->save();
 		}
 		// redirect
