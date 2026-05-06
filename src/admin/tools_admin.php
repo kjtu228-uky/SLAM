@@ -172,7 +172,7 @@ EOD;
 if (isset($_GET['custom_fields'])) {
 	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
 	foreach (CUSTOM_FIELDS as $key => $value) {
-			$body .= "<p>" . $key . ": " . $resourceLink->getSetting($key); . "</p>\n";
+			$body .= "<p>" . $key . ": " . $resourceLink->getSetting($key) . "</p>\n";
 	}
 }
 $body .= <<< EOD
