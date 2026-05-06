@@ -44,7 +44,8 @@ if(count($_GET) > 0) {
 			$_SESSION['message'] = substr($response, $header_size);
 		} else {
 			if (isset($response_data['expires_in'])) $response_data['refresh_at'] = time() + intval($response_data['expires_in']);
-			// update the token values
+			// update the token values (and delete legacy tokens key)
+			$platform->setSetting('access_token');
 			$platform->setSetting('tokens', json_encode($response_data));
 			$platform->save();
 		}

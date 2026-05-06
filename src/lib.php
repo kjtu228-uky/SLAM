@@ -242,6 +242,8 @@ function platformHasToken($platform, $refresh = false) {
 	}
 	// check if the platform has an access token; if not, request one from Canvas
 	$platform_tokens = $platform->getSetting('tokens');
+	// check for a legacy setting
+	if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
 	if ($platform_tokens) $platform_tokens = json_decode($platform_tokens);
 	if ((!$platform_tokens || !$platform_tokens->access_token) && !requestNewToken($platform)) return false;
 	// check if we need to refresh the token
@@ -270,8 +272,9 @@ function platformHasToken($platform, $refresh = false) {
 		// if there was an error using the refresh token, request a brand new token
 		if (isset($response_data['error'])) {
 			$_SESSION['error_message'] = $response_data['error'];
-			// delete the token and request a new one
+			// delete the token (and legacy key) and request a new one
 			$platform->setSetting('tokens');
+			$platform->setSetting('access_token');
 			$platform->save();
 			if (!requestNewToken($platform)) return false;
 		}
@@ -282,6 +285,8 @@ function platformHasToken($platform, $refresh = false) {
 		if (isset($response_data['expires_in']) && is_numeric($response_data['expires_in']))
 			$platform_tokens->refresh_at = time() + intval($response_data['expires_in']);
 		if (isset($platform_tokens->access_token) && isset($platform_tokens->refresh_at)) {
+			// delete the legacy token key
+			$platform->setSetting('access_token');
 			$platform->setSetting('tokens', json_encode($platform_tokens));
 			$platform->save();
 		}
@@ -326,6 +331,8 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		if (!$api_url) return ['errors' => 'The API URL is not defined for the platform.'];
 		// check if the platform has an access token; if not, request one from Canvas
 		$platform_tokens = $platform->getSetting('tokens');
+		// check for a legacy setting
+		if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
 		if ($platform_tokens) $platform_tokens = json_decode($platform_tokens);
 		if (!$platform_tokens || !$platform_tokens->access_token) return ['errors' => 'The platform does not have an access token.'];
 
