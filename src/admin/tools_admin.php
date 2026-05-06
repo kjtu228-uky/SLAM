@@ -165,6 +165,16 @@ EOD;
 
 $body .= <<< EOD
 	</div>
+	
+	<div id='custom_fields'>
+EOD;
+if (isset($_GET['custom_fields'])) {
+	foreach (CUSTOM_FIELDS as $key => $value) {
+			$body .= "<p>" . $key . ": " . $value . "</p>\n";
+	}
+}
+$body .= <<< EOD
+	</div>
 
 	<script>
 	(() => {
