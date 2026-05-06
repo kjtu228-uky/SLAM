@@ -2,6 +2,7 @@
 use ceLTIc\LTI;
 use ceLTIc\LTI\DataConnector;
 use ceLTIc\LTI\Platform;
+use ceLTIc\LTI\ResourceLink;
 use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
@@ -169,8 +170,9 @@ $body .= <<< EOD
 	<div id='custom_fields'>
 EOD;
 if (isset($_GET['custom_fields'])) {
+	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
 	foreach (CUSTOM_FIELDS as $key => $value) {
-			$body .= "<p>" . $key . ": " . $value . "</p>\n";
+			$body .= "<p>" . $key . ": " . $resourceLink->getSetting($key); . "</p>\n";
 	}
 }
 $body .= <<< EOD
