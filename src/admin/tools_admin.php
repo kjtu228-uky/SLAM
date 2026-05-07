@@ -166,17 +166,6 @@ EOD;
 
 $body .= <<< EOD
 	</div>
-	
-	<div id='custom_fields'>
-EOD;
-if (isset($_GET['custom_fields'])) {
-	$resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
-	foreach (CUSTOM_FIELDS as $key => $value) {
-			$body .= "<p>" . $key . ": " . $resourceLink->getSetting("custom_" . strtolower($key)) . "</p>\n";
-	}
-}
-$body .= <<< EOD
-	</div>
 
 	<script>
 	(() => {
