@@ -28,6 +28,12 @@ if (!isset($_GET['action'])) {
 	exit;
 }
 
+// make sure there are appropriate session variables set
+if (!isset($_SESSION['consumer_pk']) || !isset($_SESSION['resource_pk'])) {
+	print(json_encode(array('success' => false, 'errors' => 'Unauthorized.')));
+	exit;
+}
+
 // Initialise parameters
 $db = null;
 if (!init($db, true)) {
@@ -38,6 +44,12 @@ $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME
 $platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
 $resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
 $courseNumber = $resourceLink->getSetting('custom_course_number');
+
+// make sure we have a course number
+if (empty($courseNumber)) {
+	print(json_encode(array('success' => false, 'errors' => 'No course ID available.')));
+	exit;
+}
 
 // make sure we have an API token
 if (!platformHasToken($platform)) {
