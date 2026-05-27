@@ -7,8 +7,12 @@ use ceLTIc\LTI\Enum\LogLevel;
 /**
  * This page provides functions for accessing the database.
  *
- * @author  Stephen P Vickers <stephen@spvsoftwareproducts.com>
- * @copyright  SPV Software Products
+ * functions: open_db, tableExists, init_db
+ *   @author  Stephen P Vickers <stephen@spvsoftwareproducts.com>
+ *   @copyright  SPV Software Products
+ * all remaining functions:
+ *   @author  Kyle Tuck <Kyle.Tuck@uky.edu>
+ *   @copyright  Kyle Tuck 
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('vendor/autoload.php');
