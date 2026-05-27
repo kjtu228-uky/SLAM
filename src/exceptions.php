@@ -28,18 +28,19 @@ if (!isset($_GET['action'])) {
 	exit;
 }
 
-// make sure there are appropriate session variables set
-if (!isset($_SESSION['consumer_pk']) || !isset($_SESSION['resource_pk'])) {
-	print(json_encode(array('success' => false, 'errors' => 'Unauthorized.')));
-	exit;
-}
-
 // Initialise parameters
 $db = null;
 if (!init($db, true)) {
 	print(json_encode(array('success' => false, 'errors' => 'Unable to initialize.')));
 	exit;
 }
+
+// make sure there are appropriate session variables set
+if (!isset($_SESSION['consumer_pk']) || !isset($_SESSION['resource_pk'])) {
+	print(json_encode(array('success' => false, 'errors' => 'Unauthorized.')));
+	exit;
+}
+
 $dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 $platform = Platform::fromRecordId($_SESSION['consumer_pk'], $dataConnector);
 $resourceLink = ResourceLink::fromRecordId($_SESSION['resource_pk'], $dataConnector);
