@@ -5,13 +5,12 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\ResourceLink;
 
 /**
- * update_tool.php
  *
- * Used by the primary index.php file to make calls to add/remove LTI Apps for user.
+ * This script is used by the js/slam.js script to make calls to add/remove LTI Apps (exceptions) to courses.
  *
- * @author     Kyle Tuck
- * @version    0.1.3
- * @since      File available since Release 0.1
+ * @author  Kyle Tuck <Kyle.Tuck@uky.edu>
+ * @copyright  Kyle Tuck
+ * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('config.php');
 require_once('lib.php');
