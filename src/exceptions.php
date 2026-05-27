@@ -37,7 +37,7 @@ if (!init($db, true)) {
 
 // make sure there are appropriate session variables set
 if (!isset($_SESSION['consumer_pk']) || !isset($_SESSION['resource_pk'])) {
-	print(json_encode(array('success' => false, 'errors' => 'Unauthorized.')));
+	print(json_encode(array('success' => false, 'errors' => 'Unauthorized. No SESSION keys.')));
 	exit;
 }
 
