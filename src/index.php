@@ -4,9 +4,6 @@ use ceLTIc\LTI;
 use ceLTIc\LTI\DataConnector;
 use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\ResourceLink;
-use ceLTIc\LTI\UserResult;
-use ceLTIc\LTI\Util;
-use ceLTIc\LTI\Enum\LogLevel;
 
 /**
  * This page lists the LTI apps that are available to instructors to enable in their course.
