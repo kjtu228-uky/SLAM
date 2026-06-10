@@ -1,6 +1,11 @@
 let idleTimer; // Variable to hold the timeout ID
 let timeoutDuration; // Variable to hold the timeout duration (in milliseconds)
 
+
+/**
+ * Clear the existing list of LTI apps available to add/remove and retrieve refreshed list.
+ *
+ */
 async function getCourseTools() {
 	// remove any tools currently displayed and show a loading wheel
 	toolList = document.getElementById('toolList');
@@ -52,8 +57,16 @@ async function getCourseTools() {
 		});
 }
 
-/* This function will add/remove the "updating" class for all items within the div
-   of the tool controls. */
+/**
+ * This function will add/remove the "updating" class for all nodes (recursively) within a container.
+ * The "updating" class will set the cursor value to "wait".
+ *
+ * @param {element} container - The container to update.
+ * @param {boolean} [addUpdating] - Should the class be added (default) or removed. (optional).
+ * @param {integer} [level] - Track recursion level. (optional).
+ * @returns {type} Description of the return value.
+ * @throws {ErrorType} When/why an error is thrown (if applicable).
+ */
 function setUpdating(container, addUpdating = true, level=0) {
 	// Get a NodeList of all child nodes (including text and comments)
 	allNodes = container.childNodes;
@@ -62,11 +75,17 @@ function setUpdating(container, addUpdating = true, level=0) {
 		else container.classList.remove("updating");
 	}
 	allNodes.forEach(node => {
-		setUpdating(node, level+1);
+		setUpdating(node, addUpdating, level+1);
 	});
 }
 
-async function updateToolInstall(tool_id, confirmed = false) {
+
+/**
+ * Add or remove an exception for the tool to the course (depending on toggle state).
+ *
+ * @param {integer} tool_id - The tool ID to add/remove.
+ */
+async function updateToolInstall(tool_id) {
 	let tool_toggle = document.getElementById("tool_select_" + tool_id);
 	let tool_container = document.getElementById('lti_tool_' + tool_id);
 	setUpdating(tool_container);
@@ -134,6 +153,12 @@ async function updateToolInstall(tool_id, confirmed = false) {
 		});
 }
 
+/**
+ * If user was shown a notification about the tool, check if the user still wants to add it.
+ *
+ * @param {integer} tool_id - The tool ID to add/remove.
+ * @param {boolean} cancelAdd - Did the user cancel the addition of the tool?
+ */
 function toolNoticeResponse(tool_id, cancelAdd) {
 	if (document.getElementById("tool_message_" + tool_id) != null)
 		document.getElementById("tool_message_" + tool_id).style.display = "none";
@@ -141,7 +166,13 @@ function toolNoticeResponse(tool_id, cancelAdd) {
 		document.getElementById("tool_select_"+tool_id).click();
 }
 
-function initializeTimer(duration = 120000) { // set the default value of the timer to 2 minutes
+
+/**
+ * Initialize the timer that watches for user activity timeout.
+ *
+ * @param {integer} [duration] - Time in milliseconds to wait (optional; default 2 minutes).
+ */
+function initializeTimer(duration = 120000) {
 	timeoutDuration = duration;
 	// Event listeners to detect user activity
 	document.addEventListener('mousemove', resetTimer);
@@ -152,19 +183,37 @@ function initializeTimer(duration = 120000) { // set the default value of the ti
 	resetTimer();
 }
 
+/**
+ * If the user has been idle too long, set the body to instruct the user to relaunch.
+ *
+ */
 function onIdle() {
-	// Set the body of the page to ask user to relaunch SLAM
-	relaunchSLAM = `
+    const path = window.location.pathname;
+
+    // Matches ".../admin/filename.ext" at the end of the path
+    const isAdmin = /\/admin\/[^\/]+$/.test(path);
+
+    const imgSrc = isAdmin ? '../images/icon50.png' : './images/icon50.png';
+
+    const relaunchSLAM = `
 <div id='slamTitle' class='slam-title'>
-<div style='width: 100%;'>
-	<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
-</div>
+    <div style='width: 100%;'>
+        <h1>
+            <img src='${imgSrc}' style='height:1.2em;' alt='SLAM logo'>
+            Self-Service LTI App Management
+        </h1>
+    </div>
 </div>
 <h2>Page timeout</h2>
 <p>Your session has timed out. Please re-launch SLAM from the course menu.</p>`;
-	document.body.innerHTML = relaunchSLAM;
+
+    document.body.innerHTML = relaunchSLAM;
 }
 
+/**
+ * Reset the timer that monitors user inactivity.
+ *
+ */
 function resetTimer() {
 	clearTimeout(idleTimer); // Clear the previous timer
 	idleTimer = setTimeout(onIdle, timeoutDuration); // Set a new one
