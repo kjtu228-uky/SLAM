@@ -10,7 +10,7 @@ This is an update to an existing internal version of SLAM that takes advantage o
 
 **IMPORTANT**
 
-This is still a work in progress. It should "work" but testing has been limited. Only recommended for beta environments, especially since some endpoints are not available to select when enforcing scopes (as of March 10, 2026).
+You should test SLAM in your beta or test environments first.
 
 Please check the [wiki](https://github.com/kjtu228-uky/SLAM/wiki) for information about installing and configuring SLAM.
 
