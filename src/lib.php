@@ -9,11 +9,16 @@ use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
 /**
- * This page provides general functions to support the application.
+ * This script provides general functions to support the application.
  *
- * @author  Stephen P Vickers <stephen@spvsoftwareproducts.com>
- * @copyright  SPV Software Products
- * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
+ * Functions: init, getAppPath, getAppUrl, pageFooter, LTIhtmlentities, getGuid
+ *   @author  Stephen P Vickers <stephen@spvsoftwareproducts.com>
+ *   @copyright  SPV Software Products
+ *   @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
+ * Remaining functions:
+ *   @author  Kyle Tuck <Kyle.Tuck@uky.edu>
+ *   @copyright  Kyle Tuck
+ *   @license  http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3
  */
 require_once('db.php');
 require_once('SLAM.php');
@@ -179,11 +184,21 @@ function getGuid()
 }
 
 /**
- * Determine if the user is an administrator of the LTI tools for
- * the specified platform. This is not necessarily the same thing
- * as a platform admin.
+ * Determine if the specified user (or the current session user) is a tool
+ * administrator for the given LTI platform. Tool admins are defined in the
+ * platform's 'tool_admins' setting as a comma-separated list of usernames.
+ * The platform's 'api_user_id' is always treated as a tool admin and may
+ * also define other tool admins via that setting.
  *
- * @return boolean.
+ * Note: Being a tool admin is not necessarily the same as being a platform
+ * (Canvas) administrator.
+ *
+ * @param \ceLTIc\LTI\Platform      $platform The LTI platform instance to check admin status against.
+ * @param string|null $user     Optional. The username to check. If null, the current
+ *                              session user ($_SESSION['username']) is used. Returns
+ *                              false if null is passed and no session user exists.
+ *
+ * @return bool True if the user is a tool administrator for the platform, false otherwise.
  */
 function isToolAdmin($platform, $user = null) {
 	if (is_null($user)) {
@@ -202,6 +217,32 @@ function isToolAdmin($platform, $user = null) {
 	return false;
 }
 
+/**
+ * Update recognized settings for the given LTI platform. Only processes the
+ * following keys in the $settings array:
+ *
+ *   - 'tool_admins'     : A comma-separated string of usernames to be granted
+ *                         tool admin access. Unrecognized or malformed values
+ *                         are rejected. The current session user will be
+ *                         automatically re-added if they attempt to remove
+ *                         themselves, unless they are the platform's api_user_id.
+ *
+ *   - 'tool_list_header': An HTML string displayed as the tool list header.
+ *                         Only the following tags are permitted; all others are
+ *                         stripped: <p>, <a>, <br>, <strong>, <i>, <u>, <hr>.
+ *                         The value is JSON-encoded before being saved.
+ *
+ * Unrecognized keys in $settings are silently ignored. Changes are persisted
+ * by calling save() on the platform instance.
+ *
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance whose settings will be updated.
+ * @param array                $settings An associative array of settings to update.
+ *                                       Must be an array; returns false otherwise.
+ *
+ * @return bool True if the settings were successfully validated and saved,
+ *              false if the current user is not a tool admin or $settings
+ *              is not a valid array.
+ */
 function updatePlatformSettings($platform, $settings) {
 	if (!isToolAdmin($platform)) return false;
 	// only update recognized settings: tool_admins, tool_list_header
@@ -226,10 +267,43 @@ function updatePlatformSettings($platform, $settings) {
 }
 
 /**
- * Check if the platform has a stored auth token. If it doesn't, request one.
- * Optionally force a refresh (request new token).
+ * Ensure the given LTI platform has a valid API access token. If no token is
+ * stored, a new one is requested. If a token exists but is expired or a refresh
+ * is explicitly requested, the token is refreshed via an OAuth2 refresh_token
+ * grant against the platform's Canvas API endpoint.
  *
- * @return boolean.
+ * Prerequisites: The platform must have the following settings defined:
+ *   - 'api_url'           : Base URL of the Canvas API.
+ *   - 'api_client_id'     : OAuth2 client ID.
+ *   - 'api_client_secret' : OAuth2 client secret.
+ * If any of these are missing, an error is logged via Util::logError() and
+ * false is returned immediately.
+ *
+ * Token storage:
+ *   - Tokens are stored in the platform's 'tokens' setting as a JSON-encoded
+ *     object containing 'access_token', 'refresh_token', and 'refresh_at'.
+ *   - A legacy 'access_token' setting is recognized as a fallback and migrated
+ *     to the 'tokens' setting upon the next successful refresh.
+ *
+ * Refresh behavior:
+ *   - A refresh is triggered if $refresh is true, or if the stored token's
+ *     'refresh_at' timestamp is in the past.
+ *   - If the refresh token grant fails, both the 'tokens' and legacy
+ *     'access_token' settings are cleared, an error message is stored in
+ *     $_SESSION['error_message'], and a new token is requested via
+ *     requestNewToken().
+ *   - The access token returned by the refresh is validated against the
+ *     pattern /^[0-9a-zA-Z~]+$/ before being stored.
+ *
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance for which to
+ *                                        verify or obtain an access token.
+ * @param bool                 $refresh  Optional. If true, forces a token refresh
+ *                                        even if the stored token has not yet expired.
+ *                                        Defaults to false.
+ *
+ * @return bool True if a valid access token is available after the function
+ *              completes, false if required settings are missing, a new token
+ *              could not be obtained, or a refresh attempt ultimately failed.
  */
 function platformHasToken($platform, $refresh = false) {
 	// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
@@ -264,9 +338,6 @@ function platformHasToken($platform, $refresh = false) {
 		$response = curl_exec($ch);
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 		$header = substr($response, 0, $header_size);
-// TO DO: check $header for WWW-Authenticate
-//$for_session['headers'] = $this->get_headers_from_curl_response($header);
-//Util::logError($this->get_headers_from_curl_response($header));
 		$response_data = json_decode(substr($response, $header_size), true);
 		curl_close($ch);
 		// if there was an error using the refresh token, request a brand new token
@@ -295,8 +366,18 @@ function platformHasToken($platform, $refresh = false) {
 }
 
 /**
- * Redirect to the platform oauth to request a new token.
+ * Redirect the current user to the platform's Canvas OAuth2 authorization
+ * endpoint to obtain a new access/refresh token pair. Only the user designated
+ * as the platform's 'api_user_id' may trigger this flow; any other session user
+ * will cause an error to be logged and false to be returned. On success, a
+ * Location header is issued and exit(0) is called — this function does not return.
  *
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance for which a
+ *                                        new OAuth2 token is being requested.
+ *
+ * @return bool False if the current session user is not the platform's
+ *              api_user_id, or if the platform's 'api_url' setting is missing.
+ *              Does not return on success (redirects and exits).
  */
 function requestNewToken($platform) {
 	if ($_SESSION['username'] != $platform->getSetting('api_user_id')) {
@@ -312,11 +393,12 @@ function requestNewToken($platform) {
 }
 
 /**
- * Canvas API helper – generic, self‑contained, no dependencies.
+ * Canvas API helper
  *
- * @param string       $method      HTTP method: GET, POST, PUT, DELETE, PATCH, etc.
- * @param string|array $endpoint    Canvas endpoint (e.g. "https://<api_url>/api/v1/courses/12345/assignments").
- * @param array        $options     Optional keys:
+ * @param \ceLTIc\LTI\Platform $platform    The LTI platform instance to make the API call against.
+ * @param string               $method      HTTP method: GET, POST, PUT, DELETE, PATCH, etc.
+ * @param string|array         $endpoint    Canvas endpoint (e.g. "https://<api_url>/api/v1/courses/12345/assignments").
+ * @param array                $options     Optional keys:
  *                            - 'body'      => array|json string  (will be JSON‑encoded)
  *                            - 'query'     => array of key=>value for query string
  *                            - 'headers'   => array of additional headers
@@ -480,9 +562,20 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 }
 
 /**
- * Retrieve the list of LTI registrations for the platform.
+ * Retrieve the full list of LTI registrations for the platform's account,
+ * sorted alphabetically by name, via the Canvas API endpoint:
+ *   GET /api/v1/accounts/self/lti_registrations
  *
- * @return array.
+ * This includes ALL registrations, including those not visible to instructors
+ * when adding apps to a course, so access is restricted to tool admins only.
+ * Returns an errors array if the current user is not a tool admin, if the API
+ * request fails, or if no results are returned.
+ *
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance to retrieve
+ *                                        registrations from.
+ *
+ * @return array On success, an array of LTI registration records. On failure,
+ *               an associative array with an 'errors' key describing the reason.
  */
 function getLTIRegistrations($platform) {
 	$LTIregistrations = array();
@@ -497,9 +590,25 @@ function getLTIRegistrations($platform) {
 }
 
 /**
- * Get the details for the specified registration Id.
+ * Retrieve the details for one or more LTI registrations by ID via the
+ * Canvas API endpoint:
+ *   GET /api/v1/accounts/self/lti_registrations/{id}
  *
- * @return array.
+ * $registrationIds may be a single numeric ID or an array of numeric IDs.
+ * Non-numeric values within an array are silently skipped. Returns an errors
+ * array if $registrationIds is neither a number nor an array, if the API
+ * request fails, if no registration is found for a given ID, or if more than
+ * one result is returned for a given ID.
+ *
+ * @param \ceLTIc\LTI\Platform $platform        The LTI platform instance to
+ *                                               retrieve registrations from.
+ * @param int|int[]            $registrationIds A single registration ID or an
+ *                                               array of registration IDs to look up.
+ *
+ * @return array On success, an associative array keyed by integer registration
+ *               ID, each containing the corresponding registration data. On
+ *               failure, an associative array with an 'errors' key describing
+ *               the reason.
  */
 function getLTIRegistration($platform, $registrationIds) {
 	$endpoints = [];
@@ -527,9 +636,20 @@ function getLTIRegistration($platform, $registrationIds) {
 }
 
 /**
- * Retrieve all available tools configured for the platform.
+ * Retrieve all LTI registrations for the platform, enriched with
+ * SLAM-specific configuration details from the database. Combines the
+ * results of getLTIRegistrations() with per-registration data from
+ * getToolConfig(), keying the result array by registration ID.
+ * Registrations for which no tool config can be resolved are excluded
+ * from the result. Returns an errors array if getLTIRegistrations() fails.
  *
- * @return array.
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance to
+ *                                        retrieve tools for.
+ *
+ * @return array On success, an associative array keyed by integer registration
+ *               ID, each containing the registration data merged with its
+ *               SLAM configuration. On failure, an associative array with an
+ *               'errors' key describing the reason.
  */
 function getAllTools($platform) {
 	$registrations = getLTIRegistrations($platform);
@@ -544,9 +664,33 @@ function getAllTools($platform) {
 }
 
 /**
- * Determine if the LTI registration is enabled (available) for the specified course.
+ * Determine whether one or more LTI registrations are available for the
+ * specified course by querying each registration's deployment controls via
+ * the Canvas API endpoint:
+ *   GET /api/v1/accounts/self/lti_registrations/{id}/controls
  *
- * @return array: array('available' => false or context_control['id'], 'errors' => if_any).
+ * $registrationIds may be a single numeric ID or an array of numeric IDs.
+ * Non-numeric values within an array are silently skipped. Returns an errors
+ * array if $registrationIds is neither a number nor an array, or if the API
+ * request fails.
+ *
+ * @param \ceLTIc\LTI\Platform $platform        The LTI platform instance to
+ *                                               check availability against.
+ * @param int|int[]            $registrationIds A single registration ID or an
+ *                                               array of registration IDs to check.
+ * @param int                  $courseNumber    The Canvas course ID to check
+ *                                               availability for.
+ *
+ * @return array On success, an associative array keyed by integer registration
+ *               ID. Each entry contains:
+ *                 - 'available'     : (bool) True if the registration is enabled
+ *                                    for the specified course, false otherwise.
+ *                 - 'context_id'    : (int) The context_control ID for the course,
+ *                                    present only if available is true.
+ *                 - 'deployment_id' : The deployment ID for the registration,
+ *                                    present only if available is true.
+ *               On failure, an associative array with an 'errors' key describing
+ *               the reason.
  */
 function isAvailable($platform, $registrationIds, $courseNumber) {
 	$endpoints = [];
@@ -586,9 +730,30 @@ function isAvailable($platform, $registrationIds, $courseNumber) {
 }
 
 /**
- * Retrieve the list of external tools that are enabled in the course.
+ * Retrieve the SLAM-enabled LTI tools for the platform and determine whether
+ * each is currently enabled in the specified course. Combines data from three
+ * sources: the SLAM tool configuration (getToolConfigs()), Canvas registration
+ * details (getLTIRegistration()), and per-course availability controls
+ * (isAvailable()). Registration API calls are batched concurrently by
+ * collecting all registration IDs before dispatching requests.
  *
- * @return array.
+ * Each tool entry in the result is augmented with:
+ *   - 'name'    : The registration's 'admin_nickname' if set, otherwise 'name'.
+ *   - 'enabled' : (bool) True if the tool is available for the specified course.
+ *
+ * The result is sorted alphabetically by name. Returns the raw error value
+ * (not an errors array) if getLTIRegistration() or isAvailable() fails.
+ *
+ * @param \ceLTIc\LTI\Platform $platform      The LTI platform instance to
+ *                                             retrieve tools for.
+ * @param int                  $course_number The Canvas course ID to check
+ *                                             tool availability against.
+ *
+ * @return array On success, a list of tool entries sorted alphabetically by
+ *               name, each containing SLAM configuration data merged with
+ *               Canvas registration details and course availability status.
+ *               On failure, the raw error value from the first failed
+ *               internal call.
  */
 function getCourseTools($platform, $course_number) {
 	$courseTools = [];
@@ -621,9 +786,31 @@ function getCourseTools($platform, $course_number) {
 }
 
 /**
- * Add an exception for a tool to a course.
+ * Enable an LTI tool for the specified course by creating a context control
+ * exception via the Canvas API endpoint:
+ *   POST /api/v1/accounts/self/lti_registrations/{canvas_id}/controls
  *
- * @return array of tool ids that were added, or false if tool (or dependency) could not be added.
+ * If the tool has a configured dependency, that dependency is added
+ * recursively first; if the dependency cannot be added, the operation is
+ * aborted and false is returned. If the tool is already available in the
+ * course, no API call is made and success is returned immediately.
+ *
+ * All add attempts, whether successful or not, are recorded via
+ * logToolChange(). Returns an errors array if the availability check fails.
+ *
+ * @param \ceLTIc\LTI\Platform $platform      The LTI platform instance to
+ *                                             add the tool on.
+ * @param int                  $tool_id       The SLAM tool ID to add. Cast
+ *                                             to int before processing.
+ * @param int                  $course_number The Canvas course ID to enable
+ *                                             the tool for.
+ *
+ * @return array|false On success, an array of integer tool IDs that were
+ *                     added (including any resolved dependencies). Returns
+ *                     an associative array with an 'errors' key if the
+ *                     availability check fails. Returns false if the tool
+ *                     config could not be found, a dependency could not be
+ *                     added, or the Canvas API call failed.
  */
 function addToolToCourse($platform, $tool_id, $course_number) {
 	$tool_id = intval($tool_id);
@@ -674,9 +861,39 @@ function addToolToCourse($platform, $tool_id, $course_number) {
 }
 
 /**
- * Remove an exception for a tool from a course.
+ * Disable an LTI tool for the specified course by deleting its context control
+ * exception via the Canvas API endpoint:
+ *   DELETE /api/v1/accounts/self/lti_registrations/{canvas_id}/controls/{context_id}
  *
- * @return array of tool ids that were removed, or false if tool (or dependency) could not be removed.
+ * Before removing the tool, checks whether any other course-enabled tools depend
+ * on it. If a blocking dependent is found that is not already part of the current
+ * removal chain ($dependents), the operation is aborted and an empty array is
+ * returned. If the tool itself has a dependency, that dependency is removed
+ * recursively first, with the current tool ID appended to $dependents to prevent
+ * circular blocking. If the tool is not currently enabled in the course, success
+ * is returned without making an API call.
+ *
+ * All removal attempts, whether successful or not, are recorded via logToolChange().
+ * Returns an errors array if getCourseTools() or isAvailable() fails.
+ *
+ * @param \ceLTIc\LTI\Platform $platform      The LTI platform instance to remove
+ *                                             the tool from.
+ * @param int                  $tool_id       The SLAM tool ID to remove. Cast to
+ *                                             int before processing.
+ * @param int                  $course_number The Canvas course ID to disable the
+ *                                             tool for.
+ * @param array                $dependents    Optional. Tool IDs already being removed
+ *                                             in the current recursive chain, used to
+ *                                             avoid circular blocking. Defaults to an
+ *                                             empty array.
+ *
+ * @return array|false On success, an array of integer tool IDs that were removed
+ *                     (including any resolved dependencies). Returns an empty array
+ *                     if removal is blocked by a dependent tool not in the current
+ *                     removal chain. Returns an associative array with an 'errors'
+ *                     key if getCourseTools() or isAvailable() fails. Returns false
+ *                     if the tool config could not be found, a dependency could not
+ *                     be removed, or the Canvas API call failed.
  */
 function removeToolFromCourse($platform, $tool_id, $course_number, $dependents = array()) {
 	$tool_id = intval($tool_id);
