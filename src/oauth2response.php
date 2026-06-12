@@ -36,8 +36,6 @@ if(count($_GET) > 0) {
 		$response = curl_exec($ch);
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 		$header = substr($response, 0, $header_size);
-		// TO DO: check $header to make sure we're OK
-		//$for_session['headers'] = get_headers_from_curl_response($header);
 		$response_data = json_decode(substr($response, $header_size), true);
 		if(is_null($response_data)) {
 			$_SESSION['error_message'] = "Did not receive valid JSON for OAuth request.";
