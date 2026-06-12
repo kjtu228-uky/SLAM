@@ -72,21 +72,19 @@ class SLAM extends LTI\Tool
 
     protected function onLaunch(): void
     {
-// Check the user has an appropriate role
+		// Check the user has an appropriate role
         if ($this->userResult->isStaff() || $this->userResult->isAdmin()) {
 			$_SESSION['consumer_pk'] = $this->platform->getRecordId();
 			$_SESSION['resource_pk'] = $this->resourceLink->getRecordId();
 			$_SESSION['user_consumer_pk'] = $this->userResult->getResourceLink()->getPlatform()->getRecordId();
 			$_SESSION['user_resource_pk'] = $this->userResult->getResourceLink()->getRecordId();
 			$_SESSION['user_pk'] = $this->userResult->getRecordId();
-			$_SESSION['isStudent'] = $this->userResult->isLearner();
 			$_SESSION['isStaff'] = $this->userResult->isStaff();
 			$_SESSION['isAdmin'] = $this->userResult->isAdmin();
 			$_SESSION['isContentItem'] = false;
 			$_SESSION['lti_version'] = $this->platform->ltiVersion;
 			$_SESSION['username'] = $this->userResult->username;
-
-// Redirect the user to display the list of items for the resource link
+			// Redirect the user to display the list of items for the resource link
             $this->redirectUrl = getAppUrl();
         } else {
             $this->reason = 'Invalid role.';
@@ -131,13 +129,12 @@ EOD;
 
     protected function onRegister(): void
     {
-// Initialise the user session
+		// Initialise the user session
         $_SESSION['consumer_pk'] = $this->platform->getRecordId();
         $_SESSION['tc_profile_url'] = $_POST['tc_profile_url'];
         $_SESSION['tc_profile'] = $this->platform->profile;
         $_SESSION['return_url'] = $_POST['launch_presentation_return_url'];
-
-// Redirect the user to process the registration
+		// Redirect the user to process the registration
         $this->redirectUrl = getAppUrl() . 'register.php';
     }
 
@@ -154,14 +151,15 @@ EOD;
             }
         }
         $appName = APP_NAME;
-		$disabledMsg = DEFAULT_DISABLED?"<p>The SLAM navigation item is disabled by default. Once you have registered the app, you will need to install it, and instructors will need to add it to their course navigation.</p>":"";
+		$appVer = APP_VERSION;
+		$disabledMsg = DEFAULT_DISABLED?"<p>The ".$appName." navigation item is disabled by default. Once you have registered ".$appName.", you will need to install it, and instructors will need to add it to their course navigation.</p>":"";
         $html = <<< EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="content-language" content="EN" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <title>LTI Tool registration</title>
+  <title>SLAM registration</title>
   <script src="js/jquery-3.7.0.min.js" type="text/javascript"></script>
   <link href="css/slam.css" media="screen" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
@@ -204,10 +202,10 @@ EOD;
   </script>
 </head>
 <body>
-  <h1>{$appName} Tool Registration</h1>
+  <h1>{$appName}: Tool Registration</h1>
 
   <p>
-    You are trying to perform a dynamic registration of SLAM 1.3.
+    You are trying to perform a dynamic registration of {$appName} {$appVer}.
   </p>
 {$disabledMsg}
 
@@ -248,7 +246,7 @@ EOD;
 <head>
 <meta http-equiv="content-language" content="EN" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<title>{$title}</title>
+<title>{$title} error</title>
 </head>
 <body>
 <h1>Error</h1>
