@@ -323,11 +323,11 @@ function platformHasToken($platform, $refresh = false) {
 	// check if we need to refresh the token
 	if ($refresh || (isset($platform_tokens->refresh_at) && $platform_tokens->refresh_at < time())) {
 		$url = $api_url . '/login/oauth2/token';
+		$userAgent = "User-Agent: " . APP_NAME . "/" . APP_VERSION . " (" . VENDOR_NAME . "; " . VENDOR_EMAIL . ")";
 		$ch = curl_init();
 		curl_setopt ($ch, CURLOPT_URL, $url);
 		curl_setopt ($ch, CURLOPT_HEADER, true);
-		curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded",
-			"User-Agent: SLAM/1.3 (UK Online; elearning@uky.edu)"));
+		curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded", $userAgent));
 		curl_setopt ($ch, CURLOPT_POST, true);
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
 						'grant_type' => 'refresh_token',
@@ -424,11 +424,12 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		else return ['errors' => 'String or array must be provided to canvasApiRequest().'];
 
 		// Build the headers
+		$userAgent = "User-Agent: " . APP_NAME . "/" . APP_VERSION . " (" . VENDOR_NAME . "; " . VENDOR_EMAIL . ")";
 		$headers = [
 			'Accept: application/json',
 			'Content-Type: application/json',
 			'Authorization: Bearer ' . $platform_tokens->access_token,
-			'User-Agent: SLAM/1.3 (UK Online; elearning@uky.edu)'
+			$userAgent
 		];
 		// Merge user‑supplied headers
 		if (!empty($options['headers']) && is_array($options['headers'])) {

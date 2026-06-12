@@ -4,25 +4,26 @@ use ceLTIc\LTI\Platform;
 use ceLTIc\LTI\Util;
 use ceLTIc\LTI\Enum\LogLevel;
 
-// Don't do anything if no $_GET value is sent.
-require_once('config.php');
-require_once('lib.php');
+//require_once('config.php');
+//require_once('lib.php');
 
 // Initialise session and database
 $db = null;
 $ok = init($db, true);
 
+// Don't do anything if no $_GET value is sent.
 if(count($_GET) > 0) {
 	if(isset($_GET['code']) && isset($_GET['state'])) {
 		// get the platform associated with the state id
 		$dataConnector = DataConnector\DataConnector::getDataConnector($db, DB_TABLENAME_PREFIX);
 		$platform = Platform::fromRecordId($_GET['state'], $dataConnector);
 		$url = $platform->getSetting('api_url') . '/login/oauth2/token';
+		$userAgent = "User-Agent: " . APP_NAME . "/" . APP_VERSION . " (" . VENDOR_NAME . "; " . VENDOR_EMAIL . ")";
 		$ch = curl_init();
 		curl_setopt ($ch, CURLOPT_URL, $url);
 		curl_setopt ($ch, CURLOPT_HEADER, true);
 		curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded",
-			"User-Agent: LTIPHP/1.0"));
+			$userAgent));
 		curl_setopt ($ch, CURLOPT_POST, true);
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
 						'grant_type' => 'authorization_code',
