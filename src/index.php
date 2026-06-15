@@ -56,7 +56,7 @@ if ($ok) {
 	$page .= <<< EOD
 	<div id='slamTitle' class='slam-title'>
 		<div style='flex: 1;'>
-			<h1><img src='https://www.uky.edu/canvas/branding/slam.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
+			<h1><img src='./images/icon50.png' style='height:1.2em;' alt='SLAM logo'>Self-Service LTI App Management</h1>
 		</div>
 EOD;
 	if (isToolAdmin($platform))
