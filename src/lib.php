@@ -65,7 +65,7 @@ function init(&$db, $checkSession = null, $currentLevel = 0)
 
     if (!is_null($checkSession) && $checkSession) {
         $ok = isset($_SESSION['consumer_pk']) && (isset($_SESSION['resource_pk']) || is_null($_SESSION['resource_pk'])) &&
-            isset($_SESSION['user_consumer_pk']) && (isset($_SESSION['user_pk']) || is_null($_SESSION['user_pk'])) && isset($_SESSION['isStudent']);
+            isset($_SESSION['user_consumer_pk']) && (isset($_SESSION['user_pk']) || is_null($_SESSION['user_pk']));
     }
 
     if (!$ok) {
