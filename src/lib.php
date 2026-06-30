@@ -373,10 +373,7 @@ function getPlatformTokens($platform) {
 		// decode and separate the nonce from the ciphertext
         $decoded = base64_decode($platform_tokens);
 		$nonceLen = SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES;
-		            
-Util::logError("nonceLen: " . $nonceLen);
 		$nonce = mb_substr($decoded, 0, $nonceLen, '8bit');
-Util::logError("length of nonce: " . strlen($nonce));
 		$ciphertext = mb_substr($decoded, $nonceLen, null, '8bit');
         // decrypt and authenticate the token
         $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, '', $nonce, TOKEN_KEY);
