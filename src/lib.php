@@ -314,11 +314,7 @@ function platformHasToken($platform, $refresh = false) {
 		Util::logError("Platform settings are not fully configured (ID: " . $platform->getRecordId() . ")");
 		return false;
 	}
-	// check if the platform has an access token; if not, request one from Canvas
-	$platform_tokens = $platform->getSetting('tokens');
-	// check for a legacy setting
-	if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
-	if ($platform_tokens) $platform_tokens = json_decode($platform_tokens);
+	$platform_tokens = getPlatformTokens($platform);
 	if ((!$platform_tokens || !$platform_tokens->access_token) && !requestNewToken($platform)) return false;
 	// check if we need to refresh the token
 	if ($refresh || (isset($platform_tokens->refresh_at) && $platform_tokens->refresh_at < time())) {
@@ -355,14 +351,48 @@ function platformHasToken($platform, $refresh = false) {
 			$platform_tokens->access_token = $response_data['access_token'];
 		if (isset($response_data['expires_in']) && is_numeric($response_data['expires_in']))
 			$platform_tokens->refresh_at = time() + intval($response_data['expires_in']);
-		if (isset($platform_tokens->access_token) && isset($platform_tokens->refresh_at)) {
-			// delete the legacy token key
-			$platform->setSetting('access_token');
-			$platform->setSetting('tokens', json_encode($platform_tokens));
-			$platform->save();
-		}
+		if (isset($platform_tokens->access_token) && isset($platform_tokens->refresh_at))
+			setPlatformTokens($platform, $platform_tokens);
 	}
 	return true;
+}
+
+function getPlatformTokens($platform) {
+	// check if the platform has an access token; if not, request one from Canvas
+	$platform_tokens = $platform->getSetting('tokens');
+	// check for a legacy setting
+	if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
+	if ($platform_tokens) {
+		// check if the tokens are encrypted
+		if (json_validate($platform_tokens)) {
+			// not encrypted, so encrypt and re-save
+			$platform_tokens = json_decode($platform_tokens);
+			setPlatformTokens($platform, $platform_tokens);
+			return $platform_tokens;
+		}
+		// decode and separate the nonce from the ciphertext
+        $decoded = base64_decode($platform_tokens);
+		$nonceLen = SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES;
+		$nonce = mb_substr($decoded, 0, $nonceLen, '8bit');
+		$ciphertext = mb_substr($decoded, $nonceLen, null, '8bit');
+        // decrypt and authenticate the token
+        $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, '', $nonce, TOKEN_KEY);
+		if ($decrypted === false) return false;
+		if (!json_validate($decrypted)) return false;
+		return json_decode($decrypted);
+	} else return false;
+}
+
+function setPlatformTokens($platform, $tokens) {
+	// generate unique nonce for every encryption (must never be reused)
+	$nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
+	// encrypt the JSON-encoded token
+	$ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(json_encode($tokens), '', $nonce, TOKEN_KEY);
+	$platform->setSetting('tokens', base64_encode($nonce . $ciphertext));
+	// clear the legacy setting
+	$platform->setSetting('access_token');
+	// save the platform
+	$platform->save();
 }
 
 /**
@@ -412,10 +442,11 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return ['errors' => 'The API URL is not defined for the platform.'];
 		// check if the platform has an access token; if not, request one from Canvas
-		$platform_tokens = $platform->getSetting('tokens');
+/* 		$platform_tokens = $platform->getSetting('tokens');
 		// check for a legacy setting
 		if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
-		if ($platform_tokens) $platform_tokens = json_decode($platform_tokens);
+		if ($platform_tokens) $platform_tokens = json_decode($platform_tokens); */
+		$platform_tokens = getPlatformTokens($platform);
 		if (!$platform_tokens || !$platform_tokens->access_token) return ['errors' => 'The platform does not have an access token.'];
 
 		$endpoints = [];

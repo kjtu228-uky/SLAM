@@ -43,9 +43,7 @@ if(count($_GET) > 0) {
 		} else {
 			if (isset($response_data['expires_in'])) $response_data['refresh_at'] = time() + intval($response_data['expires_in']);
 			// update the token values (and delete legacy tokens key)
-			$platform->setSetting('access_token');
-			$platform->setSetting('tokens', json_encode($response_data));
-			$platform->save();
+			setPlatformTokens($platform, $response_data);
 		}
 		// redirect
 		header('Location: ' . getAppUrl() . 'index.php');
