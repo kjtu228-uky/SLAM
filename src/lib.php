@@ -372,7 +372,8 @@ function getPlatformTokens($platform) {
 		}
 		// decode and separate the nonce from the ciphertext
         $decoded = base64_decode($platform_tokens);
-		$nonceLen = SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES;
+		$nonceLen = SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES;
+		            
 Util::logError("nonceLen: " . $nonceLen);
 		$nonce = mb_substr($decoded, 0, $nonceLen, '8bit');
 Util::logError("length of nonce: " . strlen($nonce));
