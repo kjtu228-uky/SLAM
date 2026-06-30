@@ -360,12 +360,9 @@ function platformHasToken($platform, $refresh = false) {
 function getPlatformTokens($platform) {
 	// check if the platform has an access token; if not, request one from Canvas
 	$platform_tokens = $platform->getSetting('tokens');
-Util::logError("Retrieved platform tokens: [" . $platform_tokens . "]");
 	// check for a legacy setting
 	if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
-Util::logError("Retrieved platform tokens: [" . $platform_tokens . "]");
 	if ($platform_tokens) {
-Util::logError("Retrieved platform tokens: [" . $platform_tokens . "]");
 		// check if the tokens are encrypted
 		if (json_validate($platform_tokens)) {
 			// not encrypted, so encrypt and re-save
@@ -376,6 +373,7 @@ Util::logError("Retrieved platform tokens: [" . $platform_tokens . "]");
 		// decode and separate the nonce from the ciphertext
         $decoded = base64_decode($platform_tokens);
 		$nonceLen = SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES;
+Util::logError("nonceLen: [" . $nonceLen . "]");
 		$nonce = mb_substr($decoded, 0, $nonceLen, '8bit');
 		$ciphertext = mb_substr($decoded, $nonceLen, null, '8bit');
         // decrypt and authenticate the token
