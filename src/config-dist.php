@@ -76,7 +76,7 @@ Insert private key here
 -----END RSA PRIVATE KEY-----
 EOD
 );
-define('TOKEN_KEY', 'key_to_encrypt_and_decrypt_tokens');
+define('API_KEY', 'key_to_encrypt_and_decrypt_api_secret_and_tokens');
 
 ###
 ###  Canvas API Settings
