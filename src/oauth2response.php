@@ -27,7 +27,7 @@ if(count($_GET) > 0) {
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query(array(
 						'grant_type' => 'authorization_code',
 						'client_id' => $platform->getSetting('api_client_id'),
-						'client_secret' => $platform->getSetting('api_client_secret'),
+						'client_secret' => getClientSecret($platform),
 						'redirect_uri' => getAppUrl() . 'oauth2response.php',
 						'code' => $_GET['code'],
 						'replace_tokens' => '1'
