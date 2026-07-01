@@ -76,7 +76,6 @@ Insert private key here
 -----END RSA PRIVATE KEY-----
 EOD
 );
-define('API_KEY', 'key_to_encrypt_and_decrypt_api_secret_and_tokens');
 
 ###
 ###  Canvas API Settings
@@ -88,6 +87,7 @@ define('API_SCOPES', array(
 	'url:POST|/api/v1/accounts/:current_account_id/lti_registrations/:registration_id/controls',
 	'url:DELETE|/api/v1/accounts/:account_id/lti_registrations/:registration_id/controls/:id'
 ));
+define('API_KEY', 'key_to_encrypt_and_decrypt_api_secret_and_tokens');
 
 ###
 ###  Dynamic registration settings
