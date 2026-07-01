@@ -309,7 +309,8 @@ function platformHasToken($platform, $refresh = false) {
 	// the API URL, API client ID, and client secret must be defined in the platform settings, otherwise API calls won't work
 	$api_url = $platform->getSetting('api_url');
 	$api_client_id = $platform->getSetting('api_client_id');
-	$api_client_secret = $platform->getSetting('api_client_secret');
+//	$api_client_secret = $platform->getSetting('api_client_secret');
+	$api_client_secret = getClientSecret($platform);
 	if (!$api_url || !$api_client_id || !$api_client_secret) {
 		Util::logError("Platform settings are not fully configured (ID: " . $platform->getRecordId() . ")");
 		return false;
@@ -357,6 +358,67 @@ function platformHasToken($platform, $refresh = false) {
 	return true;
 }
 
+/**
+ * Retrieve the API client secret for the given platform, encrypting and
+ * resaving it if it is found to be stored as unencrypted plain text.
+ * Encryption detection is performed by attempting base64 decoding and
+ * XChaCha20-Poly1305-IETF decryption; if decryption fails, the value is
+ * treated as plain text, encrypted, and resaved before the plain text
+ * value is returned.
+ *
+ * Encrypted values are stored as a base64-encoded string containing a
+ * prepended XChaCha20-Poly1305-IETF nonce followed by the ciphertext,
+ * using the API_KEY constant as the encryption key.
+ *
+ * Note: A unique nonce is generated for every encryption operation and
+ * must never be reused.
+ *
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance from which
+ *                                        to retrieve the client secret.
+ *
+ * @return string|false The plain text client secret on success, or false if
+ *                      no secret is stored or decryption fails unexpectedly.
+ */
+function getClientSecret($platform) {
+    $api_client_secret = $platform->getSetting('api_client_secret');
+    if (!$api_client_secret) return false;
+
+    // Attempt to base64-decode and decrypt — if decryption succeeds, the value was encrypted
+    $decoded = base64_decode($api_client_secret, true);
+    if ($decoded !== false && mb_strlen($decoded, '8bit') > SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
+        $nonce      = mb_substr($decoded, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
+        $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
+        $decrypted  = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, '', $nonce, API_KEY);
+        if ($decrypted !== false) return $decrypted;
+    }
+
+    // Value is unencrypted plain text — encrypt, resave, and return the original value
+    $nonce      = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
+    $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($api_client_secret, '', $nonce, API_KEY);
+    $platform->setSetting('api_client_secret', base64_encode($nonce . $ciphertext));
+    $platform->save();
+    return $api_client_secret;
+}
+
+
+/**
+ * Retrieve and decrypt the stored API tokens for the given platform. Reads
+ * from the 'tokens' setting, falling back to the legacy 'access_token'
+ * setting if needed. If the stored value is found to be unencrypted plain
+ * JSON (e.g., a legacy token that was never encrypted), it is transparently
+ * re-encrypted via setPlatformTokens() before being returned.
+ *
+ * Encrypted tokens are stored as a base64-encoded string containing a
+ * prepended XChaCha20-Poly1305-IETF nonce followed by the ciphertext,
+ * decrypted using the API_KEY constant.
+ *
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance from which
+ *                                        to retrieve tokens.
+ *
+ * @return object|false The decoded token object on success, or false if no
+ *                      token is stored, decryption fails, or the decrypted
+ *                      value is not valid JSON.
+ */
 function getPlatformTokens($platform) {
 	// check if the platform has an access token; if not, request one from Canvas
 	$platform_tokens = $platform->getSetting('tokens');
@@ -372,22 +434,39 @@ function getPlatformTokens($platform) {
 		}
 		// decode and separate the nonce from the ciphertext
         $decoded = base64_decode($platform_tokens);
-		$nonceLen = SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES;
-		$nonce = mb_substr($decoded, 0, $nonceLen, '8bit');
-		$ciphertext = mb_substr($decoded, $nonceLen, null, '8bit');
+		$nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
+		$ciphertext = mb_substr($decoded, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
         // decrypt and authenticate the token
-        $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, '', $nonce, TOKEN_KEY);
+        $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, '', $nonce, API_KEY);
 		if ($decrypted === false) return false;
 		if (!json_validate($decrypted)) return false;
 		return json_decode($decrypted);
 	} else return false;
 }
 
+
+/**
+ * Encrypt and store API tokens for the given platform. The token object is
+ * JSON-encoded and encrypted using XChaCha20-Poly1305-IETF (libsodium) with
+ * a randomly generated nonce. The nonce and ciphertext are concatenated and
+ * base64-encoded before being saved to the platform's 'tokens' setting. The
+ * legacy 'access_token' setting is cleared on every call. Changes are
+ * persisted by calling save() on the platform instance.
+ *
+ * Note: A unique nonce is generated for every encryption operation and must
+ * never be reused. The API_KEY constant is used as the encryption key.
+ *
+ * @param \ceLTIc\LTI\Platform $platform The LTI platform instance on which
+ *                                        to store the encrypted tokens.
+ * @param object               $tokens   The token object to encrypt and store.
+ *
+ * @return void
+ */
 function setPlatformTokens($platform, $tokens) {
 	// generate unique nonce for every encryption (must never be reused)
 	$nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
 	// encrypt the JSON-encoded token
-	$ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(json_encode($tokens), '', $nonce, TOKEN_KEY);
+	$ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(json_encode($tokens), '', $nonce, API_KEY);
 	$platform->setSetting('tokens', base64_encode($nonce . $ciphertext));
 	// clear the legacy setting
 	$platform->setSetting('access_token');
@@ -441,11 +520,7 @@ function canvasApiRequest($platform, string $method, $endpoint, array $options =
 		// the API URL must be defined in the platform settings
 		$api_url = $platform->getSetting('api_url');
 		if (!$api_url) return ['errors' => 'The API URL is not defined for the platform.'];
-		// check if the platform has an access token; if not, request one from Canvas
-/* 		$platform_tokens = $platform->getSetting('tokens');
-		// check for a legacy setting
-		if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
-		if ($platform_tokens) $platform_tokens = json_decode($platform_tokens); */
+		// check if the platform has an access token
 		$platform_tokens = getPlatformTokens($platform);
 		if (!$platform_tokens || !$platform_tokens->access_token) return ['errors' => 'The platform does not have an access token.'];
 
