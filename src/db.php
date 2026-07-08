@@ -297,7 +297,7 @@ function init_db($db)
 			'consumer_pk int(11) NOT NULL, ' .
 			'canvas_id varchar(32), ' .
 			'dependency int(11) DEFAULT NULL, ' .
-			'visible tinyint(1) NOT NULL DEFAULT 1, ' .
+			'visible tinyint(1) NOT NULL DEFAULT 0, ' .
 			'config longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`config`)), ' .
 			'user_notice varchar(1000) DEFAULT NULL, ' .
 			'support_info varchar(1000) DEFAULT NULL, ' .
