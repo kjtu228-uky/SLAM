@@ -426,9 +426,10 @@ function getPlatformTokens($platform) {
 	if (!$platform_tokens) $platform_tokens = $platform->getSetting('access_token');
 	if ($platform_tokens) {
 		// check if the tokens are encrypted
-		if (json_validate($platform_tokens)) {
+		$platform_tokens_data = json_decode($platform_tokens);
+		if ($platform_tokens_data) {
 			// not encrypted, so encrypt and re-save
-			$platform_tokens = json_decode($platform_tokens);
+			$platform_tokens = $platform_tokens_data;
 			setPlatformTokens($platform, $platform_tokens);
 			return $platform_tokens;
 		}
@@ -439,8 +440,9 @@ function getPlatformTokens($platform) {
         // decrypt and authenticate the token
         $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, '', $nonce, API_KEY);
 		if ($decrypted === false) return false;
-		if (!json_validate($decrypted)) return false;
-		return json_decode($decrypted);
+		$platform_tokens_data = json_decode($decrypted);
+		if (!$platform_tokens_data) return false;
+		return $platform_tokens_data;
 	} else return false;
 }
 
